@@ -93,8 +93,102 @@ body {
     pointer-events: none;
 }
 
-.banner-boton .arrow {
+.banner-boton .flecha {
     width: 300px;
     height: auto;
     pointer-events: none;
+}
+
+/* Carruseles */
+.carrusel-contenedor {
+  width: 100%;
+  overflow: hidden;
+  padding: 12px 0;
+  margin: 0;
+}
+
+.carrusel-blanco {
+  background-color: #ffffff;
+}
+
+.carrusel-negro {
+  background-color: #000000;
+}
+
+.carrusel-pista {
+  display: flex;
+  width: max-content;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+#pista-superior {
+  animation-name: scroll-izquierda;
+  animation-duration: 60s;
+}
+
+#pista-inferior {
+  animation-name: scroll-derecha;
+  animation-duration: 60s;
+}
+
+.carrusel-elemento {
+  padding: 0 30px;
+  font-size: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carrusel-elemento:hover {
+  transform: scale(1.05);
+}
+
+.carrusel-imagen {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.carrusel-elemento:hover .carrusel-imagen {
+  transform: scale(1.1);
+}
+
+.carrusel-blanco .carrusel-elemento {
+  color: #000000;
+}
+
+.carrusel-negro .carrusel-elemento {
+  color: #ffffff;
+}
+
+@keyframes scroll-izquierda {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-derecha {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.carrusel-pista:hover {
+  animation-play-state: paused;
 }
