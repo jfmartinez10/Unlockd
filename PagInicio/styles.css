@@ -293,6 +293,32 @@ body {
   position: relative;
 }
 
+.productos-indicadores {
+  position: absolute;
+  left: 40px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.indicador-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicador-dot.activo {
+  background: #000;
+  transform: scale(1.3);
+}
+
+.indicador-dot:hover {
+  background: #666;
+}
+
 .nav-botones {
   display: flex;
 }
