@@ -282,3 +282,26 @@ body {
   white-space: nowrap;
   margin-left: 15px;
 }
+
+/* Controles de navegación */
+.productos-controles {
+  border-top: 1px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 40px;
+  position: relative;
+}
+
+.nav-botones {
+  display: flex;
+}
+
+.nav-boton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
