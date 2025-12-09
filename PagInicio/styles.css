@@ -34,6 +34,11 @@ body {
   text-decoration: none;
   color: #000;
   font-size: 18px;
+  transition: opacity 0.3s ease;
+}
+
+.nav-left a:hover {
+  opacity: 0.6;
 }
 
 /* Logo centrado */
@@ -67,10 +72,30 @@ body {
   gap: 20px;
 }
 
+.nav-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-right .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.nav-right .icon:hover {
+  opacity: 0.6;
+}
+
 .nav-right .icon img {
   width: 33px;
   height: auto;
   cursor: pointer;
+  display: block;
 }
 
 /* Banner */
@@ -336,6 +361,7 @@ body {
 
 .nav-botones {
   display: flex;
+  align-items: center;
 }
 
 .nav-boton {
@@ -345,4 +371,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.3s ease;
+}
+
+.nav-boton:hover {
+  opacity: 0.6;
+}
+
+.nav-boton svg {
+  display: block;
 }
