@@ -1,8 +1,19 @@
 /* Funcionalidad de carruseles originales */
 document.addEventListener('DOMContentLoaded', () => {
     
+    /* Fuerza a recargar las imágenes del header para evitar que desaparezcan */
+    const headerImages = document.querySelectorAll('.main-header img');
+    headerImages.forEach(img => {
+        if (!img.complete) {
+            const src = img.src;
+            img.src = '';
+            img.src = src;
+        }
+    });
+    
     /* Duplicar elementos del carrusel para efecto infinito */
     const duplicarElementosCarrusel = (pista) => {
+        if (!pista) return;
         const elementos = Array.from(pista.children);
         elementos.forEach(elemento => {
             const clon = elemento.cloneNode(true);
@@ -48,6 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const productos = slider.querySelectorAll('.producto-item');
     const totalProductos = productos.length;
+    
+    if (totalProductos === 0) {
+        console.warn('No hay productos para mostrar en el slider');
+        return;
+    }
     
     /* Calcular cuántos productos se muestran por vista según el ancho de pantalla */
     function getProductosPorVista() {
@@ -126,4 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Inicializar slider */
     crearIndicadores();
     irAPosicion(0);
+
+    /* Recalcular al cambiar el tamaño de ventana */
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const nuevosProductosPorVista = getProductosPorVista();
+            if (nuevosProductosPorVista !== productosPorVista) {
+                productosPorVista = nuevosProductosPorVista;
+                maxPosicion = Math.max(0, totalProductos - productosPorVista);
+                crearIndicadores();
+                irAPosicion(0);
+            }
+        }, 250);
+    });
 });
