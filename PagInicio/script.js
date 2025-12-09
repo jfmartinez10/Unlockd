@@ -1,7 +1,7 @@
 /* Funcionalidad de carruseles originales */
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Duplicar elementos del carrusel para efecto infinito
+    /* Duplicar elementos del carrusel para efecto infinito */
     const duplicarElementosCarrusel = (pista) => {
         const elementos = Array.from(pista.children);
         elementos.forEach(elemento => {
