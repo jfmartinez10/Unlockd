@@ -34,11 +34,28 @@ body {
   text-decoration: none;
   color: #000;
   font-size: 18px;
+  position: relative;
   transition: opacity 0.3s ease;
 }
 
+/* Línea de subrayado animada */
+.nav-left a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #000;
+  transition: width 0.4s ease;
+}
+
+.nav-left a:hover::after {
+  width: 100%;
+}
+
 .nav-left a:hover {
-  opacity: 0.6;
+  opacity: 1;
 }
 
 /* Logo centrado */
