@@ -164,12 +164,12 @@ body {
 
 #pista-superior {
   animation-name: scroll-izquierda;
-  animation-duration: 60s;
+  animation-duration: 55s;
 }
 
 #pista-inferior {
   animation-name: scroll-derecha;
-  animation-duration: 60s;
+  animation-duration: 55s;
 }
 
 .carrusel-elemento {
@@ -438,4 +438,341 @@ body {
     font-size: 16px;
     color: #000;
     margin: 0;
+}
+
+/* Media queries para tablet */
+@media screen and (max-width: 1024px) {
+  body {
+    padding-top: 60px;
+  }
+
+  .main-header {
+    padding: 0 25px;
+    height: 60px;
+  }
+
+  .nav-left {
+    gap: 20px;
+  }
+
+  .nav-left a {
+    font-size: 16px;
+  }
+
+  .logo-center img {
+    width: 40px;
+  }
+
+  .nav-right .icon img {
+    width: 28px;
+  }
+
+  .banner {
+    height: 35vh;
+  }
+
+  .banner-boton {
+    bottom: 60px;
+  }
+
+  .banner-boton .flecha {
+    width: 250px;
+  }
+
+  .carrusel-contenedor {
+    padding: 10px 0;
+  }
+
+  .carrusel-imagen {
+    width: 50px;
+    height: 50px;
+  }
+
+  .carrusel-elemento {
+    padding: 0 20px;
+    font-size: 16px;
+    gap: 10px;
+  }
+
+  /* Velocidad aumentada en tablet */
+  #pista-superior {
+    animation-duration: 40s;
+  }
+
+  #pista-inferior {
+    animation-duration: 40s;
+  }
+
+  .producto-item {
+    flex: 0 0 50%;
+  }
+
+  .producto-info {
+    padding: 15px;
+    font-size: 11px;
+  }
+
+  .productos-controles {
+    padding: 25px 30px;
+  }
+
+  .productos-indicadores {
+    left: 30px;
+  }
+
+  .main-footer {
+    padding: 25px 30px;
+  }
+
+  .footer-link {
+    font-size: 14px;
+  }
+
+  .footer-logo {
+    width: 40px;
+  }
+
+  .footer-copyright {
+    font-size: 14px;
+  }
+}
+
+/* Media queries para moviles */
+@media screen and (max-width: 768px) {
+  body {
+    padding-top: 60px;
+  }
+
+  .main-header {
+    padding: 0 15px;
+  }
+
+  .nav-left {
+    gap: 15px;
+    flex: 1;
+  }
+
+  .nav-left a {
+    font-size: 14px;
+  }
+
+  .nav-right {
+    gap: 15px;
+  }
+
+  .nav-right .icon img {
+    width: 24px;
+  }
+
+  .banner {
+    height: 40vh;
+    min-height: 300px;
+    margin-top: 0;
+  }
+
+  .banner-boton {
+    bottom: 40px;
+  }
+
+  .banner-boton .flecha {
+    width: 200px;
+  }
+
+  .carrusel-contenedor {
+    padding: 8px 0;
+  }
+
+  .carrusel-imagen {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carrusel-elemento {
+    padding: 0 15px;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  /* Velocidad aumentada en móvil */
+  #pista-superior {
+    animation-duration: 35s;
+  }
+
+  #pista-inferior {
+    animation-duration: 35s;
+  }
+
+  .producto-item {
+    flex: 0 0 100%;
+    border-right: none;
+  }
+
+  .producto-info {
+    padding: 12px 15px;
+    font-size: 11px;
+  }
+
+  .producto-nombre {
+    font-size: 11px;
+  }
+
+  .producto-precio {
+    font-size: 11px;
+    margin-left: 10px;
+  }
+
+  .productos-controles {
+    padding: 20px 15px;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .productos-indicadores {
+    position: static;
+    order: 1;
+  }
+
+  .nav-botones {
+    order: 2;
+    gap: 20px;
+  }
+
+  .indicador-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .main-footer {
+    padding: 20px 15px;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .footer-left {
+    align-items: center;
+    text-align: center;
+    order: 2;
+  }
+
+  .footer-link {
+    font-size: 13px;
+  }
+
+  .footer-center {
+    position: static;
+    transform: none;
+    order: 1;
+  }
+
+  .footer-logo {
+    width: 36px;
+  }
+
+  .footer-copyright {
+    font-size: 13px;
+  }
+}
+
+/* ===== MEDIA QUERIES PARA MÓVILES PEQUEÑOS ===== */
+@media screen and (max-width: 480px) {
+  .main-header {
+    padding: 0 10px;
+  }
+
+  .nav-left {
+    gap: 10px;
+  }
+
+  .logo-center {
+    display: none;
+  }
+
+  .nav-left a {
+    font-size: 13px;
+  }
+
+  .nav-right {
+    gap: 12px;
+  }
+
+  .nav-right .icon img {
+    width: 22px;
+  }
+
+  .banner {
+    height: 35vh;
+    min-height: 250px;
+    margin-top: 0;
+  }
+
+  .banner-boton {
+    bottom: 30px;
+  }
+
+  .banner-boton .flecha {
+    width: 160px;
+  }
+
+  /* Velocidad aumentada en móviles pequeños */
+  #pista-superior {
+    animation-duration: 25s;
+  }
+
+  #pista-inferior {
+    animation-duration: 25s;
+  }
+
+  .carrusel-elemento {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .carrusel-imagen {
+    width: 35px;
+    height: 35px;
+  }
+
+  .producto-info {
+    padding: 10px 12px;
+    font-size: 10px;
+  }
+
+  .main-footer {
+    padding: 15px 10px;
+  }
+
+  .footer-link {
+    font-size: 12px;
+  }
+
+  .footer-copyright {
+    font-size: 12px;
+  }
+}
+
+/* fixear las imagenes */
+@media screen and (max-width: 768px) {
+  /* Asegurar que todas las imágenes se carguen correctamente */
+  .main-header img,
+  .banner-img,
+  .carrusel-imagen,
+  .producto-imagen,
+  .footer-logo {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Prevenir el colapso de imágenes */
+  .producto-imagen-container {
+    min-height: 250px;
+  }
+
+  /* Optimizar carga de imágenes del banner */
+  .banner-img {
+    object-fit: cover;
+    object-position: center;
+  }
 }
