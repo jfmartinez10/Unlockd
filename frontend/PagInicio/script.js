@@ -1,4 +1,3 @@
-/* Funcionalidad de carruseles originales */
 document.addEventListener('DOMContentLoaded', () => {
     
     /* Fuerza a recargar las imágenes del header para evitar que desaparezcan */
@@ -32,16 +31,26 @@ document.addEventListener('DOMContentLoaded', () => {
         duplicarElementosCarrusel(pistaInferior);
     }
 
+    /* Navegación a productos */
+    const navegarAProducto = (idProducto) => {
+        // Construir la URL con el parámetro
+        const url = `../PagProducto/producto.html?id=${idProducto}`;
+        window.location.href = url;
+    };
+
+    /* Click en elementos del carrusel */
     const carruselElementos = document.querySelectorAll('.carrusel-elemento');
     
     carruselElementos.forEach(elemento => {
         elemento.addEventListener('click', () => {
-            const url = elemento.getAttribute('data-url');
+            // Obtener el ID del producto desde data-id
+            const idProducto = elemento.getAttribute('data-id');
             
-            if (url) {
-                window.location.href = url;
-                const textoProducto = elemento.querySelector('span').textContent;
-                console.log('Navegando a:', url, '- Producto:', textoProducto);
+            if (idProducto) {
+                navegarAProducto(idProducto);
+                console.log('Navegando al producto:', idProducto);
+            } else {
+                console.error('No se encontró data-id en el elemento');
             }
         });
     });
@@ -64,6 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('No hay productos para mostrar en el slider');
         return;
     }
+    
+    /* Click en productos del slider */
+    productos.forEach(producto => {
+        producto.addEventListener('click', () => {
+            const idProducto = producto.getAttribute('data-id');
+            if (idProducto) {
+                navegarAProducto(idProducto);
+                console.log('Navegando al producto:', idProducto);
+            } else {
+                console.error('No se encontró data-id en el producto');
+            }
+        });
+    });
     
     /* Calcular cuántos productos se muestran por vista según el ancho de pantalla */
     function getProductosPorVista() {
@@ -126,17 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             irAPosicion(0);
         }
-    });
-
-    /* Click en productos para navegar */
-    productos.forEach(producto => {
-        producto.addEventListener('click', () => {
-            const url = producto.getAttribute('data-url');
-            if (url) {
-                window.location.href = url;
-                console.log('Navegando a producto:', url);
-            }
-        });
     });
 
     /* Inicializar slider */
