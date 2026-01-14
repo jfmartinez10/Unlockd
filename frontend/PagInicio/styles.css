@@ -564,11 +564,15 @@ body {
 
   .main-header {
     padding: 0 15px;
+    height: 60px;
+  }
+
+  .logo-center img {
+    display: none;
   }
 
   .nav-left {
     gap: 15px;
-    flex: 1;
   }
 
   .nav-left a {
@@ -661,6 +665,19 @@ body {
     height: 8px;
   }
 
+  /*FIX: Color negro para las flechas en móvil*/
+  .nav-boton {
+    color: #000;
+  }
+
+  .nav-boton svg {
+    color: #000;
+  }
+
+  .nav-boton svg path {
+    fill: #000;
+  }
+
   .main-footer {
     padding: 20px 15px;
     flex-direction: column;
@@ -695,28 +712,33 @@ body {
 
 /* ===== MEDIA QUERIES PARA MÓVILES PEQUEÑOS ===== */
 @media screen and (max-width: 480px) {
+  body {
+    padding-top: 60px;
+  }
+
   .main-header {
-    padding: 0 10px;
+    padding: 0 15px;
+    height: 60px;
   }
 
-  .nav-left {
-    gap: 10px;
-  }
-
-  .logo-center {
+  .logo-center img {
     display: none;
   }
 
+  .nav-left {
+    gap: 15px;
+  }
+
   .nav-left a {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .nav-right {
-    gap: 12px;
+    gap: 15px;
   }
 
   .nav-right .icon img {
-    width: 22px;
+    width: 24px;
   }
 
   .banner {
