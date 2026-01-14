@@ -389,6 +389,7 @@ body {
   align-items: center;
   justify-content: center;
   transition: opacity 0.3s ease;
+  color: #000;
 }
 
 .nav-boton:hover {
@@ -397,6 +398,7 @@ body {
 
 .nav-boton svg {
   display: block;
+  color: #000;
 }
 
 /* Footer */
