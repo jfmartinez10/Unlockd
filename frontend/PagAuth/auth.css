@@ -294,6 +294,25 @@ body {
     color: #000;
 }
 
+/* Links secundarios (Estilo gris hover) */
+.forgot-password, .link-secondary {
+    text-align: center;
+    display: block;
+    text-decoration: underline;
+    color: #000;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    margin-top: 10px;
+}
+
+.link-secondary {
+    margin-bottom: -15px;
+}
+
+.forgot-password:hover, .link-secondary:hover {
+    color: #666; /* Efecto gris */
+}
+
 /* Footer */
 .main-footer {
   width: 100%;
