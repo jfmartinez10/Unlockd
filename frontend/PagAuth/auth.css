@@ -218,6 +218,26 @@ body {
     color: #fff;
 }
 
+/* Estilos del Formulario de Autenticación */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Campos de entrada */
+.form-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 15px 20px;
+    background: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    outline: none;
+    border: 1px solid #666;
+}
+
 /* Footer */
 .main-footer {
   width: 100%;
