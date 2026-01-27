@@ -1,6 +1,6 @@
 const POPUP_CONFIG = {
-    delay: 5000,
-    frequency: 'always', 
+    delay: 4000,
+    frequency: 'always', // 'session', 'daily', 'once', 'always'
     devMode: false
 };
 
@@ -17,16 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const verificarMostrar = () => {
         if (POPUP_CONFIG.devMode) return true;
-        if (localStorage.getItem('popupSubscribed')) return false;
 
         const hoy = new Date().toDateString();
+        const yaSuscrito = localStorage.getItem('popupSubscribed');
 
         switch (POPUP_CONFIG.frequency) {
-            case 'session': return !sessionStorage.getItem('popupClosed');
-            case 'daily':   return localStorage.getItem('popupLastShown') !== hoy;
-            case 'once':    return !localStorage.getItem('popupPermanentClose');
-            case 'always':  return true;
-            default:        return true;
+            case 'session': 
+                return !yaSuscrito && !sessionStorage.getItem('popupClosed');
+            case 'daily':   
+                return !yaSuscrito && localStorage.getItem('popupLastShown') !== hoy;
+            case 'once':    
+                return !yaSuscrito && !localStorage.getItem('popupPermanentClose');
+            case 'always':  
+                return true;
+            default:        
+                return true;
         }
     };
 
