@@ -36,4 +36,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (POPUP_CONFIG.frequency === 'daily')   localStorage.setItem('popupLastShown', hoy);
         if (POPUP_CONFIG.frequency === 'once')    localStorage.setItem('popupPermanentClose', 'true');
     };
+
+    // Lógica de apertura
+    if (verificarMostrar()) {
+        setTimeout(() => {
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }, POPUP_CONFIG.delay);
+    }
+
+    // Eventos de cierre
+    document.querySelectorAll('#popupCerrar, .popup-pie-texto').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+            registrarCierre();
+            cerrar();
+        });
+    });
+
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) { registrarCierre(); cerrar(); } });
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            registrarCierre();
+            cerrar();
+        }
+    });
+
 });
