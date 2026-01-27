@@ -10,7 +10,7 @@ El diseño de Unlockd se basa en la simplicidad y el contraste, utilizando una e
 ### Guía de Estilos
 He desarrollado un sistema de diseño propio para asegurar la consistencia visual en toda la plataforma:
 
-![Guía de Estilos de Unlockd](./docs/guía-estilos-unlockd.jpg) 
+![Guía de Estilos de Unlockd](./docs/guia-estilos-unlockd.jpg) 
 
 ### Interfaz de Usuario (UI)
 La web apuesta por un diseño funcional donde el contenido visual es el protagonista.
