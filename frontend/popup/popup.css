@@ -62,3 +62,45 @@
   width: 24px;
   height: 24px;
 }
+
+/* Contenido del popup */
+.popup-contenido {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+}
+
+/* Lado izquierdo (texto y formulario) */
+.popup-izquierda {
+  padding: 40px 40px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px; 
+}
+
+.popup-titulo {
+  font-size: 36px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.popup-texto {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.popup-texto p {
+  margin: 0;
+}
+
+.popup-texto strong {
+  font-weight: 700;
+  color: #000;
+}
