@@ -181,3 +181,80 @@
   object-position: center;
   transform: translateY(-25px); 
 }
+
+@media (max-width: 768px) {
+  .popup-contenedor {
+    width: 95%;
+    max-width: 550px;
+    margin: 0 auto;
+  }
+
+  .popup-contenido {
+    grid-template-columns: 1.1fr 0.9fr; 
+    min-height: 300px; 
+    align-items: center;
+  }
+
+  .popup-izquierda {
+    padding: 20px; 
+    gap: 12px;
+  }
+
+  .popup-derecha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 15px; 
+  }
+
+  .popup-imagen {
+    width: 100%;
+    height: auto;
+    max-height: 250px; 
+    object-fit: contain; 
+    transform: translateY(0);
+    object-position: center;
+  }
+
+  .popup-titulo {
+    font-size: 20px; 
+    line-height: 1.2;
+  }
+
+  .popup-texto {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .popup-formulario {
+    gap: 10px;
+  }
+
+  .popup-entrada {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .popup-boton {
+    height: 45px;
+    font-size: 13px;
+  }
+
+  .popup-pie-texto {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-contenido {
+    grid-template-columns: 1fr 0.8fr;
+  }
+  
+  .popup-titulo {
+    font-size: 18px;
+  }
+
+  .popup-izquierda {
+    padding: 15px 10px 15px 15px;
+  }
+}
