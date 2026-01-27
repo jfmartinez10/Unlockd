@@ -62,4 +62,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Envío de Formulario
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('.popup-boton');
+        const email = document.getElementById('popupEmail').value.trim();
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Introduce un email válido');
+
+        btn.textContent = 'ENVIANDO...';
+        btn.disabled = true;
+
+        // Simulación de éxito
+        setTimeout(() => {
+            localStorage.setItem('popupSubscribed', 'true');
+            alert('¡Gracias por suscribirte!');
+            cerrar();
+        }, 1200);
+    });
 });
