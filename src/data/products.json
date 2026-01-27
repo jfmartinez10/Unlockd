@@ -1,0 +1,90 @@
+{
+  "products": {
+    "white-tshirt": {
+      "id": "white-tshirt",
+      "name": "WHITE TSHIRT",
+      "price": "29,99€",
+      "priceNumeric": 29.99,
+      "currency": "EUR",
+      "images": [
+        "/public/assets/images/products/camiseta-blanca-delante.png",
+        "/public/assets/images/products/camiseta-blanca-detras.png",
+        "/public/assets/images/products/modelo-delante.png",
+        "/public/assets/images/products/modelo-detras.png"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": {
+        "S": 10,
+        "M": 15,
+        "L": 12,
+        "XL": 8
+      },
+      "details": {
+        "composition": "Algodón 100%",
+        "fit": "Cropped fit",
+        "care": "Lavar a máquina 30°C",
+        "origin": "Hecho en España"
+      },
+      "description": "Camiseta básica de algodón 100% con diseño minimalista. Perfecta para el día a día.",
+      "category": "camisetas",
+      "tags": ["básicos", "algodón", "unisex"],
+      "featured": true,
+      "active": true
+    },
+    "black-tshirt": {
+      "id": "black-tshirt",
+      "name": "BLACK TSHIRT",
+      "price": "29,99€",
+      "priceNumeric": 29.99,
+      "currency": "EUR",
+      "images": [
+        "/public/assets/images/products/camiseta-negra-delante.png",
+        "/public/assets/images/products/camiseta-negra-detras.png",
+        "/public/assets/images/products/modelo-delante.png",
+        "/public/assets/images/products/modelo-detras.png"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": {
+        "S": 12,
+        "M": 18,
+        "L": 15,
+        "XL": 10
+      },
+      "details": {
+        "composition": "Algodón 100%",
+        "fit": "Relaxed fit",
+        "care": "Lavar a máquina 30°C",
+        "origin": "Hecho en España"
+      },
+      "description": "Camiseta negra de corte relajado. Esencial en cualquier armario.",
+      "category": "camisetas",
+      "tags": ["básicos", "algodón", "unisex"],
+      "featured": true,
+      "active": true
+    }
+  },
+  "categories": [
+    {
+      "id": "camisetas",
+      "name": "Camisetas",
+      "slug": "camisetas"
+    },
+    {
+      "id": "sudaderas",
+      "name": "Sudaderas",
+      "slug": "sudaderas"
+    },
+    {
+      "id": "accesorios",
+      "name": "Accesorios",
+      "slug": "accesorios"
+    }
+  ],
+  "settings": {
+    "currency": "EUR",
+    "currencySymbol": "€",
+    "taxRate": 0.21,
+    "freeShippingThreshold": 50,
+    "shippingCost": 4.99
+  }
+}

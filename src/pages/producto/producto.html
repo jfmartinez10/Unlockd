@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlockd - Producto</title>
+    <link rel="icon" href="/public/assets/images/logo.png">
+    <link rel="stylesheet" href="../../styles/variables.css">
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/components/header.css">
+    <link rel="stylesheet" href="../../styles/components/footer.css">
+    <link rel="stylesheet" href="../../styles/components/buttons.css">
+    <link rel="stylesheet" href="../../styles/components/forms.css">
+    <link rel="stylesheet" href="../../styles/pages/producto.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="nav-left">
+            <a href="/src/pages/index.html">Inicio</a>
+            <a href="#">Tienda</a>
+            <a href="/src/pages/contacto/contacto.html">Contacto</a>
+        </nav> 
+
+        <div class="logo-center">
+            <a href="/src/pages/index.html">
+                <img src="/public/assets/images/logo.png" alt="Logo Principal">
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-lupa.png" alt="Buscar">
+            </span>
+            <span class="icon">
+                <a href="/src/pages/auth/login.html">
+                    <img src="/public/assets/images/icons/logo-perfil.png" alt="Perfil">
+                </a>
+            </span>
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-cesta.png" alt="Carrito">
+            </span>
+        </div>
+    </header>
+
+    <section class="producto-pagina">
+        <div class="producto-contenedor">
+            <div class="producto-galeria">
+                <div class="imagen-principal-container">
+                    <img src="/public/assets/images/products/camiseta-blanca-delante.png" alt="Producto Principal" class="imagen-principal" id="imagenPrincipal">
+                </div>
+                
+                <div class="miniaturas-container">
+                    <div class="miniatura activa" data-imagen="/public/assets/images/products/camiseta-blanca-delante.png">
+                        <img src="/public/assets/images/products/camiseta-blanca-delante.png" alt="Vista 1">
+                    </div>
+                    <div class="miniatura" data-imagen="/public/assets/images/products/camiseta-blanca-detras.png">
+                        <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="Vista 2">
+                    </div>
+                    <div class="miniatura" data-imagen="/public/assets/images/products/modelo-delante.png">
+                        <img src="/public/assets/images/products/modelo-delante.png" alt="Vista 3">
+                    </div>
+                    <div class="miniatura" data-imagen="/public/assets/images/products/modelo-detras.png">
+                        <img src="/public/assets/images/products/modelo-detras.png" alt="Vista 4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="producto-info-panel">
+                <h1 class="producto-titulo">WHITE TSHIRT</h1>
+                <p class="producto-precio-detalle">29,99€</p>
+                
+                <div class="separator"></div>
+
+                <div class="tallas-seccion">
+                    <label class="tallas-label">TALLA:</label>
+                    <div class="tallas-opciones">
+                        <button class="talla-btn" data-talla="S"><span>S</span></button>
+                        <button class="talla-btn" data-talla="M"><span>M</span></button>
+                        <button class="talla-btn" data-talla="L"><span>L</span></button>
+                        <button class="talla-btn" data-talla="XL"><span>XL</span></button>
+                    </div>
+                </div>
+
+                <div class="cantidad-seccion">
+                    <button class="cantidad-btn" id="btnRestar"><span>-</span></button>
+                    <input type="text" class="cantidad-input" id="cantidadInput" value="1" readonly>
+                    <button class="cantidad-btn" id="btnSumar"><span>+</span></button>
+                </div>
+
+                <button class="btn btn-block">Añadir a la cesta</button>
+
+                <div class="desplegable-seccion">
+                    <button class="desplegable-header">
+                        <span>Guía de tallas</span>
+                        <span class="desplegable-icon">+</span>
+                    </button>
+                    <div class="desplegable-contenido">
+                        <div>
+                            <img src="/public/assets/images/products/guia-tallas.png" alt="Guía de tallas" class="guia-tallas-imagen">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="desplegable-seccion">
+                    <button class="desplegable-header">
+                        <span>Detalles</span>
+                        <span class="desplegable-icon">+</span>
+                    </button>
+                    <div class="desplegable-contenido">
+                        <div class="detalles-grid">
+                            <div class="detalle-item">
+                                <div class="detalle-icono">
+                                    <img src="/public/assets/images/products/hoja.svg" alt="Composición">
+                                </div>
+                                <div class="detalle-texto">
+                                    <strong>Composición</strong>
+                                    <span id="detalleComposicion">Algodón 100%</span>
+                                </div>
+                            </div>
+                            <div class="detalle-item">
+                                <div class="detalle-icono">
+                                    <img src="/public/assets/images/products/tijeras.svg" alt="Corte">
+                                </div>
+                                <div class="detalle-texto">
+                                    <strong>Corte</strong>
+                                    <span id="detalleCorte">Cropped fit</span>
+                                </div>
+                            </div>
+                            <div class="detalle-item">
+                                <div class="detalle-icono">
+                                    <img src="/public/assets/images/products/jabon.svg" alt="Cuidado">
+                                </div>
+                                <div class="detalle-texto">
+                                    <strong>Cuidado</strong>
+                                    <span id="detalleCuidado">Lavar a máquina 30°C</span>
+                                </div>
+                            </div>
+                            <div class="detalle-item">
+                                <div class="detalle-icono">
+                                    <img src="/public/assets/images/products/mundo.svg" alt="Origen">
+                                </div>
+                                <div class="detalle-texto">
+                                    <strong>Origen</strong>
+                                    <span id="detalleOrigen">Hecho en España</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="desplegable-seccion">
+                    <button class="desplegable-header">
+                        <span>Beneficios de suscripción</span>
+                        <span class="desplegable-icon">+</span>
+                    </button>
+                    <div class="desplegable-contenido">
+                        <div>
+                            <p>Información sobre los beneficios de suscribirse: descuentos exclusivos, envíos gratis, acceso anticipado, etc.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="suscripcion-seccion">
+                    <p class="suscripcion-titulo">¡Desbloquea tu estilo!</p>
+                    <button class="btn">Suscríbete</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-left">
+            <a href="#" class="footer-link">Política de Privacidad</a>
+            <a href="#" class="footer-link">Política de Reembolso</a>
+            <a href="#" class="footer-link">Términos de Servicio</a>
+        </div>
+        
+        <div class="footer-center">
+            <img src="/public/assets/images/logo.png" alt="Logo Unlockd" class="footer-logo">
+            <p class="footer-copyright">&copy; 2025 - Unlockd</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../../scripts/main.js"></script>
+    <script type="module" src="../../scripts/pages/producto.js"></script>
+
+</body>
+</html>

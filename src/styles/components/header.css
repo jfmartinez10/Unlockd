@@ -1,0 +1,155 @@
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height);
+  background: var(--color-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-xxl);
+  z-index: var(--z-index-header);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+/* Navegación izquierda */
+.nav-left {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.nav-left a {
+  text-decoration: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-large);
+  position: relative;
+  transition: opacity var(--transition-base);
+}
+
+/* Efecto de subrayado animado */
+.nav-left a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  transition: width var(--transition-slow);
+}
+
+.nav-left a:hover::after {
+  width: 100%;
+}
+
+.nav-left a:hover {
+  opacity: 1;
+}
+
+/* Logo centrado */
+.logo-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-center a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.logo-center img {
+  width: 48px;
+  height: auto;
+  cursor: pointer;
+  display: block;
+  object-fit: contain;
+}
+
+/* Navegación derecha (iconos) */
+.nav-right {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.nav-right .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  cursor: pointer;
+  transition: opacity var(--transition-base);
+}
+
+.nav-right .icon:hover {
+  opacity: 0.6;
+}
+
+.nav-right .icon img {
+  width: 33px;
+  height: auto;
+  cursor: pointer;
+  display: block;
+}
+
+/* Responsive - Tablet */
+
+@media (max-width: 1024px) {
+  .main-header {
+    padding: 0 25px;
+    height: var(--header-height-mobile);
+  }
+
+  .nav-left {
+    gap: var(--spacing-lg);
+  }
+
+  .nav-left a {
+    font-size: var(--font-size-base);
+  }
+
+  .logo-center img {
+    width: 40px;
+  }
+
+  .nav-right .icon img {
+    width: 28px;
+  }
+}
+
+/* Responsive - Móvil */
+
+@media (max-width: 768px) {
+  .main-header {
+    padding: 0 var(--spacing-md);
+  }
+
+  /* Ocultar logo en móvil para ahorrar espacio */
+  .logo-center img {
+    display: none;
+  }
+
+  .nav-left {
+    gap: var(--spacing-md);
+  }
+
+  .nav-left a {
+    font-size: var(--font-size-small);
+  }
+
+  .nav-right {
+    gap: var(--spacing-md);
+  }
+
+  .nav-right .icon img {
+    width: 24px;
+  }
+}

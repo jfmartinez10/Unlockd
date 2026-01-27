@@ -1,0 +1,151 @@
+/* Input básico (sin dimensiones fijas) */
+.form-input {
+    background: var(--color-secondary);
+    color: var(--color-text);
+    border: var(--border-width) solid var(--color-accent);
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+.form-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+}
+
+.form-input:disabled {
+    background: var(--color-background-alt);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Textarea (sin dimensiones fijas) */
+.form-textarea {
+    background: var(--color-secondary);
+    color: var(--color-text);
+    border: var(--border-width) solid var(--color-accent);
+    resize: vertical;
+    font-family: var(--font-family);
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+.form-textarea::placeholder {
+    color: var(--color-text-muted);
+}
+
+.form-textarea:focus {
+    border-color: var(--color-primary);
+}
+
+/* Contenedor de password con icono de ojo */
+.password-container {
+    position: relative;
+}
+
+.password-container .form-input {
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password img {
+    display: block;
+    pointer-events: none;
+    transition: opacity var(--transition-fast);
+}
+
+.toggle-password:hover img {
+    opacity: 0.7;
+}
+
+/* Grupo de formulario */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Fila de inputs (dos columnas) */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Checkbox personalizado */
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border: var(--border-width) solid var(--color-border);
+}
+
+.form-checkbox label {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Mensajes de error */
+.form-error {
+    color: #e74c3c;
+    font-size: var(--font-size-small);
+    margin-top: var(--spacing-xs);
+}
+
+.form-input.error {
+    border-color: #e74c3c;
+}
+
+/* Mensajes de éxito */
+.form-success {
+    color: #27ae60;
+    font-size: var(--font-size-small);
+    margin-top: var(--spacing-xs);
+}
+
+/* Select personalizado */
+.form-select {
+    background: var(--color-secondary);
+    color: var(--color-text);
+    border: var(--border-width) solid var(--color-accent);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+.form-select:focus {
+    border-color: var(--color-primary);
+}

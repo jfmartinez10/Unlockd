@@ -1,0 +1,239 @@
+/* Botón primario (Añadir a cesta, Enviar, etc.)  */
+.btn {
+  width: 100%;
+  max-width: 350px;
+  height: var(--button-height);
+  border: var(--border-width-thick) solid var(--color-border);
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn:hover {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Botón secundario (Outline) */
+
+.btn-secondary {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border: var(--border-width-thick) solid var(--color-border);
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+/* Botón de tallas (S, M, L, XL) */
+
+.talla-btn {
+  width: 60px;
+  height: 50px;
+  border: none;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  transition: all var(--transition-base);
+  overflow: visible;
+  border-left: var(--border-width-thick) solid var(--color-border);
+  border-right: var(--border-width-thick) solid var(--color-border);
+  transform: skewX(var(--skew-angle));
+}
+
+.talla-btn span {
+  display: inline-block;
+  transform: skewX(calc(var(--skew-angle) * -1));
+}
+
+/* Bordes animados superior e inferior */
+.talla-btn::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 0;
+  height: var(--border-width-thick);
+  background-color: var(--color-border);
+  transition: width var(--transition-slow);
+  transform: skewX(var(--skew-angle));
+  transform-origin: left;
+}
+
+.talla-btn::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 0;
+  height: var(--border-width-thick);
+  background-color: var(--color-border);
+  transition: width var(--transition-slow);
+  transform: skewX(var(--skew-angle));
+  transform-origin: right;
+}
+
+/* Hover y estado seleccionado */
+.talla-btn:hover::before,
+.talla-btn.seleccionada::before {
+  width: calc(100% + 4px);
+}
+
+.talla-btn:hover::after,
+.talla-btn.seleccionada::after {
+  width: calc(100% + 4px);
+}
+
+.talla-btn.seleccionada {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+/* Botones de cantidad (+/-) */
+.cantidad-btn {
+  width: 50px;
+  height: 40px;
+  border: none;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  font-size: 24px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+  border-left: var(--border-width-thick) solid var(--color-border);
+  border-right: var(--border-width-thick) solid var(--color-border);
+  transform: skewX(var(--skew-angle));
+}
+
+.cantidad-btn span {
+  display: inline-block;
+  transform: skewX(calc(var(--skew-angle) * -1));
+}
+
+/* Bordes animados superior e inferior */
+.cantidad-btn::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 0;
+  height: var(--border-width-thick);
+  background-color: var(--color-border);
+  transition: width var(--transition-slow);
+  transform: skewX(var(--skew-angle));
+  transform-origin: left;
+}
+
+.cantidad-btn::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 0;
+  height: var(--border-width-thick);
+  background-color: var(--color-border);
+  transition: width var(--transition-slow);
+  transform: skewX(var(--skew-angle));
+  transform-origin: right;
+}
+
+/* Hover que muestra bordes horizontales */
+.cantidad-btn:hover::before {
+  width: calc(100% + 4px);
+}
+
+.cantidad-btn:hover::after {
+  width: calc(100% + 4px);
+}
+
+/* Activo (cuando se hace clic) - invertir colores */
+.cantidad-btn:active {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+/* Botón de texto (Link Style) */
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: color var(--transition-base);
+  padding: 0;
+  height: auto;
+}
+
+.btn-link:hover {
+  color: var(--color-accent);
+}
+
+/* Tamaños adicionales */
+.btn-small {
+  height: 45px;
+  font-size: var(--font-size-small);
+  padding: 0 var(--spacing-lg);
+}
+
+.btn-large {
+  height: 60px;
+  font-size: var(--font-size-large);
+  padding: 0 var(--spacing-xxl);
+}
+
+/* Full width */
+.btn-block {
+  width: 100%;
+  max-width: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn {
+    max-width: 100%;
+    font-size: var(--font-size-small);
+  }
+
+  .talla-btn {
+    width: 55px;
+    height: 45px;
+    font-size: var(--font-size-small);
+  }
+
+  .cantidad-btn {
+    width: 45px;
+    height: 38px;
+    font-size: 20px;
+  }
+}

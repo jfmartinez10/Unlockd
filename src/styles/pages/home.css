@@ -1,0 +1,463 @@
+/* Banner */
+.banner {
+    width: 100%;
+    position: relative;
+    height: 65vh;
+}
+
+.banner-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: transparent !important;
+    outline: none;
+    -webkit-tap-highlight-color: transparent; /* Elimina el flash gris en móviles */
+}
+
+.banner-link:hover, 
+.banner-link:active, 
+.banner-link:focus {
+    background-color: transparent !important;
+    opacity: 1 !important;
+    outline: none;
+}
+
+.banner-img {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    object-fit: cover;
+}
+
+.banner-boton {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.banner-boton .flecha {
+    width: 300px;
+    height: auto;
+    pointer-events: none;
+}
+
+/* Carruseles */
+.carrusel-contenedor {
+    width: 100%;
+    overflow: hidden;
+    padding: 12px 0;
+    margin: 0;
+}
+
+.carrusel-blanco {
+    background-color: var(--color-secondary);
+}
+
+.carrusel-negro {
+    background-color: var(--color-primary);
+}
+
+.carrusel-pista {
+    display: flex;
+    width: max-content;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+#pista-superior {
+    animation-name: scroll-izquierda;
+    animation-duration: 55s;
+}
+
+#pista-inferior {
+    animation-name: scroll-derecha;
+    animation-duration: 55s;
+}
+
+.carrusel-elemento {
+    padding: 0 30px;
+    font-size: 18px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carrusel-elemento:hover {
+    transform: scale(1.05);
+}
+
+.carrusel-imagen {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.carrusel-elemento:hover .carrusel-imagen {
+    transform: scale(1.1);
+}
+
+.carrusel-blanco .carrusel-elemento {
+    color: var(--color-primary);
+}
+
+.carrusel-negro .carrusel-elemento {
+    color: var(--color-secondary);
+}
+
+@keyframes scroll-izquierda {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@keyframes scroll-derecha {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+}
+
+.carrusel-pista:hover {
+    animation-play-state: paused;
+}
+
+/* Sección de productos */
+.productos-seccion {
+    width: 100%;
+    background: var(--color-secondary);
+    padding: 0;
+    position: relative;
+    border-top: var(--border-width) solid var(--color-border);
+}
+
+.productos-contenedor {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.productos-slider {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.producto-item {
+    flex: 0 0 33.333%;
+    position: relative;
+    cursor: pointer;
+    border-right: var(--border-width) solid var(--color-border);
+}
+
+.producto-item:last-child {
+    border-right: none;
+}
+
+.producto-imagen-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+    background: var(--color-background-alt);
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.producto-imagen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease;
+}
+
+.producto-imagen.imagen-principal {
+    opacity: 1;
+}
+
+.producto-imagen.imagen-hover {
+    opacity: 0;
+}
+
+.producto-item:hover .producto-imagen.imagen-principal {
+    opacity: 0;
+}
+
+.producto-item:hover .producto-imagen.imagen-hover {
+    opacity: 1;
+}
+
+.producto-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--color-secondary);
+}
+
+.producto-nombre {
+    font-weight: 500;
+    color: var(--color-primary);
+    flex: 1;
+}
+
+.producto-precio {
+    font-weight: 600;
+    color: var(--color-primary);
+    white-space: nowrap;
+    margin-left: var(--spacing-md);
+}
+
+/* Controles de navegación */
+.productos-controles {
+    border-top: var(--border-width) solid var(--color-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-xl) var(--spacing-xxl);
+    position: relative;
+}
+
+.productos-indicadores {
+    position: absolute;
+    left: var(--spacing-xxl);
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.indicador-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d0d0d0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicador-dot.activo {
+    background: var(--color-primary);
+    transform: scale(1.3);
+}
+
+.indicador-dot:hover {
+    background: var(--color-accent);
+}
+
+.nav-botones {
+    display: flex;
+    align-items: center;
+}
+
+.nav-boton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    color: var(--color-primary);
+}
+
+.nav-boton:hover {
+    opacity: 0.6;
+}
+
+.nav-boton svg {
+    display: block;
+    color: var(--color-primary);
+}
+
+/* Responsive - Tablet */
+
+@media (max-width: 1024px) {
+    .banner {
+        height: 35vh;
+    }
+
+    .banner-boton {
+        bottom: 60px;
+    }
+
+    .banner-boton .flecha {
+        width: 250px;
+    }
+
+    .carrusel-contenedor {
+        padding: 10px 0;
+    }
+
+    .carrusel-imagen {
+        width: 50px;
+        height: 50px;
+    }
+
+    .carrusel-elemento {
+        padding: 0 var(--spacing-lg);
+        font-size: var(--font-size-base);
+        gap: var(--spacing-sm);
+    }
+
+    #pista-superior, #pista-inferior {
+        animation-duration: 40s;
+    }
+
+    .producto-item {
+        flex: 0 0 50%;
+    }
+
+    .producto-info {
+        padding: var(--spacing-md);
+        font-size: 11px;
+    }
+
+    .productos-controles {
+        padding: 25px var(--spacing-xl);
+    }
+
+    .productos-indicadores {
+        left: var(--spacing-xl);
+    }
+}
+
+/* Responsive - Móvil */
+
+@media (max-width: 768px) {
+    .banner {
+        height: 40vh;
+        min-height: 300px;
+    }
+
+    .banner-boton {
+        bottom: 40px;
+    }
+
+    .banner-boton .flecha {
+        width: 200px;
+    }
+
+    .carrusel-contenedor {
+        padding: 8px 0;
+    }
+
+    .carrusel-imagen {
+        width: 40px;
+        height: 40px;
+    }
+
+    .carrusel-elemento {
+        padding: 0 var(--spacing-md);
+        font-size: var(--font-size-small);
+        gap: 8px;
+    }
+
+    #pista-superior, #pista-inferior {
+        animation-duration: 35s;
+    }
+
+    .producto-item {
+        flex: 0 0 100%;
+        border-right: none;
+    }
+
+    .producto-info {
+        padding: 12px var(--spacing-md);
+        font-size: 11px;
+    }
+
+    .producto-nombre, .producto-precio {
+        font-size: 11px;
+    }
+
+    .producto-precio {
+        margin-left: var(--spacing-sm);
+    }
+
+    .productos-controles {
+        padding: var(--spacing-lg) var(--spacing-md);
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .productos-indicadores {
+        position: static;
+        order: 1;
+    }
+
+    .nav-botones {
+        order: 2;
+        gap: var(--spacing-lg);
+    }
+
+    .indicador-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .nav-boton {
+        color: var(--color-primary);
+    }
+
+    .nav-boton svg {
+        color: var(--color-primary);
+    }
+
+    .nav-boton svg path {
+        fill: var(--color-primary);
+    }
+}
+
+/* Responsive - Móvil más pequeño */
+@media (max-width: 480px) {
+    .banner {
+        height: 35vh;
+        min-height: 250px;
+    }
+
+    .banner-boton {
+        bottom: 30px;
+    }
+
+    .banner-boton .flecha {
+        width: 160px;
+    }
+
+    #pista-superior, #pista-inferior {
+        animation-duration: 25s;
+    }
+
+    .carrusel-elemento {
+        padding: 0 12px;
+        font-size: 12px;
+    }
+
+    .carrusel-imagen {
+        width: 35px;
+        height: 35px;
+    }
+
+    .producto-info {
+        padding: 10px 12px;
+        font-size: 10px;
+    }
+}

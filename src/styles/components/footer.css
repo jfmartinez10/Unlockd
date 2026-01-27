@@ -1,0 +1,112 @@
+.main-footer {
+  width: 100%;
+  padding: var(--spacing-xl) var(--spacing-xxl);
+  background: var(--color-secondary);
+  border-top: var(--border-width) solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-top: auto;
+}
+
+/* Sección de políticas (izquierda) */
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  align-items: flex-start;
+}
+
+.footer-link {
+  text-decoration: underline;
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  transition: opacity var(--transition-base);
+}
+
+.footer-link:hover {
+  opacity: 0.7;
+}
+
+/* Logo y copyright (centro) */
+.footer-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.footer-logo {
+  width: 48px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.footer-copyright {
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+  margin: 0;
+}
+
+/* Responsive - Tablet */
+
+@media (max-width: 1024px) {
+  .main-footer {
+    padding: 25px var(--spacing-xl);
+  }
+
+  .footer-link {
+    font-size: var(--font-size-small);
+  }
+
+  .footer-logo {
+    width: 40px;
+  }
+
+  .footer-copyright {
+    font-size: var(--font-size-small);
+  }
+}
+
+/* Responsive - Móvil */
+
+@media (max-width: 768px) {
+  .main-footer {
+    padding: var(--spacing-lg) var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    align-items: center;
+  }
+
+  .footer-left {
+    align-items: center;
+    text-align: center;
+    order: 2;
+  }
+
+  .footer-link {
+    font-size: 13px;
+  }
+
+  .footer-center {
+    position: static;
+    transform: none;
+    order: 1;
+  }
+
+  .footer-logo {
+    width: 36px;
+  }
+
+  .footer-copyright {
+    font-size: 13px;
+  }
+}

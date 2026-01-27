@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlockd - Inicio</title>
+    <link rel="icon" href="/public/assets/images/logo.png">
+    <link rel="stylesheet" href="../styles/variables.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/components/header.css">
+    <link rel="stylesheet" href="../styles/components/footer.css">
+    <link rel="stylesheet" href="../styles/components/buttons.css">
+    <link rel="stylesheet" href="../styles/pages/home.css">
+    <link rel="stylesheet" href="../styles/pages/popup.css">
+</head>
+<body>
+
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-contenedor">
+            <button class="popup-cerrar" id="popupCerrar">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#000000" d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/></svg>
+            </button>
+
+            <div class="popup-contenido">
+                <div class="popup-izquierda">
+                    <h2 class="popup-titulo">¡Desbloquea<br>tu estilo!</h2>
+                    
+                    <div class="popup-texto">
+                        <p>Suscríbete para recibir un <strong>10% de descuento</strong> en tu primera compra y ser el primero en saber sobre nuevos drops.</p>
+                    </div>
+
+                    <form class="popup-formulario" id="popupFormulario">
+                        <input 
+                            type="email" 
+                            class="popup-entrada" 
+                            placeholder="Email" 
+                            required
+                            id="popupEmail"
+                        >
+                        
+                        <button type="submit" class="popup-boton">DESBLOQUEAR AHORA</button>
+                    </form>
+
+                    <p class="popup-pie-texto">Paso, que pereza!</p>
+                </div>
+
+                <div class="popup-derecha">
+                    <img src="/public/assets/images/pestaña-emergente.png" alt="Modelo Unlockd" class="popup-imagen">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <nav class="nav-left">
+            <a href="/src/pages/index.html">Inicio</a>
+            <a href="#">Tienda</a>
+            <a href="/src/pages/contacto/contacto.html">Contacto</a>
+        </nav> 
+
+        <div class="logo-center">
+            <a href="/src/pages/index.html">
+                <img src="/public/assets/images/logo.png" alt="Logo Principal">
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-lupa.png" alt="Buscar">
+            </span>
+            <span class="icon">
+                <a href="/src/pages/auth/login.html">
+                    <img src="/public/assets/images/icons/logo-perfil.png" alt="Perfil">
+                </a>
+            </span>
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-cesta.png" alt="Carrito">
+            </span>
+        </div>
+    </header>
+
+    <section class="banner">
+        <a href="#" class="banner-link">
+            <img src="/public/assets/images/banner.png" class="banner-img" alt="Banner Principal">
+            
+            <div class="banner-boton"> 
+                <img src="/public/assets/images/logo-boton.png" class="flecha" alt="Ir a tienda">
+            </div>
+        </a>
+    </section>
+
+    <section class="carrusel-contenedor carrusel-blanco">
+        <div class="carrusel-pista" id="pista-superior">
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-delante.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="black-tshirt">
+                <img src="/public/assets/images/products/camiseta-negra-delante.png" alt="Black Tshirt" class="carrusel-imagen">
+                <span>· BLACK TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="black-tshirt">
+                <img src="/public/assets/images/products/camiseta-negra-detras.png" alt="Black Tshirt" class="carrusel-imagen">
+                <span>· BLACK TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="black-tshirt">
+                <img src="/public/assets/images/products/camiseta-negra-detras.png" alt="Black Tshirt" class="carrusel-imagen">
+                <span>· BLACK TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="carrusel-contenedor carrusel-negro">
+        <div class="carrusel-pista" id="pista-inferior">
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-delante.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="black-tshirt">
+                <img src="/public/assets/images/products/camiseta-negra-delante.png" alt="Black Tshirt" class="carrusel-imagen">
+                <span>· BLACK TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="black-tshirt">
+                <img src="/public/assets/images/products/camiseta-negra-detras.png" alt="Black Tshirt" class="carrusel-imagen">
+                <span>· BLACK TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="black-tshirt">
+                <img src="/public/assets/images/products/camiseta-negra-detras.png" alt="Black Tshirt" class="carrusel-imagen">
+                <span>· BLACK TSHIRT</span>
+            </div>
+            <div class="carrusel-elemento" data-id="white-tshirt">
+                <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt" class="carrusel-imagen">
+                <span>· WHITE TSHIRT</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="productos-seccion">
+        <div class="productos-contenedor">
+            <div class="productos-slider" id="productosSlider">           
+                <div class="producto-item" data-id="black-tshirt">
+                    <div class="producto-imagen-container">
+                        <img src="/public/assets/images/products/camiseta-negra-delante.png" alt="Black Tshirt" class="producto-imagen imagen-principal">
+                        <img src="/public/assets/images/products/camiseta-negra-detras.png" alt="Black Tshirt Back" class="producto-imagen imagen-hover">
+                    </div>
+                    <div class="producto-info">
+                        <span class="producto-nombre">BLACK TSHIRT</span>
+                        <span class="producto-precio">29,99€</span>
+                    </div>
+                </div>
+
+                <div class="producto-item" data-id="white-tshirt">
+                    <div class="producto-imagen-container">
+                        <img src="/public/assets/images/products/camiseta-blanca-delante.png" alt="White Tshirt" class="producto-imagen imagen-principal">
+                        <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt Back" class="producto-imagen imagen-hover">
+                    </div>
+                    <div class="producto-info">
+                        <span class="producto-nombre">WHITE TSHIRT</span>
+                        <span class="producto-precio">29,99€</span>
+                    </div>
+                </div>
+
+                <div class="producto-item" data-id="black-tshirt">
+                    <div class="producto-imagen-container">
+                        <img src="/public/assets/images/products/camiseta-negra-delante.png" alt="Black Tshirt" class="producto-imagen imagen-principal">
+                        <img src="/public/assets/images/products/camiseta-negra-detras.png" alt="Black Tshirt Back" class="producto-imagen imagen-hover">
+                    </div>
+                    <div class="producto-info">
+                        <span class="producto-nombre">BLACK TSHIRT</span>
+                        <span class="producto-precio">29,99€</span>
+                    </div>
+                </div>
+
+                <div class="producto-item" data-id="white-tshirt">
+                    <div class="producto-imagen-container">
+                        <img src="/public/assets/images/products/camiseta-blanca-delante.png" alt="White Tshirt" class="producto-imagen imagen-principal">
+                        <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt Back" class="producto-imagen imagen-hover">
+                    </div>
+                    <div class="producto-info">
+                        <span class="producto-nombre">WHITE TSHIRT</span>
+                        <span class="producto-precio">29,99€</span>
+                    </div>
+                </div>
+
+                <div class="producto-item" data-id="black-tshirt">
+                    <div class="producto-imagen-container">
+                        <img src="/public/assets/images/products/camiseta-negra-delante.png" alt="Black Tshirt" class="producto-imagen imagen-principal">
+                        <img src="/public/assets/images/products/camiseta-negra-detras.png" alt="Black Tshirt Back" class="producto-imagen imagen-hover">
+                    </div>
+                    <div class="producto-info">
+                        <span class="producto-nombre">BLACK TSHIRT</span>
+                        <span class="producto-precio">29,99€</span>
+                    </div>
+                </div>
+
+                <div class="producto-item" data-id="white-tshirt">
+                    <div class="producto-imagen-container">
+                        <img src="/public/assets/images/products/camiseta-blanca-delante.png" alt="White Tshirt" class="producto-imagen imagen-principal">
+                        <img src="/public/assets/images/products/camiseta-blanca-detras.png" alt="White Tshirt Back" class="producto-imagen imagen-hover">
+                    </div>
+                    <div class="producto-info">
+                        <span class="producto-nombre">WHITE TSHIRT</span>
+                        <span class="producto-precio">29,99€</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="productos-controles">
+            <div class="productos-indicadores" id="productosIndicadores"></div>
+            <div class="nav-botones">
+                <button class="nav-boton" id="btnAnterior">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m7.825 13l5.6 5.6L12 20l-8-8l8-8l1.425 1.4l-5.6 5.6H20v2z"/></svg>
+                </button>
+
+                <button class="nav-boton" id="btnSiguiente">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M16.175 13H4v-2h12.175l-5.6-5.6L12 4l8 8l-8 8l-1.425-1.4z"/></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-left">
+            <a href="#" class="footer-link">Política de Privacidad</a>
+            <a href="#" class="footer-link">Política de Reembolso</a>
+            <a href="#" class="footer-link">Términos de Servicio</a>
+        </div>
+        
+        <div class="footer-center">
+            <img src="/public/assets/images/logo.png" alt="Logo Unlockd" class="footer-logo">
+            <p class="footer-copyright">&copy; 2025 - Unlockd</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../scripts/main.js"></script>
+    <script type="module" src="../scripts/pages/home.js"></script>
+    <script type="module" src="../scripts/components/popup.js"></script>
+
+</body>
+</html>
