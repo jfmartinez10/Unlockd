@@ -1,0 +1,64 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 20px;
+}
+
+/* Cuando está activo */
+.popup-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Contenedor principal del popup */
+.popup-contenedor {
+  background: #fff;
+  width: 100%;
+  max-width: 700px; 
+  position: relative;
+  border-radius: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.popup-overlay.active .popup-contenedor {
+  transform: scale(1);
+}
+
+/* Botón cerrar (X) */
+.popup-cerrar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  color: #000;
+  transition: opacity 0.3s ease;
+}
+
+.popup-cerrar:hover {
+  opacity: 0.6;
+}
+
+.popup-cerrar svg {
+  width: 24px;
+  height: 24px;
+}
