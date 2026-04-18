@@ -174,20 +174,18 @@
 .desplegable-contenido {
     display: grid;
     grid-template-rows: 0fr;
-    max-height: 0;
     overflow: hidden;
-    transform: translateY(-2px);
     transition: grid-template-rows var(--transition-slow);
+    will-change: grid-template-rows;
 }
 
 .desplegable-contenido > div {
     overflow: hidden;
+    min-height: 0;
 }
 
 .desplegable-contenido.abierto {
     grid-template-rows: 1fr;
-    max-height: 1000px;
-    transform: translateY(0);
 }
 
 .desplegable-contenido p {
