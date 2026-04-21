@@ -1,5 +1,5 @@
 :root {
-  /* Colores principales */
+  /* Colores */
   --color-primary: #000;
   --color-secondary: #fff;
   --color-accent: #666;
@@ -55,7 +55,7 @@
   --glass-shadow:       0 8px 48px rgba(0, 0, 0, 0.09);
   --glass-shadow-side:  -8px 0 48px rgba(0, 0, 0, 0.10);
   
-  /* Transiciones */
+  /* Animaciones */
   --transition-fast: 0.2s ease;
   --transition-base: 0.3s ease;
   --transition-slow: 0.4s ease;
