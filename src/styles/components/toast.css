@@ -1,0 +1,195 @@
+/* Notificaciones */
+
+/* Contenedor de toasts */
+#unlockd-toast-container {
+    position: fixed;
+    top: calc(var(--header-height) + 18px);
+    right: var(--spacing-xxl);
+    z-index: calc(var(--z-index-modal) + 100);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+/* Toast: wrapper de animación */
+.unlockd-toast {
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.32s ease,
+                transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.unlockd-toast.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.unlockd-toast.saliendo {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.28s ease,
+                transform 0.28s cubic-bezier(0.4, 0, 0.8, 1);
+}
+
+/* Marco inclinado — efecto Unlockd */
+.unlockd-toast-marco {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-width: 280px;
+    max-width: 460px;
+    width: max-content;
+
+    /* Sin fondo ni blur aquí: se delega a .toast-glass-bg para no afectar al texto */
+    background: transparent;
+
+    /* Barras laterales diagonales */
+    border-left:  var(--border-width-thick) solid var(--color-border);
+    border-right: var(--border-width-thick) solid var(--color-border);
+    transform: skewX(-25deg);
+}
+
+/* Capa de cristal — aislada del texto para que el blur no lo desenfoque */
+.toast-glass-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.97);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    z-index: 0;
+    will-change: backdrop-filter;
+}
+
+/* Barra superior — completa desde el inicio (sin animación) */
+.unlockd-toast-marco::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    width: calc(100% + 4px);
+    height: var(--border-width-thick);
+    background: var(--color-border);
+    transform: skewX(-25deg);
+    transform-origin: left;
+}
+
+/* Barra inferior — completa desde el inicio */
+.unlockd-toast-marco::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: calc(100% + 4px);
+    height: var(--border-width-thick);
+    background: var(--color-border);
+    transform: skewX(-25deg);
+    transform-origin: right;
+}
+
+/* Contenido: contra-inclinado, aislado sobre la capa de cristal */
+.unlockd-toast-inner {
+    position: relative;
+    z-index: 1;                          /* encima de .toast-glass-bg */
+    transform: skewX(25deg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 13px 22px 13px 18px;
+    width: 100%;
+    min-height: 0;
+    /* Renderizado nítido de fuentes */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mensaje */
+.unlockd-toast-msg {
+    flex: 1;
+    font-family: var(--font-family);
+    font-size: 11px;
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--color-primary);
+    white-space: nowrap;
+    overflow: visible;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Botón cerrar */
+.unlockd-toast-cerrar {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.35;
+    transition: opacity var(--transition-fast);
+    margin-left: 4px;
+}
+
+.unlockd-toast-cerrar:hover {
+    opacity: 1;
+}
+
+.unlockd-toast-cerrar svg {
+    width: 11px;
+    height: 11px;
+    stroke: var(--color-primary);
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+}
+
+/* Variantes */
+
+/* Error: indicador izquierdo negro sólido */
+.unlockd-toast.toast-error .unlockd-toast-marco {
+    border-left-width: 3px;
+}
+
+/* Success: indicador punteado */
+.unlockd-toast.toast-success .unlockd-toast-marco {
+    border-right-width: 3px;
+}
+
+/* Progreso */
+.unlockd-toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.15);
+    transform-origin: left;
+    transform: scaleX(1);
+    transition: transform linear;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #unlockd-toast-container {
+        top: calc(var(--header-height-mobile) + 12px);
+        right: var(--spacing-lg);
+        left: var(--spacing-lg);
+    }
+
+    .unlockd-toast-marco {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .unlockd-toast-msg {
+        white-space: normal;
+    }
+}
