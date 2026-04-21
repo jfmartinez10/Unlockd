@@ -1,16 +1,16 @@
 import { getUrlParams } from '../main.js';
 import { addToCart } from '../utils/storage.js';
-import { showNotification } from '../main.js';
+import { showNotification } from '../utils/toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    /* Obtener ID del producto desde URL */
+    /* ID producto */
     const params = getUrlParams();
     const idProducto = params.id;
     
     console.log('ID del producto:', idProducto);
 
-    /* Base de datos temporal (debería venir de products.json) */
+    /* DB temporal */
     const productosDB = {
         'white-tshirt': {
             id: 'white-tshirt',
@@ -175,14 +175,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 nombre: producto.nombre,
                 precio: producto.precio,
                 priceNumeric: producto.priceNumeric,
-                talla: tallaSeleccionada,
+                size: tallaSeleccionada,
                 quantity: cantidad,
                 imagen: producto.imagenes[0]
             };
-            
+
             addToCart(productoParaCesta);
-            showNotification(`Producto añadido (Talla: ${tallaSeleccionada}, Cant: ${cantidad})`, 'success');
-            console.log('Producto añadido al carrito:', productoParaCesta);
+            document.dispatchEvent(new CustomEvent('cart:updated'));
+
+            import('../components/carrito.js').then(({ abrirCarrito }) => abrirCarrito());
         });
     }
 
@@ -212,10 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Botón de suscripción */
     const btnSuscribirse = document.querySelector('.suscripcion-seccion .btn');
-    
     if (btnSuscribirse) {
         btnSuscribirse.addEventListener('click', () => {
-            showNotification('Función de suscripción próximamente', 'info');
+            import('../components/popup.js').then(({ abrirPopup }) => abrirPopup());
         });
     }
 });
