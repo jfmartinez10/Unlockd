@@ -1,44 +1,34 @@
-import { getCartItemCount } from './utils/storage.js';
+import { abrirCarrito } from './components/carrito.js';
+import './components/buscador.js';
+export { showNotification } from './utils/toast.js';
 
-/* Configuración global */
+/* Configuración */
 const CONFIG = {
   apiUrl: '', // Para futuro backend
   assetsPath: '/public/assets',
   productDataPath: '/src/data/products.json'
 };
 
-/* Inicialización global */
+/* Inicialización */
 
 document.addEventListener('DOMContentLoaded', () => {
   initializeHeader();
   forceReloadHeaderImages();
 });
 
-/* Inicializa funcionalidad del header */
+/* Header */
 function initializeHeader() {
-  /* Resaltar página activa en navegación */
+  /* Página activa */
   highlightActivePage();
   
-  /* Click en carrito */
+  /* Carrito */
   const cartIcon = document.querySelector('.nav-right .icon:last-child');
   if (cartIcon) {
-    cartIcon.addEventListener('click', () => {
-      console.log('Abrir carrito');
-      // TODO: Implementar modal de carrito
-    });
-  }
-
-  /* Click en búsqueda */
-  const searchIcon = document.querySelector('.nav-right .icon:first-child');
-  if (searchIcon) {
-    searchIcon.addEventListener('click', () => {
-      console.log('Abrir búsqueda');
-      // TODO: Implementar modal de búsqueda
-    });
+    cartIcon.addEventListener('click', abrirCarrito);
   }
 }
 
-/* Resalta la página activa en el menú de navegación */
+/* Resaltar página activa */
 function highlightActivePage() {
   const currentPath = window.location.pathname;
   const navLinks = document.querySelectorAll('.nav-left a');
@@ -52,7 +42,7 @@ function highlightActivePage() {
   });
 }
 
-/* Fuerza la recarga de imágenes del header (fix para móviles) */
+/* Recarga imágenes header */
 function forceReloadHeaderImages() {
   const headerImages = document.querySelectorAll('.main-header img');
   headerImages.forEach(img => {
@@ -64,11 +54,11 @@ function forceReloadHeaderImages() {
   });
 }
 
-/* Navega a una página con parámetros opcionales */
+/* Navegación */
 export function navigateTo(page, params = {}) {
   let url = page;
   
-  /* Agregar parámetros a la URL si existen */
+  /* Parámetros URL */
   if (Object.keys(params).length > 0) {
     const queryString = new URLSearchParams(params).toString();
     url += `?${queryString}`;
@@ -78,7 +68,7 @@ export function navigateTo(page, params = {}) {
   window.location.href = url;
 }
 
-/* Obtiene parámetros de la URL */
+/* Obtener parámetros */
 export function getUrlParams() {
   const params = {};
   const urlParams = new URLSearchParams(window.location.search);
@@ -90,7 +80,7 @@ export function getUrlParams() {
   return params;
 }
 
-/* Scroll suave a un elemento */
+/* Scroll suave */
 export function scrollToElement(selector, offset = 0) {
   const element = document.querySelector(selector);
   if (!element) return;
@@ -104,7 +94,7 @@ export function scrollToElement(selector, offset = 0) {
   });
 }
 
-/* Scroll al inicio de la página */
+/* Scroll arriba */
 export function scrollToTop() {
   window.scrollTo({
     top: 0,
@@ -112,17 +102,17 @@ export function scrollToTop() {
   });
 }
 
-/* Previene el scroll del body */
+/* Bloquear scroll */
 export function disableBodyScroll() {
   document.body.style.overflow = 'hidden';
 }
 
-/* Permite el scroll del body */
+/* Habilitar scroll */
 export function enableBodyScroll() {
   document.body.style.overflow = 'auto';
 }
 
-/* Muestra estado de carga en un botón */
+/* Botón cargando */
 export function setButtonLoading(button, loadingText = 'CARGANDO...') {
   button.dataset.originalText = button.textContent;
   button.textContent = loadingText;
@@ -130,7 +120,7 @@ export function setButtonLoading(button, loadingText = 'CARGANDO...') {
   button.classList.add('loading');
 }
 
-/* Restaura el estado normal de un botón */
+/* Botón listo */
 export function setButtonReady(button) {
   if (button.dataset.originalText) {
     button.textContent = button.dataset.originalText;
@@ -139,36 +129,8 @@ export function setButtonReady(button) {
   button.classList.remove('loading');
 }
 
-/* Muestra una notificación temporal */
-export function showNotification(message, type = 'info', duration = 3000) {
-  const notification = document.createElement('div');
-  notification.className = `notification notification-${type}`;
-  notification.textContent = message;
-  
-  /* Estilos inline */
-  Object.assign(notification.style, {
-    position: 'fixed',
-    top: '20px',
-    right: '20px',
-    background: type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#333',
-    color: '#fff',
-    padding: '15px 20px',
-    borderRadius: '4px',
-    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-    zIndex: '10000',
-    animation: 'slideIn 0.3s ease',
-    maxWidth: '300px'
-  });
-  
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.style.animation = 'slideOut 0.3s ease';
-    setTimeout(() => notification.remove(), 300);
-  }, duration);
-}
 
-/* Formatea un precio */
+/* Formatear precio */
 export function formatPrice(price, currency = 'EUR') {
   const formatter = new Intl.NumberFormat('es-ES', {
     style: 'currency',
@@ -178,7 +140,7 @@ export function formatPrice(price, currency = 'EUR') {
   return formatter.format(price);
 }
 
-/* Formatea una fecha */
+/* Formatear fecha */
 export function formatDate(date) {
   return new Intl.DateTimeFormat('es-ES', {
     year: 'numeric',
@@ -187,7 +149,7 @@ export function formatDate(date) {
   }).format(date);
 }
 
-/* Debounce function */
+/* Debounce */
 export function debounce(func, wait = 300) {
   let timeout;
   return function executedFunction(...args) {
