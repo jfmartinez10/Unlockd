@@ -2,6 +2,53 @@ import { validateEmail } from '../utils/validation.js';
 import { setItem, getItem, setSessionItem, getSessionItem } from '../utils/storage.js';
 import { disableBodyScroll, enableBodyScroll, showNotification } from '../main.js';
 
+/* Inyectar CSS una sola vez */
+if (!document.querySelector('link[href*="popup.css"]')) {
+    const _link = document.createElement('link');
+    _link.rel  = 'stylesheet';
+    _link.href = '/src/styles/pages/popup.css';
+    document.head.appendChild(_link);
+}
+
+/* Previene parpadeo visual */
+const _critStyle = document.createElement('style');
+_critStyle.textContent = '.popup-overlay:not(.active){opacity:0;visibility:hidden;pointer-events:none}';
+document.head.prepend(_critStyle);
+
+/* HTML del popup */
+const POPUP_HTML = `
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup-contenedor">
+        <button class="popup-cerrar" id="popupCerrar" aria-label="Cerrar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                <path fill="#000000" d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/>
+            </svg>
+        </button>
+        <div class="popup-contenido">
+            <div class="popup-izquierda">
+                <h2 class="popup-titulo">¡Desbloquea<br>tu estilo!</h2>
+                <div class="popup-texto">
+                    <p>Suscríbete para recibir un <strong>10% de descuento</strong> en tu primera compra y ser el primero en saber sobre nuevos drops.</p>
+                </div>
+                <form class="popup-formulario" id="popupFormulario">
+                    <input
+                        type="email"
+                        class="popup-entrada"
+                        placeholder="Email"
+                        required
+                        id="popupEmail"
+                    >
+                    <button type="submit" class="popup-boton">DESBLOQUEAR AHORA</button>
+                </form>
+                <p class="popup-pie-texto">Paso, que pereza!</p>
+            </div>
+            <div class="popup-derecha">
+                <img src="/public/assets/images/pestaña-emergente.png" alt="Modelo Unlockd" class="popup-imagen">
+            </div>
+        </div>
+    </div>
+</div>`;
+
 const POPUP_CONFIG = {
     delay: 4000,               
     frequency: 'always',        
@@ -9,6 +56,11 @@ const POPUP_CONFIG = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    /* Inyectar HTML si no existe */
+    if (!document.getElementById('popupOverlay')) {
+        document.body.insertAdjacentHTML('beforeend', POPUP_HTML);
+    }
+
     const overlay = document.getElementById('popupOverlay');
     const form = document.getElementById('popupFormulario');
     const emailInput = document.getElementById('popupEmail');
