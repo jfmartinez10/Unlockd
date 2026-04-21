@@ -4,13 +4,16 @@
   left: 0;
   width: 100%;
   height: var(--header-height);
-  background: var(--color-secondary);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 var(--spacing-xxl);
   z-index: var(--z-index-header);
   border-bottom: var(--border-width) solid var(--color-border);
+  transition: background var(--transition-base);
 }
 
 /* Navegación izquierda */
@@ -28,7 +31,7 @@
   transition: opacity var(--transition-base);
 }
 
-/* Efecto de subrayado animado */
+/* Subrayado */
 .nav-left a::after {
   content: '';
   position: absolute;
