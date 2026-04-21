@@ -1,6 +1,25 @@
+import { addToCart } from '../utils/storage.js';
+
+/* Datos para el slider */
+const PRODUCTOS_HOME = {
+    'white-tshirt': {
+        id: 'white-tshirt', nombre: 'WHITE TSHIRT', precio: '29,99€', priceNumeric: 29.99,
+        imagen: '/public/assets/images/products/camiseta-blanca-delante.png'
+    },
+    'black-tshirt': {
+        id: 'black-tshirt', nombre: 'BLACK TSHIRT', precio: '29,99€', priceNumeric: 29.99,
+        imagen: '/public/assets/images/products/camiseta-negra-delante.png'
+    }
+};
+
+const SVG_CESTA_MINI = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="13" width="23" height="15" rx="3"/>
+    <path d="M12 13C12 9.4 14 7 16.5 7C19 7 21 9.4 21 13"/>
+</svg>`;
+
 document.addEventListener('DOMContentLoaded', () => {
     
-    /* Duplicar elementos del carrusel para efecto infinito */
+    /* Carrusel infinito */
     const duplicarElementosCarrusel = (pista) => {
         if (!pista) return;
         const elementos = Array.from(pista.children);
@@ -16,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pistaSuperior) duplicarElementosCarrusel(pistaSuperior);
     if (pistaInferior) duplicarElementosCarrusel(pistaInferior);
 
-    /* Navegación a productos */
+    /* Navegación */
     const navegarAProducto = (idProducto) => {
         /* Construir URL relativa correcta */
         const url = `producto/producto.html?id=${idProducto}`;
@@ -24,7 +43,38 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Navegando a:', url);
     };
 
-    /* Click en elementos del carrusel */
+    /* Botones de carrito */
+    function setupAddToCartButtons() {
+        const sliderEl = document.getElementById('productosSlider');
+        if (!sliderEl) return;
+
+        sliderEl.querySelectorAll('.producto-item').forEach(item => {
+            const info = item.querySelector('.producto-info');
+            if (!info || info.querySelector('.btn-cesta-mini')) return;
+
+            const id   = item.dataset.id;
+            const prod = PRODUCTOS_HOME[id];
+            if (!prod) return;
+
+            const btn = document.createElement('button');
+            btn.className = 'btn-cesta-mini';
+            btn.setAttribute('aria-label', 'Añadir al carrito');
+            btn.innerHTML = SVG_CESTA_MINI;
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                addToCart({ ...prod, size: null, quantity: 1 });
+                document.dispatchEvent(new CustomEvent('cart:updated'));
+                import('../components/carrito.js').then(({ abrirCarrito }) => abrirCarrito());
+                btn.classList.add('clicked');
+                setTimeout(() => btn.classList.remove('clicked'), 350);
+            });
+
+            info.appendChild(btn);
+        });
+    }
+
+    /* Click en carrusel */
     const setupCarruselClicks = () => {
         const carruselElementos = document.querySelectorAll('.carrusel-elemento');
         carruselElementos.forEach(elemento => {
@@ -40,7 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Ejecutar después de duplicar los elementos */
     setupCarruselClicks();
 
-    /* Funcionalidad del slider de productos */
+    /* Botones de carrito slider */
+    setupAddToCartButtons();
+
+    /* Lógica del slider */
     const slider = document.getElementById('productosSlider');
     const btnAnterior = document.getElementById('btnAnterior');
     const btnSiguiente = document.getElementById('btnSiguiente');
@@ -53,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (totalProductos === 0) return;
     
-    /* Click en productos del slider */
+    /* Click en slider */
     productos.forEach(producto => {
         producto.addEventListener('click', () => {
             const idProducto = producto.getAttribute('data-id');
