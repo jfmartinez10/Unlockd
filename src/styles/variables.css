@@ -45,6 +45,15 @@
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.3);
+
+  /* Glassmorphism */
+  --glass-bg:           rgba(255, 255, 255, 0.88);
+  --glass-bg-strong:    rgba(255, 255, 255, 0.97);
+  --glass-blur:         blur(22px) saturate(160%);
+  --glass-blur-md:      blur(14px) saturate(150%);
+  --glass-border:       rgba(0, 0, 0, 0.06);
+  --glass-shadow:       0 8px 48px rgba(0, 0, 0, 0.09);
+  --glass-shadow-side:  -8px 0 48px rgba(0, 0, 0, 0.10);
   
   /* Transiciones */
   --transition-fast: 0.2s ease;
