@@ -95,7 +95,7 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* Contenedor centrado */
+/* Contenedor */
 .container {
   max-width: var(--max-width-container);
   margin: 0 auto;
@@ -108,12 +108,12 @@ input[type="number"] {
   }
 }
 
-/* Ocultar scroll pero mantener funcionalidad */
+/* Scroll */
 .no-scroll {
   overflow: hidden;
 }
 
-/* Separador visual */
+/* Separador */
 .separator {
   width: 100%;
   height: var(--border-width);
@@ -121,7 +121,7 @@ input[type="number"] {
   margin: var(--spacing-md) 0;
 }
 
-/* Espaciado vertical */
+/* Espaciado */
 .mt-sm { margin-top: var(--spacing-sm); }
 .mt-md { margin-top: var(--spacing-md); }
 .mt-lg { margin-top: var(--spacing-lg); }
@@ -132,18 +132,18 @@ input[type="number"] {
 .mb-lg { margin-bottom: var(--spacing-lg); }
 .mb-xl { margin-bottom: var(--spacing-xl); }
 
-/* Text alignment */
+/* Alineación */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
 .text-right { text-align: right; }
 
-/* Display utilities */
+/* Utilidades */
 .d-none { display: none !important; }
 .d-block { display: block !important; }
 .d-flex { display: flex !important; }
 .d-grid { display: grid !important; }
 
-/* Ocultar visualmente pero mantener para lectores de pantalla */
+/* Accesibilidad */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -156,13 +156,13 @@ input[type="number"] {
   border-width: 0;
 }
 
-/* Focus visible para teclado */
+/* Focus */
 *:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* Preloaders */
+/* Botones */
 
 .loading {
   pointer-events: none;
