@@ -49,6 +49,23 @@
 
             <div class="tienda-controles-derecha">
 
+                <!-- Toggle vista -->
+                <div class="tienda-vista-toggle" id="tiendaVistaToggle" aria-label="Cambiar vista">
+                    <button class="tienda-vista-btn activo" id="btnVistaGrid" aria-label="Vista cuadrícula" data-vista="grid">
+                        <svg viewBox="0 0 18 18" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="2" y="2" width="6" height="6"/><rect x="10" y="2" width="6" height="6"/>
+                            <rect x="2" y="10" width="6" height="6"/><rect x="10" y="10" width="6" height="6"/>
+                        </svg>
+                    </button>
+                    <button class="tienda-vista-btn" id="btnVistaLista" aria-label="Vista lista" data-vista="lista">
+                        <svg viewBox="0 0 18 18" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                            <line x1="2" y1="4.5" x2="16" y2="4.5"/>
+                            <line x1="2" y1="9"   x2="16" y2="9"/>
+                            <line x1="2" y1="13.5" x2="16" y2="13.5"/>
+                        </svg>
+                    </button>
+                </div>
+
                 <div class="tienda-controles-grupo">
                     <button class="tienda-btn-control" id="btnSort" aria-haspopup="listbox" aria-expanded="false">
                         <svg viewBox="0 0 18 18" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -76,6 +93,8 @@
                     <div class="tienda-dropdown" id="dropdownFilter" role="listbox">
                         <button class="tienda-dropdown-item activo" data-color="todos"  role="option">Todos</button>
                         <button class="tienda-dropdown-item"        data-color="blanco" role="option">Blanco</button>
+                        <button class="tienda-dropdown-item"        data-color="crema"  role="option">Crema</button>
+                        <button class="tienda-dropdown-item"        data-color="gris"   role="option">Gris</button>
                         <button class="tienda-dropdown-item"        data-color="negro"  role="option">Negro</button>
                     </div>
                 </div>
