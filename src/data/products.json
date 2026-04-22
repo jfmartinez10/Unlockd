@@ -6,30 +6,56 @@
       "price": "29,99€",
       "priceNumeric": 29.99,
       "currency": "EUR",
+      "color": "blanco",
       "images": [
         "/public/assets/images/products/camiseta-blanca-delante.png",
         "/public/assets/images/products/camiseta-blanca-detras.png",
-        "/public/assets/images/products/modelo-delante.png",
-        "/public/assets/images/products/modelo-detras.png"
+        "/public/assets/images/products/modelo-camiseta-blanca-delante.png",
+        "/public/assets/images/products/modelo-camiseta-blanca-detras.png"
       ],
       "sizes": ["S", "M", "L", "XL"],
-      "stock": {
-        "S": 10,
-        "M": 15,
-        "L": 12,
-        "XL": 8
-      },
-      "details": {
-        "composition": "Algodón 100%",
-        "fit": "Cropped fit",
-        "care": "Lavar a máquina 30°C",
-        "origin": "Hecho en España"
-      },
-      "description": "Camiseta básica de algodón 100% con diseño minimalista. Perfecta para el día a día.",
-      "category": "camisetas",
-      "tags": ["básicos", "algodón", "unisex"],
-      "featured": true,
-      "active": true
+      "stock": { "S": 10, "M": 15, "L": 12, "XL": 8 },
+      "details": { "composition": "Algodón 100%", "fit": "Cropped fit", "care": "Lavar a máquina 30°C", "origin": "Hecho en España" },
+      "description": "Camiseta básica de algodón 100% con diseño minimalista.",
+      "category": "camisetas", "tags": ["básicos","algodón","unisex"], "featured": true, "active": true
+    },
+    "cream-tshirt": {
+      "id": "cream-tshirt",
+      "name": "CREAM TSHIRT",
+      "price": "29,99€",
+      "priceNumeric": 29.99,
+      "currency": "EUR",
+      "color": "crema",
+      "images": [
+        "/public/assets/images/products/camiseta-crema-delante.png",
+        "/public/assets/images/products/camiseta-crema-detras.png",
+        "/public/assets/images/products/modelo-camiseta-crema-delante.png",
+        "/public/assets/images/products/modelo-camiseta-crema-detras.png"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": { "S": 8, "M": 12, "L": 10, "XL": 6 },
+      "details": { "composition": "Algodón 100%", "fit": "Regular fit", "care": "Lavar a máquina 30°C", "origin": "Hecho en España" },
+      "description": "Camiseta en tono crema de algodón premium. Un básico atemporal.",
+      "category": "camisetas", "tags": ["básicos","algodón","unisex"], "featured": true, "active": true
+    },
+    "grey-tshirt": {
+      "id": "grey-tshirt",
+      "name": "GREY TSHIRT",
+      "price": "29,99€",
+      "priceNumeric": 29.99,
+      "currency": "EUR",
+      "color": "gris",
+      "images": [
+        "/public/assets/images/products/camiseta-gris-delante.png",
+        "/public/assets/images/products/camiseta-gris-detras.png",
+        "/public/assets/images/products/modelo-camiseta-gris-delante.png",
+        "/public/assets/images/products/modelo-camiseta-gris-detras.png"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": { "S": 9, "M": 14, "L": 11, "XL": 7 },
+      "details": { "composition": "Algodón 100%", "fit": "Relaxed fit", "care": "Lavar a máquina 30°C", "origin": "Hecho en España" },
+      "description": "Camiseta gris de corte relajado. Versátil y cómoda.",
+      "category": "camisetas", "tags": ["básicos","algodón","unisex"], "featured": true, "active": true
     },
     "black-tshirt": {
       "id": "black-tshirt",
@@ -37,48 +63,43 @@
       "price": "29,99€",
       "priceNumeric": 29.99,
       "currency": "EUR",
+      "color": "negro",
       "images": [
         "/public/assets/images/products/camiseta-negra-delante.png",
         "/public/assets/images/products/camiseta-negra-detras.png",
-        "/public/assets/images/products/modelo-delante.png",
-        "/public/assets/images/products/modelo-detras.png"
+        "/public/assets/images/products/camiseta-negra-delante.png",
+        "/public/assets/images/products/camiseta-negra-detras.png"
       ],
       "sizes": ["S", "M", "L", "XL"],
-      "stock": {
-        "S": 12,
-        "M": 18,
-        "L": 15,
-        "XL": 10
-      },
-      "details": {
-        "composition": "Algodón 100%",
-        "fit": "Relaxed fit",
-        "care": "Lavar a máquina 30°C",
-        "origin": "Hecho en España"
-      },
+      "stock": { "S": 12, "M": 18, "L": 15, "XL": 10 },
+      "details": { "composition": "Algodón 100%", "fit": "Relaxed fit", "care": "Lavar a máquina 30°C", "origin": "Hecho en España" },
       "description": "Camiseta negra de corte relajado. Esencial en cualquier armario.",
-      "category": "camisetas",
-      "tags": ["básicos", "algodón", "unisex"],
-      "featured": true,
-      "active": true
+      "category": "camisetas", "tags": ["básicos","algodón","unisex"], "featured": true, "active": true
+    },
+    "black-texture-tshirt": {
+      "id": "black-texture-tshirt",
+      "name": "BLACK TEXTURE TSHIRT",
+      "price": "34,99€",
+      "priceNumeric": 34.99,
+      "currency": "EUR",
+      "color": "negro",
+      "images": [
+        "/public/assets/images/products/camiseta-negra-textura-delante.png",
+        "/public/assets/images/products/camiseta-negra-textura-detras.png",
+        "/public/assets/images/products/modelo-camiseta-negra-textura-delante.png",
+        "/public/assets/images/products/modelo-camiseta-negro-textura-detras.png"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": { "S": 6, "M": 10, "L": 8, "XL": 5 },
+      "details": { "composition": "Algodón 100% texturizado", "fit": "Oversized fit", "care": "Lavar a máquina 30°C", "origin": "Hecho en España" },
+      "description": "Camiseta negra con textura especial. El toque diferencial para cualquier outfit.",
+      "category": "camisetas", "tags": ["premium","textura","unisex"], "featured": true, "active": true
     }
   },
   "categories": [
-    {
-      "id": "camisetas",
-      "name": "Camisetas",
-      "slug": "camisetas"
-    },
-    {
-      "id": "sudaderas",
-      "name": "Sudaderas",
-      "slug": "sudaderas"
-    },
-    {
-      "id": "accesorios",
-      "name": "Accesorios",
-      "slug": "accesorios"
-    }
+    { "id": "camisetas", "name": "Camisetas", "slug": "camisetas" },
+    { "id": "sudaderas", "name": "Sudaderas", "slug": "sudaderas" },
+    { "id": "accesorios", "name": "Accesorios", "slug": "accesorios" }
   ],
   "settings": {
     "currency": "EUR",
