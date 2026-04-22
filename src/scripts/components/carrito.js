@@ -1,5 +1,5 @@
 import { getCart, saveCart, addToCart, getCartTotal } from '../utils/storage.js';
-import { showNotification } from '../utils/toast.js';
+
 
 /* Estilo crítico inline */
 const _criticalStyle = document.createElement('style');
@@ -226,7 +226,7 @@ function _renderFooter(footer, cart, totalUnidades) {
 
     /* Checkout */
     footer.querySelector('#carritoCheckout').addEventListener('click', () => {
-        showNotification('Pasarela de pago — próximamente', 'info');
+        window.location.href = '/src/pages/checkout/checkout.html';
     });
 }
 
