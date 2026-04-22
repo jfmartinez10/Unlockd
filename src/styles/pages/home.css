@@ -103,12 +103,12 @@
 }
 
 .carrusel-imagen {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 5px;
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
     flex-shrink: 0;
     transition: transform 0.3s ease;
+    image-rendering: auto;
 }
 
 .carrusel-elemento:hover .carrusel-imagen {
@@ -308,8 +308,8 @@
     }
 
     .carrusel-imagen {
-        width: 50px;
-        height: 50px;
+        width: 62px;
+        height: 62px;
     }
 
     .carrusel-elemento {
@@ -361,8 +361,8 @@
     }
 
     .carrusel-imagen {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
 
     .carrusel-elemento {
@@ -452,8 +452,8 @@
     }
 
     .carrusel-imagen {
-        width: 35px;
-        height: 35px;
+        width: 42px;
+        height: 42px;
     }
 
     .producto-info {
