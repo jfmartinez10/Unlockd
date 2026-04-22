@@ -14,6 +14,24 @@ document.addEventListener('DOMContentLoaded', () => {
             imgHover: '/public/assets/images/products/camiseta-blanca-detras.png',
         },
         {
+            id: 'cream-tshirt',
+            nombre: 'CREAM TSHIRT',
+            precio: '29,99€',
+            priceNumeric: 29.99,
+            color: 'crema',
+            img:      '/public/assets/images/products/camiseta-crema-delante.png',
+            imgHover: '/public/assets/images/products/camiseta-crema-detras.png',
+        },
+        {
+            id: 'grey-tshirt',
+            nombre: 'GREY TSHIRT',
+            precio: '29,99€',
+            priceNumeric: 29.99,
+            color: 'gris',
+            img:      '/public/assets/images/products/camiseta-gris-delante.png',
+            imgHover: '/public/assets/images/products/camiseta-gris-detras.png',
+        },
+        {
             id: 'black-tshirt',
             nombre: 'BLACK TSHIRT',
             precio: '29,99€',
@@ -22,13 +40,23 @@ document.addEventListener('DOMContentLoaded', () => {
             img:      '/public/assets/images/products/camiseta-negra-delante.png',
             imgHover: '/public/assets/images/products/camiseta-negra-detras.png',
         },
+        {
+            id: 'black-texture-tshirt',
+            nombre: 'BLACK TEXTURE TSHIRT',
+            precio: '34,99€',
+            priceNumeric: 34.99,
+            color: 'negro',
+            img:      '/public/assets/images/products/camiseta-negra-textura-delante.png',
+            imgHover: '/public/assets/images/products/camiseta-negra-textura-detras.png',
+        },
     ];
 
     /* Estado */
     let estadoFiltro   = 'todos';
     let estadoOrden    = 'defecto';
     let estadoBusqueda = '';
-    const ITEMS_POR_PAGINA = 8;
+    let estadoVista    = 'grid'; // 'grid' | 'lista'
+    const ITEMS_POR_PAGINA = 9;
     let paginaActual = 1;
 
     /* DOM */
@@ -72,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return result;
     }
 
-    /* HTML tarjeta */
+    /* HTML tarjeta — grid */
     function crearCardHTML(p) {
         return `
         <article class="tienda-card" data-id="${p.id}" data-color="${p.color}">
@@ -100,6 +128,36 @@ document.addEventListener('DOMContentLoaded', () => {
         </article>`;
     }
 
+    /* HTML tarjeta — lista */
+    function crearListaHTML(p) {
+        return `
+        <article class="tienda-card tienda-card--lista" data-id="${p.id}" data-color="${p.color}">
+            <div class="tienda-card-imagen-wrap">
+                <img class="tienda-card-img img-principal"
+                     src="${p.img}"
+                     alt="${p.nombre}">
+                <img class="tienda-card-img img-hover"
+                     src="${p.imgHover}"
+                     alt="${p.nombre}"
+                     loading="lazy">
+            </div>
+            <div class="tienda-card-info tienda-card-info--lista">
+                <div class="tienda-card-texto">
+                    <span class="tienda-nombre">${p.nombre}</span>
+                    <span class="tienda-precio">${p.precio}</span>
+                </div>
+                <div class="tienda-lista-acciones">
+                    <button class="btn-cesta-mini" aria-label="Añadir al carrito">
+                        ${SVG_CESTA}
+                    </button>
+                    <button class="btn-favorito btn-favorito--lista" aria-label="Guardar en favoritos" data-activo="false">
+                        <img src="/public/assets/images/logo.png" alt="" aria-hidden="true">
+                    </button>
+                </div>
+            </div>
+        </article>`;
+    }
+
     /* Render grid */
     function renderGrid() {
         const productos    = getProductosFiltradosOrdenados();
@@ -117,10 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const inicio   = (paginaActual - 1) * ITEMS_POR_PAGINA;
         const enPagina = productos.slice(inicio, inicio + ITEMS_POR_PAGINA);
 
+        /* Aplicar clase de vista al grid */
+        grid.classList.toggle('tienda-grid--lista', estadoVista === 'lista');
+
         if (enPagina.length === 0) {
             grid.innerHTML = '<p class="tienda-sin-resultados">Sin resultados</p>';
         } else {
-            grid.innerHTML = enPagina.map(crearCardHTML).join('');
+            const renderFn = estadoVista === 'lista' ? crearListaHTML : crearCardHTML;
+            grid.innerHTML = enPagina.map(renderFn).join('');
             attachCardEvents();
         }
 
@@ -202,6 +264,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlQ = new URLSearchParams(window.location.search).get('q');
     if (urlQ) {
         estadoBusqueda = urlQ;
+    }
+
+    /* Toggle vista grid / lista */
+    const btnVistaGrid  = document.getElementById('btnVistaGrid');
+    const btnVistaLista = document.getElementById('btnVistaLista');
+
+    if (btnVistaGrid && btnVistaLista) {
+        [btnVistaGrid, btnVistaLista].forEach(btn => {
+            btn.addEventListener('click', () => {
+                estadoVista = btn.dataset.vista;
+                btnVistaGrid.classList.toggle('activo', estadoVista === 'grid');
+                btnVistaLista.classList.toggle('activo', estadoVista === 'lista');
+                paginaActual = 1;
+                renderGrid();
+            });
+        });
     }
 
     /* Dropdown Ordenar */
