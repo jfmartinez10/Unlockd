@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlockd — Checkout</title>
+    <link rel="icon" href="/public/assets/images/logo.png">
+    <link rel="stylesheet" href="../../styles/variables.css">
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/components/header.css">
+    <link rel="stylesheet" href="../../styles/components/footer.css">
+    <link rel="stylesheet" href="../../styles/components/forms.css">
+    <link rel="stylesheet" href="../../styles/pages/checkout.css">
+</head>
+<body>
+
+    <!-- Header mínimo sticky -->
+    <header class="co-header">
+        <a class="co-back" href="javascript:history.back()" aria-label="Volver">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12,19 5,12 12,5"/>
+            </svg>
+        </a>
+
+        <a href="/src/pages/index.html" class="co-logo">
+            <img src="/public/assets/images/logo.png" alt="Unlockd">
+        </a>
+
+        <nav class="co-pasos" aria-label="Pasos del checkout">
+            <span class="co-paso co-paso--hecho">Carrito</span>
+            <span class="co-paso-sep">/</span>
+            <span class="co-paso co-paso--activo">Envío</span>
+            <span class="co-paso-sep">/</span>
+            <span class="co-paso">Pago</span>
+        </nav>
+    </header>
+
+    <main class="co-main">
+
+        <!-- Columna derecha: resumen -->
+        <aside class="co-resumen">
+            <div class="co-titulo-marco">
+                <span>Resumen</span>
+            </div>
+
+            <div class="co-items" id="checkoutItems">
+                <!-- Renderizado por checkout.js -->
+            </div>
+
+            <div class="co-totales">
+                <div class="co-total-fila">
+                    <span>Subtotal</span>
+                    <span id="checkoutSubtotal">—</span>
+                </div>
+                <div class="co-total-fila">
+                    <span>Envío</span>
+                    <span id="checkoutEnvio">—</span>
+                </div>
+                <div class="co-total-fila co-total-fila--final">
+                    <span>Total</span>
+                    <span id="checkoutTotal">—</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Columna izquierda: formulario -->
+        <section class="co-formulario">
+            <div class="co-titulo-marco">
+                <span>Datos de envío</span>
+            </div>
+
+            <form class="co-form" id="checkoutForm" novalidate>
+
+                <div class="co-fila-doble">
+                    <div class="co-campo">
+                        <label class="co-label" for="coNombre">Nombre</label>
+                        <input class="co-input" type="text" id="coNombre" name="nombre"
+                               placeholder="José" required autocomplete="given-name">
+                    </div>
+                    <div class="co-campo">
+                        <label class="co-label" for="coApellidos">Apellidos</label>
+                        <input class="co-input" type="text" id="coApellidos" name="apellidos"
+                               placeholder="Martínez" required autocomplete="family-name">
+                    </div>
+                </div>
+
+                <div class="co-campo">
+                    <label class="co-label" for="coEmail">Email</label>
+                    <input class="co-input" type="email" id="coEmail" name="email"
+                           placeholder="hola@unlockd.es" required autocomplete="email">
+                </div>
+
+                <div class="co-campo">
+                    <label class="co-label" for="coTelefono">Teléfono</label>
+                    <input class="co-input" type="tel" id="coTelefono" name="telefono"
+                           placeholder="+34 600 000 000" autocomplete="tel">
+                </div>
+
+                <div class="co-campo">
+                    <label class="co-label" for="coDireccion">Dirección</label>
+                    <input class="co-input" type="text" id="coDireccion" name="direccion"
+                           placeholder="Calle Mayor, 1, 2ºA" required autocomplete="street-address">
+                </div>
+
+                <div class="co-fila-doble">
+                    <div class="co-campo">
+                        <label class="co-label" for="coCiudad">Ciudad</label>
+                        <input class="co-input" type="text" id="coCiudad" name="ciudad"
+                               placeholder="Madrid" required autocomplete="address-level2">
+                    </div>
+                    <div class="co-campo">
+                        <label class="co-label" for="coCP">Código postal</label>
+                        <input class="co-input" type="text" id="coCP" name="cp"
+                               placeholder="28001" required autocomplete="postal-code" maxlength="5">
+                    </div>
+                </div>
+
+                <div class="co-campo">
+                    <label class="co-label" for="coPais">País</label>
+                    <select class="co-input co-select" id="coPais" name="pais" required autocomplete="country">
+                        <option value="">Selecciona un país</option>
+                        <option value="ES" selected>España</option>
+                        <option value="PT">Portugal</option>
+                        <option value="FR">Francia</option>
+                        <option value="DE">Alemania</option>
+                        <option value="IT">Italia</option>
+                        <option value="GB">Reino Unido</option>
+                    </select>
+                </div>
+
+                <button class="co-cta" type="submit" id="checkoutSubmit">
+                    <span>Continuar al pago</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12,5 19,12 12,19"/>
+                    </svg>
+                </button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <script type="module" src="../../scripts/main.js"></script>
+    <script type="module" src="../../scripts/pages/checkout.js"></script>
+
+</body>
+</html>
