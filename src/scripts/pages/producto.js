@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('ID del producto:', idProducto);
 
-    /* DB temporal */
+    /* DB de productos */
     const productosDB = {
         'white-tshirt': {
             id: 'white-tshirt',
@@ -20,16 +20,39 @@ document.addEventListener('DOMContentLoaded', () => {
             imagenes: [
                 '/public/assets/images/products/camiseta-blanca-delante.png',
                 '/public/assets/images/products/camiseta-blanca-detras.png',
-                '/public/assets/images/products/modelo-delante.png',
-                '/public/assets/images/products/modelo-detras.png'
+                '/public/assets/images/products/modelo-camiseta-blanca-delante.png',
+                '/public/assets/images/products/modelo-camiseta-blanca-detras.png'
             ],
             tallas: ['S', 'M', 'L', 'XL'],
-            detalles: {
-                composicion: 'Algodón 100%',
-                corte: 'Cropped fit',
-                cuidado: 'Lavar a máquina 30°C',
-                origen: 'Hecho en España'
-            }
+            detalles: { composicion: 'Algodón 100%', corte: 'Cropped fit', cuidado: 'Lavar a máquina 30°C', origen: 'Hecho en España' }
+        },
+        'cream-tshirt': {
+            id: 'cream-tshirt',
+            nombre: 'CREAM TSHIRT',
+            precio: '29,99€',
+            priceNumeric: 29.99,
+            imagenes: [
+                '/public/assets/images/products/camiseta-crema-delante.png',
+                '/public/assets/images/products/camiseta-crema-detras.png',
+                '/public/assets/images/products/modelo-camiseta-crema-delante.png',
+                '/public/assets/images/products/modelo-camiseta-crema-detras.png'
+            ],
+            tallas: ['S', 'M', 'L', 'XL'],
+            detalles: { composicion: 'Algodón 100%', corte: 'Regular fit', cuidado: 'Lavar a máquina 30°C', origen: 'Hecho en España' }
+        },
+        'grey-tshirt': {
+            id: 'grey-tshirt',
+            nombre: 'GREY TSHIRT',
+            precio: '29,99€',
+            priceNumeric: 29.99,
+            imagenes: [
+                '/public/assets/images/products/camiseta-gris-delante.png',
+                '/public/assets/images/products/camiseta-gris-detras.png',
+                '/public/assets/images/products/modelo-camiseta-gris-delante.png',
+                '/public/assets/images/products/modelo-camiseta-gris-detras.png'
+            ],
+            tallas: ['S', 'M', 'L', 'XL'],
+            detalles: { composicion: 'Algodón 100%', corte: 'Relaxed fit', cuidado: 'Lavar a máquina 30°C', origen: 'Hecho en España' }
         },
         'black-tshirt': {
             id: 'black-tshirt',
@@ -39,16 +62,25 @@ document.addEventListener('DOMContentLoaded', () => {
             imagenes: [
                 '/public/assets/images/products/camiseta-negra-delante.png',
                 '/public/assets/images/products/camiseta-negra-detras.png',
-                '/public/assets/images/products/modelo-delante.png',
-                '/public/assets/images/products/modelo-detras.png'
+                '/public/assets/images/products/camiseta-negra-delante.png',
+                '/public/assets/images/products/camiseta-negra-detras.png'
             ],
             tallas: ['S', 'M', 'L', 'XL'],
-            detalles: {
-                composicion: 'Algodón 100%',
-                corte: 'Relaxed fit',
-                cuidado: 'Lavar a máquina 30°C',
-                origen: 'Hecho en España'
-            }
+            detalles: { composicion: 'Algodón 100%', corte: 'Relaxed fit', cuidado: 'Lavar a máquina 30°C', origen: 'Hecho en España' }
+        },
+        'black-texture-tshirt': {
+            id: 'black-texture-tshirt',
+            nombre: 'BLACK TEXTURE TSHIRT',
+            precio: '34,99€',
+            priceNumeric: 34.99,
+            imagenes: [
+                '/public/assets/images/products/camiseta-negra-textura-delante.png',
+                '/public/assets/images/products/camiseta-negra-textura-detras.png',
+                '/public/assets/images/products/modelo-camiseta-negra-textura-delante.png',
+                '/public/assets/images/products/modelo-camiseta-negro-textura-detras.png'
+            ],
+            tallas: ['S', 'M', 'L', 'XL'],
+            detalles: { composicion: 'Algodón 100% texturizado', corte: 'Oversized fit', cuidado: 'Lavar a máquina 30°C', origen: 'Hecho en España' }
         }
     };
 
