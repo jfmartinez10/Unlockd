@@ -1,5 +1,5 @@
 import { validateEmail, validatePasswordMatch, removeNumbers, validateForm } from '../utils/validation.js';
-import { showNotification } from '../main.js';
+import { showNotification } from '../utils/toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const inputsTexto = document.querySelectorAll('input[name="nombre"], input[name="apellidos"]');
@@ -69,6 +69,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotification('Inicio de sesión exitoso', 'success');
                 /* Aquí iría la lógica de autenticación */
             }
+        });
+    }
+
+    /* Recuperación de contraseña */
+    const recuperarForm = document.getElementById('recuperarForm');
+    if (recuperarForm) {
+        recuperarForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('recuperarEmail').value.trim();
+            if (!validateEmail(email)) {
+                showNotification('Introduce un email válido', 'error');
+                return;
+            }
+            const btn = recuperarForm.querySelector('button[type="submit"]');
+            const textoOriginal = btn.textContent;
+            btn.textContent = 'ENVIANDO...';
+            btn.disabled = true;
+            setTimeout(() => {
+                showNotification('Enlace enviado. Revisa tu correo.', 'success');
+                btn.textContent = textoOriginal;
+                btn.disabled = false;
+                recuperarForm.reset();
+            }, 1200);
         });
     }
 
