@@ -215,6 +215,21 @@
     }
 
     .titulo-auth span {
-        transform: skewX(25deg);  
+        transform: skewX(25deg);
     }
+}
+
+/* ── Recuperar contraseña ── */
+.titulo-auth.recuperar {
+    min-width: 200px;
+}
+
+.auth-descripcion {
+    width: 100%;
+    max-width: 500px;
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: -4px;
 }
