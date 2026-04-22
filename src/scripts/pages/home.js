@@ -6,9 +6,21 @@ const PRODUCTOS_HOME = {
         id: 'white-tshirt', nombre: 'WHITE TSHIRT', precio: '29,99€', priceNumeric: 29.99,
         imagen: '/public/assets/images/products/camiseta-blanca-delante.png'
     },
+    'cream-tshirt': {
+        id: 'cream-tshirt', nombre: 'CREAM TSHIRT', precio: '29,99€', priceNumeric: 29.99,
+        imagen: '/public/assets/images/products/camiseta-crema-delante.png'
+    },
+    'grey-tshirt': {
+        id: 'grey-tshirt', nombre: 'GREY TSHIRT', precio: '29,99€', priceNumeric: 29.99,
+        imagen: '/public/assets/images/products/camiseta-gris-delante.png'
+    },
     'black-tshirt': {
         id: 'black-tshirt', nombre: 'BLACK TSHIRT', precio: '29,99€', priceNumeric: 29.99,
         imagen: '/public/assets/images/products/camiseta-negra-delante.png'
+    },
+    'black-texture-tshirt': {
+        id: 'black-texture-tshirt', nombre: 'BLACK TEXTURE TSHIRT', precio: '34,99€', priceNumeric: 34.99,
+        imagen: '/public/assets/images/products/camiseta-negra-textura-delante.png'
     }
 };
 
