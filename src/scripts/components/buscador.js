@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     _initEventos();
 
-    /* Soporte para query en URL */
+    /* Soporte para query en URL (solo en páginas que no sean tienda;
+       tienda.js ya aplica el filtro directamente desde la URL) */
     const urlQ = new URLSearchParams(window.location.search).get('q');
-    if (urlQ) {
-        /* Pequeño delay para que la página cargue visualmente */
+    if (urlQ && !window.location.pathname.includes('/tienda/')) {
         setTimeout(() => abrirBuscador(urlQ), 120);
     }
 });
@@ -102,10 +102,14 @@ function _initEventos() {
             cerrarBuscador();
             return;
         }
-        /* Navegar si no está en tienda */
         if (e.key === 'Enter') {
             const q = input.value.trim();
-            if (q && !window.location.pathname.includes('/tienda/')) {
+            if (!q) return;
+            if (window.location.pathname.includes('/tienda/')) {
+                /* Ya en tienda: cerrar la barra y dejar los resultados visibles */
+                cerrarBuscador(false);
+            } else {
+                /* En otra página: navegar a tienda con la query */
                 window.location.href = `/src/pages/tienda/tienda.html?q=${encodeURIComponent(q)}`;
             }
         }
@@ -131,7 +135,7 @@ export function abrirBuscador(query = '') {
     setTimeout(() => input.focus(), 40);
 }
 
-export function cerrarBuscador() {
+export function cerrarBuscador(limpiar = true) {
     const barra   = document.getElementById('buscadorBarra');
     const overlay = document.getElementById('buscadorOverlay');
     const input   = document.getElementById('buscadorInput');
@@ -141,12 +145,12 @@ export function cerrarBuscador() {
     overlay.classList.remove('activo');
     _abierto = false;
 
-    input.value = '';
-
-    /* Limpiar resultados filtrados */
-    document.dispatchEvent(new CustomEvent('buscador:query', { detail: { query: '' } }));
-
-    /* Ocultar contador */
-    const count = document.getElementById('buscadorCount');
-    if (count) count.classList.add('oculto');
+    if (limpiar) {
+        input.value = '';
+        /* Limpiar resultados filtrados */
+        document.dispatchEvent(new CustomEvent('buscador:query', { detail: { query: '' } }));
+        /* Ocultar contador */
+        const count = document.getElementById('buscadorCount');
+        if (count) count.classList.add('oculto');
+    }
 }
