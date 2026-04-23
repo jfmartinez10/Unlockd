@@ -67,8 +67,8 @@
       "images": [
         "/public/assets/images/products/camiseta-negra-delante.png",
         "/public/assets/images/products/camiseta-negra-detras.png",
-        "/public/assets/images/products/camiseta-negra-delante.png",
-        "/public/assets/images/products/camiseta-negra-detras.png"
+        "/public/assets/images/products/modelo-camiseta-negra-delante.png",
+        "/public/assets/images/products/modelo-camiseta-negra-detras.png"
       ],
       "sizes": ["S", "M", "L", "XL"],
       "stock": { "S": 12, "M": 18, "L": 15, "XL": 10 },
