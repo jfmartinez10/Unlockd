@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
             imagenes: [
                 '/public/assets/images/products/camiseta-negra-delante.png',
                 '/public/assets/images/products/camiseta-negra-detras.png',
-                '/public/assets/images/products/camiseta-negra-delante.png',
-                '/public/assets/images/products/camiseta-negra-detras.png'
+                '/public/assets/images/products/modelo-camiseta-negra-delante.png',
+                '/public/assets/images/products/modelo-camiseta-negra-detras.png'
             ],
             tallas: ['S', 'M', 'L', 'XL'],
             detalles: { composicion: 'Algodón 100%', corte: 'Relaxed fit', cuidado: 'Lavar a máquina 30°C', origen: 'Hecho en España' }
