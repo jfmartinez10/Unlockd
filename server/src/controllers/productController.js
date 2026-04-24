@@ -1,40 +1,30 @@
-'use strict';
+import { query }      from '../config/db.js';
+import { ok, fail }   from '../utils/response.js';
 
-const { query }  = require('../config/db');
-const { ok, fail } = require('../utils/response');
-
-async function getAllProducts(req, res, next) {
+export async function getAllProducts(req, res, next) {
     try {
         const { category, featured } = req.query;
         const conditions = ['activo = TRUE'];
         const values     = [];
         let   idx        = 1;
 
-        if (category) {
-            conditions.push(`categoria = $${idx++}`);
-            values.push(category);
-        }
-        if (featured === 'true') {
-            conditions.push(`destacado = $${idx++}`);
-            values.push(true);
-        }
+        if (category) { conditions.push(`categoria = $${idx++}`); values.push(category); }
+        if (featured === 'true') { conditions.push(`destacado = $${idx++}`); values.push(true); }
 
-        const where = 'WHERE ' + conditions.join(' AND ');
-        const sql   = `
-            SELECT id, nombre, precio_numerico, precio_str, moneda, color,
-                   imagenes, tallas, stock, detalles, descripcion, categoria, tags, destacado
-            FROM productos ${where}
-            ORDER BY creado_en DESC
-        `;
+        const { rows } = await query(
+            `SELECT id, nombre, precio_numerico, precio_str, moneda, color,
+                    imagenes, tallas, stock, detalles, descripcion, categoria, tags, destacado
+             FROM productos WHERE ${conditions.join(' AND ')} ORDER BY creado_en DESC`,
+            values
+        );
 
-        const { rows } = await query(sql, values);
         res.json(ok(rows.map(dbToFrontend), `${rows.length} productos`));
     } catch (err) {
         next(err);
     }
 }
 
-async function getProductById(req, res, next) {
+export async function getProductById(req, res, next) {
     try {
         const { rows } = await query(
             `SELECT id, nombre, precio_numerico, precio_str, moneda, color,
@@ -74,5 +64,3 @@ function dbToFrontend(row) {
         featured:    row.destacado,
     };
 }
-
-module.exports = { getAllProducts, getProductById };

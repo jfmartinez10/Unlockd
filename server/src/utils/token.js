@@ -1,9 +1,7 @@
-'use strict';
+import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
-const jwt              = require('jsonwebtoken');
-const { v4: uuidv4 }  = require('uuid');
-
-function generateAccessToken(user) {
+export function generateAccessToken(user) {
     return jwt.sign(
         { sub: user.id, email: user.email, rol: user.rol },
         process.env.JWT_ACCESS_SECRET,
@@ -12,12 +10,10 @@ function generateAccessToken(user) {
 }
 
 /* Token de refresco opaco — se guarda en BD, no es un JWT */
-function generateRefreshToken() {
+export function generateRefreshToken() {
     return uuidv4();
 }
 
-function verifyAccessToken(token) {
+export function verifyAccessToken(token) {
     return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 }
-
-module.exports = { generateAccessToken, generateRefreshToken, verifyAccessToken };

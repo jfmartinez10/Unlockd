@@ -1,11 +1,10 @@
-'use strict';
+import { Router } from 'express';
 
-const express = require('express');
-const router  = express.Router();
+const router = Router();
 
-/* TODO: Implementar en Fase siguiente */
+/* TODO: implementar en la siguiente fase */
 router.all('*', (_req, res) => {
     res.status(501).json({ success: false, message: 'Próximamente' });
 });
 
-module.exports = router;
+export default router;

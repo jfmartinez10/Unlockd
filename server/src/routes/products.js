@@ -1,13 +1,11 @@
-'use strict';
+import { Router } from 'express';
+import { generalLimiter } from '../middleware/rateLimit.js';
+import { getAllProducts, getProductById } from '../controllers/productController.js';
 
-const express                        = require('express');
-const { generalLimiter }             = require('../middleware/rateLimit');
-const { getAllProducts, getProductById } = require('../controllers/productController');
-
-const router = express.Router();
+const router = Router();
 
 router.use(generalLimiter);
 router.get('/',    getAllProducts);
 router.get('/:id', getProductById);
 
-module.exports = router;
+export default router;

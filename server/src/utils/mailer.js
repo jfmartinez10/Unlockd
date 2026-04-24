@@ -1,6 +1,4 @@
-'use strict';
-
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 let _transporter = null;
 
@@ -19,7 +17,7 @@ function getTransporter() {
     return _transporter;
 }
 
-async function sendVerificationEmail(to, token) {
+export async function sendVerificationEmail(to, token) {
     const url = `${process.env.CLIENT_URL}/src/pages/auth/verificar.html?token=${token}`;
     await getTransporter().sendMail({
         from:    process.env.MAIL_FROM,
@@ -33,15 +31,13 @@ async function sendVerificationEmail(to, token) {
                     text-decoration:none;text-transform:uppercase;letter-spacing:2px;font-size:13px">
                     Verificar cuenta
                 </a>
-                <p style="color:#888;font-size:12px;margin-top:24px">
-                    El enlace caduca en 24 horas.
-                </p>
+                <p style="color:#888;font-size:12px;margin-top:24px">El enlace caduca en 24 horas.</p>
             </div>
         `,
     });
 }
 
-async function sendOrderConfirmationEmail(to, order) {
+export async function sendOrderConfirmationEmail(to, order) {
     await getTransporter().sendMail({
         from:    process.env.MAIL_FROM,
         to,
@@ -50,11 +46,9 @@ async function sendOrderConfirmationEmail(to, order) {
             <div style="font-family:sans-serif;max-width:480px;margin:auto">
                 <h2 style="letter-spacing:4px;text-transform:uppercase">UNLOCKD</h2>
                 <p>Tu pedido ha sido confirmado. Gracias por tu compra.</p>
-                <p><strong>Nº de pedido:</strong> ${order.id.slice(0, 8).toUpperCase()}</p>
+                <p><strong>Nº pedido:</strong> ${order.id.slice(0, 8).toUpperCase()}</p>
                 <p><strong>Total:</strong> ${order.total}€</p>
             </div>
         `,
     });
 }
-
-module.exports = { sendVerificationEmail, sendOrderConfirmationEmail };
