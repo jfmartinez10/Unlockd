@@ -11,7 +11,7 @@ const pool = new Pool({
 });
 
 pool.on('error', (err) => {
-    console.error('❌ Error en el pool de PG:', err.message);
+    console.error('Error en el pool de PG:', err.message);
 });
 
 /* Helper para ejecutar queries: query('SELECT...', [params]) */

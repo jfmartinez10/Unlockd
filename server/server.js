@@ -13,14 +13,14 @@ async function start() {
         const client = await pool.connect();
         const { rows } = await client.query('SELECT NOW() AS now');
         client.release();
-        console.log(`✅ PostgreSQL conectado — ${rows[0].now}`);
+        console.log('PostgreSQL conectado —', rows[0].now);
     } catch (err) {
-        console.error('❌ No se pudo conectar a PostgreSQL:', err.message);
+        console.error('No se pudo conectar a PostgreSQL:', err.message);
         process.exit(1);
     }
 
     app.listen(PORT, () => {
-        console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+        console.log('Servidor corriendo en http://localhost:' + PORT);
     });
 }
 
