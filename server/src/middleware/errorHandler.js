@@ -1,7 +1,4 @@
-'use strict';
-
-// eslint-disable-next-line no-unused-vars
-function errorHandler(err, _req, res, _next) {
+export default function errorHandler(err, _req, res, _next) {
     const status  = err.status || err.statusCode || 500;
     const message = err.message || 'Error interno del servidor';
 
@@ -9,5 +6,3 @@ function errorHandler(err, _req, res, _next) {
 
     res.status(status).json({ success: false, message });
 }
-
-module.exports = errorHandler;

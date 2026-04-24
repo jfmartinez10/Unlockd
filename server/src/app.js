@@ -1,15 +1,12 @@
-'use strict';
-
-const express      = require('express');
-const helmet       = require('helmet');
-const corsMiddle   = require('./middleware/cors');
-const errorHandler = require('./middleware/errorHandler');
-
-const productRoutes = require('./routes/products');
-const authRoutes    = require('./routes/auth');
-const orderRoutes   = require('./routes/orders');
-const cartRoutes    = require('./routes/cart');
-const favRoutes     = require('./routes/favorites');
+import express      from 'express';
+import helmet       from 'helmet';
+import corsMiddle   from './middleware/cors.js';
+import errorHandler from './middleware/errorHandler.js';
+import productRoutes from './routes/products.js';
+import authRoutes    from './routes/auth.js';
+import orderRoutes   from './routes/orders.js';
+import cartRoutes    from './routes/cart.js';
+import favRoutes     from './routes/favorites.js';
 
 const app = express();
 
@@ -33,4 +30,4 @@ app.use((_req, res) => {
 
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

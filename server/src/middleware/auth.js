@@ -1,9 +1,7 @@
-'use strict';
+import jwt from 'jsonwebtoken';
+import { fail } from '../utils/response.js';
 
-const jwt        = require('jsonwebtoken');
-const { fail }   = require('../utils/response');
-
-function requireAuth(req, res, next) {
+export function requireAuth(req, res, next) {
     const header = req.headers['authorization'] || '';
     const token  = header.startsWith('Bearer ') ? header.slice(7) : null;
 
@@ -19,9 +17,7 @@ function requireAuth(req, res, next) {
     }
 }
 
-function requireAdmin(req, res, next) {
+export function requireAdmin(req, res, next) {
     if (req.user?.rol !== 'admin') return res.status(403).json(fail('Acceso denegado'));
     next();
 }
-
-module.exports = { requireAuth, requireAdmin };

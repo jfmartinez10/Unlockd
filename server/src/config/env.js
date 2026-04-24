@@ -1,5 +1,3 @@
-'use strict';
-
 const REQUIRED = ['DATABASE_URL', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'];
 
 function validateEnv() {
@@ -10,4 +8,4 @@ function validateEnv() {
     }
 }
 
-module.exports = { validateEnv };
+export { validateEnv };

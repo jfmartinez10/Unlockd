@@ -1,12 +1,10 @@
-'use strict';
+import { validateEnv } from './src/config/env.js';
+import app from './src/app.js';
+import { pool } from './src/config/db.js';
 
-require('dotenv').config();
-const { validateEnv } = require('./src/config/env');
 validateEnv();
 
-const app      = require('./src/app');
-const { pool } = require('./src/config/db');
-const PORT     = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 async function start() {
     try {

@@ -1,6 +1,6 @@
-'use strict';
+import pg from 'pg';
 
-const { Pool } = require('pg');
+const { Pool } = pg;
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -16,8 +16,7 @@ pool.on('error', (err) => {
 
 /* Helper para ejecutar queries: query('SELECT...', [params]) */
 async function query(text, params) {
-    const res = await pool.query(text, params);
-    return res;
+    return pool.query(text, params);
 }
 
-module.exports = { pool, query };
+export { pool, query };
