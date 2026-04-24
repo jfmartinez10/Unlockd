@@ -1,65 +1,22 @@
 import { addToCart } from '../utils/storage.js';
+import { API_URL }   from '../config/api.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+const SVG_CESTA = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="13" width="23" height="15" rx="3"/>
+    <path d="M12 13C12 9.4 14 7 16.5 7C19 7 21 9.4 21 13"/>
+</svg>`;
 
-    /* Catálogo */
-    const PRODUCTOS_DB = [
-        {
-            id: 'white-tshirt',
-            nombre: 'WHITE TSHIRT',
-            precio: '29,99€',
-            priceNumeric: 29.99,
-            color: 'blanco',
-            img:      '/public/assets/images/products/camiseta-blanca-delante.png',
-            imgHover: '/public/assets/images/products/camiseta-blanca-detras.png',
-        },
-        {
-            id: 'cream-tshirt',
-            nombre: 'CREAM TSHIRT',
-            precio: '29,99€',
-            priceNumeric: 29.99,
-            color: 'crema',
-            img:      '/public/assets/images/products/camiseta-crema-delante.png',
-            imgHover: '/public/assets/images/products/camiseta-crema-detras.png',
-        },
-        {
-            id: 'grey-tshirt',
-            nombre: 'GREY TSHIRT',
-            precio: '29,99€',
-            priceNumeric: 29.99,
-            color: 'gris',
-            img:      '/public/assets/images/products/camiseta-gris-delante.png',
-            imgHover: '/public/assets/images/products/camiseta-gris-detras.png',
-        },
-        {
-            id: 'black-tshirt',
-            nombre: 'BLACK TSHIRT',
-            precio: '29,99€',
-            priceNumeric: 29.99,
-            color: 'negro',
-            img:      '/public/assets/images/products/camiseta-negra-delante.png',
-            imgHover: '/public/assets/images/products/camiseta-negra-detras.png',
-        },
-        {
-            id: 'black-texture-tshirt',
-            nombre: 'BLACK TEXTURE TSHIRT',
-            precio: '34,99€',
-            priceNumeric: 34.99,
-            color: 'negro',
-            img:      '/public/assets/images/products/camiseta-negra-textura-delante.png',
-            imgHover: '/public/assets/images/products/camiseta-negra-textura-detras.png',
-        },
-    ];
+/* Estado */
+let productos      = [];
+let estadoFiltro   = 'todos';
+let estadoOrden    = 'defecto';
+let estadoBusqueda = '';
+let estadoVista    = 'grid';
+let paginaActual   = 1;
+const ITEMS_POR_PAGINA = 9;
 
-    /* Estado */
-    let estadoFiltro   = 'todos';
-    let estadoOrden    = 'defecto';
-    let estadoBusqueda = '';
-    let estadoVista    = 'grid'; // 'grid' | 'lista'
-    const ITEMS_POR_PAGINA = 9;
-    let paginaActual = 1;
+document.addEventListener('DOMContentLoaded', async () => {
 
-    /* DOM */
     const grid           = document.getElementById('tiendaGrid');
     const dotsContainer  = document.getElementById('paginaDots');
     const paginacion     = document.getElementById('tiendaPaginacion');
@@ -69,87 +26,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnFilter      = document.getElementById('btnFilter');
     const dropdownFilter = document.getElementById('dropdownFilter');
 
-    /* Icono cesta */
-    const SVG_CESTA = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="5" y="13" width="23" height="15" rx="3"/>
-        <path d="M12 13C12 9.4 14 7 16.5 7C19 7 21 9.4 21 13"/>
-    </svg>`;
+    /* Cargar productos desde la API */
+    async function cargarProductos() {
+        try {
+            const res  = await fetch(`${API_URL}/products`);
+            const json = await res.json();
+            if (!json.success) throw new Error(json.message);
+            productos = json.data;
+        } catch (err) {
+            console.error('Error al cargar productos:', err.message);
+            grid.innerHTML = '<p class="tienda-sin-resultados">Error al cargar productos. Asegúrate de que el servidor está activo.</p>';
+        }
+    }
 
-    /* Filtrado y orden */
     function getProductosFiltradosOrdenados() {
-        let result = [...PRODUCTOS_DB];
+        let result = [...productos];
 
-        /* Filtro por color */
         if (estadoFiltro !== 'todos') {
             result = result.filter(p => p.color === estadoFiltro);
         }
 
-        /* Búsqueda por nombre */
-        const query = estadoBusqueda.trim().toLowerCase();
-        if (query) {
-            result = result.filter(p => p.nombre.toLowerCase().includes(query));
+        const q = estadoBusqueda.trim().toLowerCase();
+        if (q) {
+            result = result.filter(p => p.name.toLowerCase().includes(q));
         }
 
-        /* Ordenado */
-        if (estadoOrden === 'mayor-menor') {
-            result.sort((a, b) => b.priceNumeric - a.priceNumeric);
-        } else if (estadoOrden === 'menor-mayor') {
-            result.sort((a, b) => a.priceNumeric - b.priceNumeric);
-        }
+        if (estadoOrden === 'mayor-menor') result.sort((a, b) => b.priceNumeric - a.priceNumeric);
+        if (estadoOrden === 'menor-mayor') result.sort((a, b) => a.priceNumeric - b.priceNumeric);
 
         return result;
     }
 
-    /* HTML tarjeta — grid */
     function crearCardHTML(p) {
         return `
         <article class="tienda-card" data-id="${p.id}" data-color="${p.color}">
             <div class="tienda-card-imagen-wrap">
-                <img class="tienda-card-img img-principal"
-                     src="${p.img}"
-                     alt="${p.nombre}">
-                <img class="tienda-card-img img-hover"
-                     src="${p.imgHover}"
-                     alt="${p.nombre}"
-                     loading="lazy">
+                <img class="tienda-card-img img-principal" src="${p.images[0]}" alt="${p.name}">
+                <img class="tienda-card-img img-hover"     src="${p.images[1]}" alt="${p.name}" loading="lazy">
                 <button class="btn-favorito" aria-label="Guardar en favoritos" data-activo="false">
                     <img src="/public/assets/images/logo.png" alt="" aria-hidden="true">
                 </button>
             </div>
             <div class="tienda-card-info">
                 <div class="tienda-card-texto">
-                    <span class="tienda-nombre">${p.nombre}</span>
-                    <span class="tienda-precio">${p.precio}</span>
+                    <span class="tienda-nombre">${p.name}</span>
+                    <span class="tienda-precio">${p.price}</span>
                 </div>
-                <button class="btn-cesta-mini" aria-label="Añadir al carrito">
-                    ${SVG_CESTA}
-                </button>
+                <button class="btn-cesta-mini" aria-label="Añadir al carrito">${SVG_CESTA}</button>
             </div>
         </article>`;
     }
 
-    /* HTML tarjeta — lista */
     function crearListaHTML(p) {
         return `
         <article class="tienda-card tienda-card--lista" data-id="${p.id}" data-color="${p.color}">
             <div class="tienda-card-imagen-wrap">
-                <img class="tienda-card-img img-principal"
-                     src="${p.img}"
-                     alt="${p.nombre}">
-                <img class="tienda-card-img img-hover"
-                     src="${p.imgHover}"
-                     alt="${p.nombre}"
-                     loading="lazy">
+                <img class="tienda-card-img img-principal" src="${p.images[0]}" alt="${p.name}">
+                <img class="tienda-card-img img-hover"     src="${p.images[1]}" alt="${p.name}" loading="lazy">
             </div>
             <div class="tienda-card-info tienda-card-info--lista">
                 <div class="tienda-card-texto">
-                    <span class="tienda-nombre">${p.nombre}</span>
-                    <span class="tienda-precio">${p.precio}</span>
+                    <span class="tienda-nombre">${p.name}</span>
+                    <span class="tienda-precio">${p.price}</span>
                 </div>
                 <div class="tienda-lista-acciones">
-                    <button class="btn-cesta-mini" aria-label="Añadir al carrito">
-                        ${SVG_CESTA}
-                    </button>
+                    <button class="btn-cesta-mini" aria-label="Añadir al carrito">${SVG_CESTA}</button>
                     <button class="btn-favorito btn-favorito--lista" aria-label="Guardar en favoritos" data-activo="false">
                         <img src="/public/assets/images/logo.png" alt="" aria-hidden="true">
                     </button>
@@ -158,24 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
         </article>`;
     }
 
-    /* Render grid */
     function renderGrid() {
-        const productos    = getProductosFiltradosOrdenados();
-        const total        = productos.length;
+        const filtrados    = getProductosFiltradosOrdenados();
+        const total        = filtrados.length;
         const totalPaginas = Math.max(1, Math.ceil(total / ITEMS_POR_PAGINA));
 
         if (paginaActual > totalPaginas) paginaActual = 1;
 
-        /* Actualizar contador y notificar al buscador global */
-        if (contador) {
-            contador.textContent = `${total} producto${total !== 1 ? 's' : ''}`;
-        }
+        if (contador) contador.textContent = `${total} producto${total !== 1 ? 's' : ''}`;
         document.dispatchEvent(new CustomEvent('buscador:resultados', { detail: { total } }));
 
         const inicio   = (paginaActual - 1) * ITEMS_POR_PAGINA;
-        const enPagina = productos.slice(inicio, inicio + ITEMS_POR_PAGINA);
+        const enPagina = filtrados.slice(inicio, inicio + ITEMS_POR_PAGINA);
 
-        /* Aplicar clase de vista al grid */
         grid.classList.toggle('tienda-grid--lista', estadoVista === 'lista');
 
         if (enPagina.length === 0) {
@@ -189,9 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPaginacion(totalPaginas);
     }
 
-    /* Eventos tarjetas */
     function attachCardEvents() {
-        /* Detalle producto */
         grid.querySelectorAll('.tienda-card-imagen-wrap').forEach(wrap => {
             wrap.addEventListener('click', (e) => {
                 if (e.target.closest('.btn-favorito')) return;
@@ -200,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        /* Favorito: toggle visual */
         grid.querySelectorAll('.btn-favorito').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -210,21 +143,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        /* Cesta: añadir al carrito */
         grid.querySelectorAll('.btn-cesta-mini').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const id = btn.closest('.tienda-card').dataset.id;
-                const p  = PRODUCTOS_DB.find(x => x.id === id);
+                const p  = productos.find(x => x.id === id);
                 if (p) {
                     addToCart({
-                        id:           p.id,
-                        nombre:       p.nombre,
-                        precio:       p.precio,
+                        id,
+                        nombre:       p.name,
+                        precio:       p.price,
                         priceNumeric: p.priceNumeric,
                         size:         null,
                         quantity:     1,
-                        imagen:       p.img
+                        imagen:       p.images[0]
                     });
                     document.dispatchEvent(new CustomEvent('cart:updated'));
                     import('../components/carrito.js').then(({ abrirCarrito }) => abrirCarrito());
@@ -235,14 +167,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* Paginación */
     function renderPaginacion(totalPaginas) {
         dotsContainer.innerHTML = '';
-
-        /* Ocultar barra si no hay multipágina */
-        if (paginacion) {
-            paginacion.classList.toggle('oculta', totalPaginas <= 1);
-        }
+        if (paginacion) paginacion.classList.toggle('oculta', totalPaginas <= 1);
 
         for (let i = 1; i <= totalPaginas; i++) {
             const dot = document.createElement('button');
@@ -262,11 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Query de URL */
     const urlQ = new URLSearchParams(window.location.search).get('q');
-    if (urlQ) {
-        estadoBusqueda = urlQ;
-    }
+    if (urlQ) estadoBusqueda = urlQ;
 
-    /* Toggle vista grid / lista */
+    /* Toggle vista */
     const btnVistaGrid  = document.getElementById('btnVistaGrid');
     const btnVistaLista = document.getElementById('btnVistaLista');
 
@@ -324,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* Cerrar dropdowns al clicar fuera */
     document.addEventListener('click', () => {
         dropdownSort.classList.remove('activo');
         dropdownFilter.classList.remove('activo');
@@ -332,6 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnFilter.setAttribute('aria-expanded', 'false');
     });
 
-    /* Render inicial */
+    /* Arranque */
+    await cargarProductos();
     renderGrid();
 });
