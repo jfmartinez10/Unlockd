@@ -1,13 +1,8 @@
 'use strict';
 
-const { query } = require('../config/db');
+const { query }  = require('../config/db');
 const { ok, fail } = require('../utils/response');
 
-/**
- * GET /api/products
- * Devuelve todos los productos activos.
- * Query params: ?category=camisetas&featured=true
- */
 async function getAllProducts(req, res, next) {
     try {
         const { category, featured } = req.query;
@@ -24,55 +19,38 @@ async function getAllProducts(req, res, next) {
             values.push(true);
         }
 
-        const where = conditions.length ? 'WHERE ' + conditions.join(' AND ') : '';
+        const where = 'WHERE ' + conditions.join(' AND ');
         const sql   = `
-            SELECT
-                id, nombre, precio_numerico, precio_str,
-                moneda, color, imagenes, tallas, stock,
-                detalles, descripcion, categoria, tags, destacado
-            FROM productos
-            ${where}
+            SELECT id, nombre, precio_numerico, precio_str, moneda, color,
+                   imagenes, tallas, stock, detalles, descripcion, categoria, tags, destacado
+            FROM productos ${where}
             ORDER BY creado_en DESC
         `;
 
         const { rows } = await query(sql, values);
-
-        /* Transformar al formato que espera el frontend */
-        const products = rows.map(dbToFrontend);
-        res.json(ok(products, `${products.length} productos`));
+        res.json(ok(rows.map(dbToFrontend), `${rows.length} productos`));
     } catch (err) {
         next(err);
     }
 }
 
-/**
- * GET /api/products/:id
- * Devuelve un producto por su slug/id.
- */
 async function getProductById(req, res, next) {
     try {
-        const { id } = req.params;
         const { rows } = await query(
-            `SELECT
-                id, nombre, precio_numerico, precio_str,
-                moneda, color, imagenes, tallas, stock,
-                detalles, descripcion, categoria, tags, destacado
-             FROM productos
-             WHERE id = $1 AND activo = TRUE`,
-            [id]
+            `SELECT id, nombre, precio_numerico, precio_str, moneda, color,
+                    imagenes, tallas, stock, detalles, descripcion, categoria, tags, destacado
+             FROM productos WHERE id = $1 AND activo = TRUE`,
+            [req.params.id]
         );
 
-        if (!rows.length) {
-            return res.status(404).json(fail('Producto no encontrado'));
-        }
-
+        if (!rows.length) return res.status(404).json(fail('Producto no encontrado'));
         res.json(ok(dbToFrontend(rows[0])));
     } catch (err) {
         next(err);
     }
 }
 
-/* ── Mapeador BD → Frontend ─────────────────────────────── */
+/* Adapta el formato de BD al que espera el frontend */
 function dbToFrontend(row) {
     return {
         id:           row.id,
