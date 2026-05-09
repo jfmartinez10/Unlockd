@@ -1,6 +1,7 @@
 import { validateEmail } from '../utils/validation.js';
 import { setItem, getItem, setSessionItem, getSessionItem } from '../utils/storage.js';
 import { showNotification } from '../utils/toast.js';
+import { API_URL } from '../config/api.js';
 
 /* Inyectar CSS una sola vez */
 if (!document.querySelector('link[href*="popup.css"]')) {
@@ -140,7 +141,7 @@ function _initPopup() {
     });
 
     /* Envío de formulario */
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = emailInput.value.trim();
 
@@ -154,14 +155,33 @@ function _initPopup() {
         btn.textContent = 'ENVIANDO...';
         btn.disabled = true;
 
-        setTimeout(() => {
-            setItem('popupSubscribed', 'true');
-            setItem('subscribedEmail', email);
-            showNotification('¡Gracias por suscribirte! Revisa tu email.', 'success');
-            cerrar();
-            form.reset();
+        try {
+            const res  = await fetch(`${API_URL}/newsletter`, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ email }),
+            });
+            const json = await res.json();
+
+            if (res.status === 409) {
+                showNotification('Este email ya está suscrito', 'info');
+                cerrar();
+                form.reset();
+            } else if (res.status === 201) {
+                setItem('popupSubscribed', 'true');
+                setItem('subscribedEmail', email);
+                showNotification('¡Gracias! Revisa tu email para ver tu código.', 'success');
+                cerrar();
+                form.reset();
+            } else {
+                showNotification(json.message || 'Error al suscribirse', 'error');
+            }
+        } catch (err) {
+            console.error('[newsletter]', err);
+            showNotification('Error de conexión. Inténtalo de nuevo.', 'error');
+        } finally {
             btn.textContent = textoOriginal;
             btn.disabled = false;
-        }, 1500);
+        }
     });
 }
