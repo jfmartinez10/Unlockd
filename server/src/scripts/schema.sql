@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS productos (
     actualizado_en  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS trg_productos_timestamp ON productos;
 CREATE TRIGGER trg_productos_timestamp
 BEFORE UPDATE ON productos
 FOR EACH ROW EXECUTE FUNCTION fn_actualizar_timestamp();
@@ -47,18 +48,24 @@ CREATE TABLE IF NOT EXISTS usuarios (
     actualizado_en  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS trg_usuarios_timestamp ON usuarios;
 CREATE TRIGGER trg_usuarios_timestamp
 BEFORE UPDATE ON usuarios
 FOR EACH ROW EXECUTE FUNCTION fn_actualizar_timestamp();
 
-/* Tokens de verificación de email */
+/* Tokens de verificación de email y reset de contraseña */
 CREATE TABLE IF NOT EXISTS tokens_verificacion (
     id  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     usuario_id  UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     token  TEXT NOT NULL UNIQUE,
+    tipo  TEXT NOT NULL DEFAULT 'verificacion' CHECK (tipo IN ('verificacion', 'reset')),
     expira_en  TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '24 hours'),
     usado  BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+/* Migración: añadir columna tipo si la tabla ya existe sin ella */
+ALTER TABLE tokens_verificacion ADD COLUMN IF NOT EXISTS
+    tipo TEXT NOT NULL DEFAULT 'verificacion' CHECK (tipo IN ('verificacion', 'reset'));
 
 /* Refresh tokens */
 CREATE TABLE IF NOT EXISTS refresh_tokens (
@@ -116,9 +123,45 @@ CREATE TABLE IF NOT EXISTS pedidos (
     actualizado_en  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS trg_pedidos_timestamp ON pedidos;
 CREATE TRIGGER trg_pedidos_timestamp
 BEFORE UPDATE ON pedidos
 FOR EACH ROW EXECUTE FUNCTION fn_actualizar_timestamp();
+
+/* Suscriptores newsletter */
+CREATE TABLE IF NOT EXISTS suscriptores (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email           TEXT NOT NULL UNIQUE,
+    codigo_descuento TEXT NOT NULL,
+    codigo_expira_en TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '30 days'),
+    usado           BOOLEAN NOT NULL DEFAULT FALSE,
+    activo          BOOLEAN NOT NULL DEFAULT TRUE,
+    creado_en       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+/* Migración: añadir columnas de código si la tabla ya existe */
+ALTER TABLE suscriptores ADD COLUMN IF NOT EXISTS
+    codigo_descuento TEXT NOT NULL DEFAULT 'UNLCKD-MIGRADO';
+ALTER TABLE suscriptores ADD COLUMN IF NOT EXISTS
+    codigo_expira_en TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '30 days');
+ALTER TABLE suscriptores ADD COLUMN IF NOT EXISTS
+    usado BOOLEAN NOT NULL DEFAULT FALSE;
+
+/* Direcciones de envío */
+CREATE TABLE IF NOT EXISTS direcciones_envio (
+    id  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    usuario_id  UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    nombre  TEXT NOT NULL,
+    apellidos  TEXT NOT NULL,
+    pais  TEXT NOT NULL,
+    ciudad  TEXT NOT NULL,
+    provincia  TEXT NOT NULL,
+    direccion  TEXT NOT NULL,
+    cod_postal  TEXT NOT NULL,
+    direccion2  TEXT,
+    predeterminada  BOOLEAN NOT NULL DEFAULT FALSE,
+    creado_en  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 /* Items de pedido */
 CREATE TABLE IF NOT EXISTS pedido_items (
