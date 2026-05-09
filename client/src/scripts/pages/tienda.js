@@ -1,5 +1,6 @@
-import { addToCart } from '../utils/storage.js';
-import { API_URL }   from '../config/api.js';
+import { addToCart } from '../utils/cartService.js';
+import { initFavoritos, esFavorito, toggleFavorito } from '../utils/favoritosService.js';
+import { API_URL } from '../config/api.js';
 
 const SVG_CESTA = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="5" y="13" width="23" height="15" rx="3"/>
@@ -58,12 +59,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function crearCardHTML(p) {
+        const fav = esFavorito(p.id);
         return `
         <article class="tienda-card" data-id="${p.id}" data-color="${p.color}">
             <div class="tienda-card-imagen-wrap">
                 <img class="tienda-card-img img-principal" src="${p.images[0]}" alt="${p.name}">
                 <img class="tienda-card-img img-hover"     src="${p.images[1]}" alt="${p.name}" loading="lazy">
-                <button class="btn-favorito" aria-label="Guardar en favoritos" data-activo="false">
+                <button class="btn-favorito${fav ? ' activo' : ''}" aria-label="Guardar en favoritos" data-id="${p.id}" data-activo="${fav}">
                     <img src="/public/assets/images/logo.png" alt="" aria-hidden="true">
                 </button>
             </div>
@@ -78,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function crearListaHTML(p) {
+        const fav = esFavorito(p.id);
         return `
         <article class="tienda-card tienda-card--lista" data-id="${p.id}" data-color="${p.color}">
             <div class="tienda-card-imagen-wrap">
@@ -91,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="tienda-lista-acciones">
                     <button class="btn-cesta-mini" aria-label="Añadir al carrito">${SVG_CESTA}</button>
-                    <button class="btn-favorito btn-favorito--lista" aria-label="Guardar en favoritos" data-activo="false">
+                    <button class="btn-favorito btn-favorito--lista${fav ? ' activo' : ''}" aria-label="Guardar en favoritos" data-id="${p.id}" data-activo="${fav}">
                         <img src="/public/assets/images/logo.png" alt="" aria-hidden="true">
                     </button>
                 </div>
@@ -99,7 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         </article>`;
     }
 
-    function renderGrid() {
+    async function renderGrid() {
+        await initFavoritos();
         const filtrados    = getProductosFiltradosOrdenados();
         const total        = filtrados.length;
         const totalPaginas = Math.max(1, Math.ceil(total / ITEMS_POR_PAGINA));
@@ -135,21 +139,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         grid.querySelectorAll('.btn-favorito').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                const activo = btn.dataset.activo === 'true';
-                btn.dataset.activo = String(!activo);
-                btn.classList.toggle('activo', !activo);
+                const id     = btn.dataset.id;
+                const activo = await toggleFavorito(id);
+                btn.dataset.activo = String(activo);
+                btn.classList.toggle('activo', activo);
             });
         });
 
         grid.querySelectorAll('.btn-cesta-mini').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const id = btn.closest('.tienda-card').dataset.id;
                 const p  = productos.find(x => x.id === id);
                 if (p) {
-                    addToCart({
+                    await addToCart({
                         id,
                         nombre:       p.name,
                         precio:       p.price,
