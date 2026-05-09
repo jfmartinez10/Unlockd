@@ -1,4 +1,4 @@
-import { addToCart } from '../utils/storage.js';
+import { addToCart } from '../utils/cartService.js';
 import { API_URL }   from '../config/api.js';
 
 const SVG_CESTA_MINI = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.setAttribute('aria-label', 'Añadir al carrito');
             btn.innerHTML = SVG_CESTA_MINI;
 
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                addToCart({
+                await addToCart({
                     id,
                     nombre:       prod.name,
                     precio:       prod.price,
