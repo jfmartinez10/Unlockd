@@ -14,7 +14,18 @@ const CONFIG = {
 document.addEventListener('DOMContentLoaded', () => {
   initializeHeader();
   forceReloadHeaderImages();
+  actualizarEnlacePerfil();
 });
+
+/* Redirige el icono de perfil según si hay sesión activa */
+function actualizarEnlacePerfil() {
+  const perfilLink = document.querySelector('.nav-right .icon:nth-child(2) a');
+  if (!perfilLink) return;
+  const token = sessionStorage.getItem('unlockd_access_token');
+  perfilLink.href = token
+    ? '/src/pages/cuenta/cuenta.html'
+    : '/src/pages/auth/login.html';
+}
 
 /* Header */
 function initializeHeader() {
