@@ -1,5 +1,6 @@
-import { getCart, saveCart, addToCart, getCartTotal } from '../utils/storage.js';
-
+import { getCart as getLocalCart, saveCart, getCartTotal as getLocalTotal } from '../utils/storage.js';
+import { getCart, addToCart, updateQuantity, removeFromCart, clearCart } from '../utils/cartService.js';
+import { isLoggedIn } from '../utils/auth.js';
 
 /* Estilo crítico inline */
 const _criticalStyle = document.createElement('style');
@@ -27,9 +28,11 @@ const SVG_CERRAR = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
 /* Nota persistida */
 let _notaTexto = '';
 
+/* Cache del carrito actual (evita múltiples fetches) */
+let _cartCache = null;
+
 /* Init en DOMContentLoaded */
 document.addEventListener('DOMContentLoaded', () => {
-    /* Inyectar HTML del panel */
     document.body.insertAdjacentHTML('beforeend', `
         <div class="carrito-overlay" id="carritoOverlay"></div>
         <aside class="carrito-panel" id="carritoPanel" aria-label="Carrito de compras" aria-hidden="true">
@@ -53,20 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Init de eventos globales */
 function _initEventos() {
-    document.getElementById('carritoOverlay')
-        .addEventListener('click', cerrarCarrito);
-
-    document.getElementById('carritoCerrar')
-        .addEventListener('click', cerrarCarrito);
+    document.getElementById('carritoOverlay').addEventListener('click', cerrarCarrito);
+    document.getElementById('carritoCerrar').addEventListener('click', cerrarCarrito);
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') cerrarCarrito();
     });
 
-    /* Escuchar actualizaciones del carrito */
-    document.addEventListener('cart:updated', _renderCarrito);
+    document.addEventListener('cart:updated', () => {
+        _cartCache = null;
+        _renderCarrito();
+    });
 
-    /* Fix bfcache */
     window.addEventListener('pageshow', (e) => {
         if (e.persisted) cerrarCarrito();
     });
@@ -84,10 +85,11 @@ function _initEventos() {
 
 /* API pública */
 export function abrirCarrito() {
-    const panel = document.getElementById('carritoPanel');
+    const panel   = document.getElementById('carritoPanel');
     const overlay = document.getElementById('carritoOverlay');
     if (!panel) return;
 
+    _cartCache = null;
     _renderCarrito();
     panel.classList.add('activo');
     panel.setAttribute('aria-hidden', 'false');
@@ -96,7 +98,7 @@ export function abrirCarrito() {
 }
 
 export function cerrarCarrito() {
-    const panel = document.getElementById('carritoPanel');
+    const panel   = document.getElementById('carritoPanel');
     const overlay = document.getElementById('carritoOverlay');
     if (!panel) return;
 
@@ -106,14 +108,20 @@ export function cerrarCarrito() {
     document.body.style.overflow = '';
 }
 
-/* Render principal */
-function _renderCarrito() {
+/* Render principal — asíncrono porque puede ir a la API */
+async function _renderCarrito() {
     const cuerpo = document.getElementById('carritoCuerpo');
     const footer = document.getElementById('carritoFooter');
     if (!cuerpo || !footer) return;
 
-    const cart = getCart();
-    const totalUnidades = cart.reduce((sum, item) => sum + item.quantity, 0);
+    /* Mostrar spinner ligero mientras carga */
+    if (!_cartCache) {
+        cuerpo.innerHTML = '<div class="carrito-cargando"></div>';
+    }
+
+    const cart          = _cartCache ?? await getCart();
+    _cartCache          = cart;
+    const totalUnidades = cart.reduce((sum, item) => sum + (item.quantity ?? item.cantidad ?? 0), 0);
 
     /* Actualizar badge */
     const badge = document.getElementById('carritoBadge');
@@ -151,12 +159,14 @@ function _renderVacio(cuerpo) {
 /* Lista de productos */
 function _renderItems(cuerpo, cart) {
     const html = cart.map((item, i) => {
-        const size  = item.size ?? item.talla ?? null;
-        const img   = item.imagen ?? '/public/assets/images/logo.png';
-        const tallaHTML = size ? `<span class="carrito-item-talla">${size}</span>` : '';
+        const size     = item.size ?? item.talla ?? null;
+        const img      = item.imagen ?? '/public/assets/images/logo.png';
+        const tallaHTML = size && size !== 'unica'
+            ? `<span class="carrito-item-talla">${size}</span>`
+            : '';
 
         return `
-        <div class="carrito-item" data-index="${i}">
+        <div class="carrito-item" data-index="${i}" data-id="${item.id}">
             <div class="carrito-item-imagen">
                 <img src="${img}" alt="${item.nombre}" loading="lazy">
             </div>
@@ -168,7 +178,7 @@ function _renderItems(cuerpo, cart) {
             <div class="carrito-item-acciones">
                 <div class="carrito-item-cantidad">
                     <button class="btn-restar" aria-label="Reducir">−</button>
-                    <span>${item.quantity}</span>
+                    <span>${item.quantity ?? item.cantidad}</span>
                     <button class="btn-sumar" aria-label="Aumentar">+</button>
                 </div>
                 <button class="carrito-item-eliminar">Eliminar</button>
@@ -178,7 +188,6 @@ function _renderItems(cuerpo, cart) {
 
     cuerpo.innerHTML = `<div class="carrito-items">${html}</div>`;
 
-    /* Eventos de cada fila */
     cuerpo.querySelectorAll('.carrito-item').forEach((el, i) => {
         el.querySelector('.btn-restar').addEventListener('click', () => _cambiarCantidad(i, -1));
         el.querySelector('.btn-sumar').addEventListener('click', () => _cambiarCantidad(i, +1));
@@ -189,7 +198,11 @@ function _renderItems(cuerpo, cart) {
 /* Footer: nota + resumen + checkout */
 function _renderFooter(footer, cart, totalUnidades) {
     const fmt   = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
-    const total = getCartTotal();
+    const total = cart.reduce((sum, item) => {
+        const precio = item.priceNumeric ?? parseFloat(item.precio_numerico) ?? 0;
+        const qty    = item.quantity ?? item.cantidad ?? 1;
+        return sum + precio * qty;
+    }, 0);
     const unStr = `${totalUnidades} unidad${totalUnidades !== 1 ? 'es' : ''}`;
 
     footer.innerHTML = `
@@ -213,35 +226,56 @@ function _renderFooter(footer, cart, totalUnidades) {
         </div>
         <button class="carrito-checkout" id="carritoCheckout">Finalizar pedido</button>`;
 
-    /* Toggle nota */
     footer.querySelector('#carritoNotaToggle').addEventListener('click', () => {
         footer.querySelector('#carritoNotaArea').classList.toggle('abierta');
         footer.querySelector('#carritoNotaTexto').focus();
     });
 
-    /* Persistir nota en memoria */
     footer.querySelector('#carritoNotaTexto').addEventListener('input', (e) => {
         _notaTexto = e.target.value;
     });
 
-    /* Checkout */
     footer.querySelector('#carritoCheckout').addEventListener('click', () => {
         window.location.href = '/src/pages/checkout/checkout.html';
     });
 }
 
 /* Mutaciones del carrito */
-function _cambiarCantidad(index, delta) {
-    const cart = getCart();
-    if (!cart[index]) return;
-    cart[index].quantity = Math.max(1, cart[index].quantity + delta);
-    saveCart(cart);
+async function _cambiarCantidad(index, delta) {
+    const cart = _cartCache ?? await getCart();
+    const item = cart[index];
+    if (!item) return;
+
+    const nuevaCantidad = Math.max(1, (item.quantity ?? item.cantidad ?? 1) + delta);
+
+    if (isLoggedIn()) {
+        await updateQuantity(item.id, nuevaCantidad);
+        _cartCache = null;
+    } else {
+        cart[index].quantity = nuevaCantidad;
+        saveCart(cart);
+        _cartCache = cart;
+    }
+
     _renderCarrito();
 }
 
-function _eliminarItem(index) {
-    const cart = getCart();
-    cart.splice(index, 1);
-    saveCart(cart);
+async function _eliminarItem(index) {
+    const cart = _cartCache ?? await getCart();
+    const item = cart[index];
+    if (!item) return;
+
+    if (isLoggedIn()) {
+        await removeFromCart(item.id);
+        _cartCache = null;
+    } else {
+        cart.splice(index, 1);
+        saveCart(cart);
+        _cartCache = cart;
+    }
+
     _renderCarrito();
 }
+
+/* Exportar addToCart para que tienda.js/producto.js lo usen */
+export { addToCart };
