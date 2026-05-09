@@ -4,5 +4,8 @@ export default function errorHandler(err, _req, res, _next) {
 
     if (process.env.NODE_ENV !== 'production') console.error('[ERROR]', err);
 
-    res.status(status).json({ success: false, message });
+    const body = { success: false, message };
+    if (err.errors) body.errors = err.errors;
+
+    res.status(status).json(body);
 }
