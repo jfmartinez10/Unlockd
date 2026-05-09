@@ -33,9 +33,10 @@
     justify-content: center;
 
     /* Control de barras */
+    padding: 0 24px;
     border-left: var(--border-width-thick) solid var(--color-border);
     border-right: var(--border-width-thick) solid var(--color-border);
-    transform: skewX(-35deg); 
+    transform: skewX(-35deg);
 }
 
 .registro {
@@ -232,4 +233,12 @@
     text-align: center;
     line-height: 1.6;
     margin-bottom: -4px;
+}
+
+/* Botón <a> en páginas de estado (verificar, reset) */
+.auth-form a.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
