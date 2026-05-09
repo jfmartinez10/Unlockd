@@ -1,10 +1,21 @@
 import { Router } from 'express';
+import { requireAuth } from '../middleware/auth.js';
+import {
+    getCart,
+    upsertItem,
+    updateItem,
+    deleteItem,
+    clearCart,
+} from '../controllers/cartController.js';
 
 const router = Router();
 
-/* TODO: implementar en la siguiente fase */
-router.all('*', (_req, res) => {
-    res.status(501).json({ success: false, message: 'Próximamente' });
-});
+router.use(requireAuth);
+
+router.get('/',      getCart);
+router.post('/',     upsertItem);
+router.patch('/:id', updateItem);
+router.delete('/',   clearCart);
+router.delete('/:id', deleteItem);
 
 export default router;
