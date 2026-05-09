@@ -1,10 +1,12 @@
 import { Router } from 'express';
+import { requireAuth } from '../middleware/auth.js';
+import { listarFavoritos, toggleFavorito } from '../controllers/favoritosController.js';
 
 const router = Router();
 
-/* TODO: implementar en la siguiente fase */
-router.all('*', (_req, res) => {
-    res.status(501).json({ success: false, message: 'Próximamente' });
-});
+router.use(requireAuth);
+
+router.get('/',                listarFavoritos);
+router.post('/:productoId',    toggleFavorito);
 
 export default router;
