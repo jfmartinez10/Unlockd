@@ -1,5 +1,5 @@
 import { getUrlParams }     from '../main.js';
-import { addToCart }        from '../utils/storage.js';
+import { addToCart }        from '../utils/cartService.js';
 import { showNotification } from '../utils/toast.js';
 import { API_URL }          from '../config/api.js';
 
@@ -94,13 +94,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnAñadirCesta = document.querySelector('.producto-info-panel .btn-block');
 
     if (btnAñadirCesta) {
-        btnAñadirCesta.addEventListener('click', () => {
+        btnAñadirCesta.addEventListener('click', async () => {
             if (!tallaSeleccionada) {
                 showNotification('Por favor, selecciona una talla', 'error');
                 return;
             }
 
-            addToCart({
+            await addToCart({
                 id:           producto.id,
                 nombre:       producto.name,
                 precio:       producto.price,
