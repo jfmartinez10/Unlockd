@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlockd — Admin</title>
+    <link rel="icon" href="/public/assets/images/logo.png">
+    <link rel="stylesheet" href="../../styles/variables.css">
+    <link rel="stylesheet" href="../../styles/pages/admin.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+
+        <!-- Barra superior -->
+        <header class="admin-topbar">
+            <div class="admin-topbar-marca">
+                <img src="/public/assets/images/logo.png" alt="Unlockd" class="admin-topbar-logo">
+                <span class="admin-topbar-sep">/</span>
+                <span class="admin-topbar-titulo">Admin</span>
+            </div>
+
+            <nav class="admin-nav">
+                <button class="admin-nav-btn activo" data-tab="productos">Productos</button>
+            </nav>
+
+            <div class="admin-topbar-derecha">
+                <span class="admin-usuario" id="adminUsuario"></span>
+                <button class="admin-logout" id="adminLogout">Cerrar sesión</button>
+            </div>
+        </header>
+
+        <!-- Contenido principal -->
+        <main class="admin-main">
+
+            <!-- Barra de herramientas -->
+            <div class="admin-toolbar">
+                <div class="admin-stats" id="adminStats">
+                    <div class="admin-stat"><span class="admin-stat-num" id="statTotal">—</span><span class="admin-stat-label">Total</span></div>
+                    <div class="admin-stat"><span class="admin-stat-num" id="statActivos">—</span><span class="admin-stat-label">Activos</span></div>
+                    <div class="admin-stat"><span class="admin-stat-num" id="statDestacados">—</span><span class="admin-stat-label">Destacados</span></div>
+                </div>
+                <div class="admin-toolbar-acciones">
+                    <input type="text" class="admin-buscador" id="adminBuscar" placeholder="Buscar por nombre o ID...">
+                    <button class="admin-btn-nuevo" id="btnNuevoProducto">+ Nuevo producto</button>
+                </div>
+            </div>
+
+            <!-- Tabla de productos -->
+            <div class="admin-tabla-wrap">
+                <table class="admin-tabla">
+                    <thead>
+                        <tr>
+                            <th class="col-img">Imagen</th>
+                            <th class="col-info">ID / Nombre</th>
+                            <th class="col-precio">Precio</th>
+                            <th class="col-color">Color</th>
+                            <th class="col-toggle">Activo</th>
+                            <th class="col-toggle">Dest.</th>
+                            <th class="col-acciones">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTablaBody">
+                        <tr><td colspan="7" class="admin-tabla-cargando">Cargando productos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal crear / editar producto -->
+    <div class="admin-overlay" id="adminOverlay">
+        <div class="admin-modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitulo">
+            <div class="admin-modal-header">
+                <h2 class="admin-modal-titulo" id="adminModalTitulo">Nuevo producto</h2>
+                <button class="admin-modal-cerrar" id="adminModalCerrar" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="admin-modal-cuerpo">
+                <form id="adminForm" novalidate>
+
+                    <!-- Fila 1: datos básicos -->
+                    <div class="admin-form-grid-2">
+                        <div class="admin-field">
+                            <label class="admin-label" for="fId">ID del producto *</label>
+                            <input class="admin-input" id="fId" name="id" type="text" placeholder="ej: black-tshirt">
+                            <span class="admin-field-hint">Solo minúsculas, números y guiones</span>
+                        </div>
+                        <div class="admin-field">
+                            <label class="admin-label" for="fNombre">Nombre *</label>
+                            <input class="admin-input" id="fNombre" name="nombre" type="text" placeholder="BLACK TSHIRT">
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid-3">
+                        <div class="admin-field">
+                            <label class="admin-label" for="fPrecio">Precio (€) *</label>
+                            <input class="admin-input" id="fPrecio" name="precio" type="number" min="0" step="0.01" placeholder="29.99">
+                        </div>
+                        <div class="admin-field">
+                            <label class="admin-label" for="fColor">Color</label>
+                            <input class="admin-input" id="fColor" name="color" type="text" placeholder="negro">
+                        </div>
+                        <div class="admin-field">
+                            <label class="admin-label" for="fCategoria">Categoría *</label>
+                            <input class="admin-input" id="fCategoria" name="categoria" type="text" placeholder="camisetas">
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="admin-field">
+                        <label class="admin-label" for="fDescripcion">Descripción</label>
+                        <textarea class="admin-input admin-textarea" id="fDescripcion" name="descripcion" rows="2" placeholder="Descripción del producto..."></textarea>
+                    </div>
+
+                    <!-- Detalles -->
+                    <div class="admin-seccion-titulo">Detalles del producto</div>
+                    <div class="admin-form-grid-2">
+                        <div class="admin-field">
+                            <label class="admin-label" for="fComposicion">Composición</label>
+                            <input class="admin-input" id="fComposicion" type="text" placeholder="Algodón 100%">
+                        </div>
+                        <div class="admin-field">
+                            <label class="admin-label" for="fCorte">Corte</label>
+                            <input class="admin-input" id="fCorte" type="text" placeholder="Relaxed fit">
+                        </div>
+                        <div class="admin-field">
+                            <label class="admin-label" for="fCuidado">Cuidado</label>
+                            <input class="admin-input" id="fCuidado" type="text" placeholder="Lavar a máquina 30°C">
+                        </div>
+                        <div class="admin-field">
+                            <label class="admin-label" for="fOrigen">Origen</label>
+                            <input class="admin-input" id="fOrigen" type="text" placeholder="Hecho en España">
+                        </div>
+                    </div>
+
+                    <!-- Tallas y stock -->
+                    <div class="admin-seccion-titulo">Tallas y stock</div>
+                    <div class="admin-tallas-grid" id="adminTallasGrid">
+                        <!-- Renderizado por JS -->
+                    </div>
+
+                    <!-- Imágenes -->
+                    <div class="admin-seccion-titulo">Imágenes <span class="admin-campo-hint">(máx. 4 — la primera es la principal)</span></div>
+                    <div class="admin-imagenes-grid" id="adminImagenesGrid">
+                        <!-- Renderizado por JS -->
+                    </div>
+
+                    <!-- Tags + opciones -->
+                    <div class="admin-form-grid-2">
+                        <div class="admin-field">
+                            <label class="admin-label" for="fTags">Tags</label>
+                            <input class="admin-input" id="fTags" type="text" placeholder="básicos, algodón, unisex">
+                            <span class="admin-field-hint">Separados por comas</span>
+                        </div>
+                        <div class="admin-field admin-field-checks">
+                            <label class="admin-label">Opciones</label>
+                            <div class="admin-checks-row">
+                                <label class="admin-check-label">
+                                    <input type="checkbox" id="fActivo" checked>
+                                    <span>Activo</span>
+                                </label>
+                                <label class="admin-check-label">
+                                    <input type="checkbox" id="fDestacado">
+                                    <span>Destacado</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error -->
+                    <p class="admin-form-error" id="adminFormError"></p>
+
+                    <!-- Botones -->
+                    <div class="admin-form-footer">
+                        <button type="button" class="admin-btn-cancelar" id="adminBtnCancelar">Cancelar</button>
+                        <button type="submit" class="admin-btn-guardar" id="adminBtnGuardar">Guardar producto</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../scripts/pages/admin.js"></script>
+</body>
+</html>
