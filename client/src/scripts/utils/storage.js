@@ -111,8 +111,9 @@ export function saveCart(cart) {
 /* Añade un producto al carrito */
 export function addToCart(product) {
   const cart = getCart();
+  const normSize = (s) => (s === undefined || s === null || s === '') ? null : s;
   const existingIndex = cart.findIndex(
-    item => item.id === product.id && item.size === product.size
+    item => item.id === product.id && normSize(item.size) === normSize(product.size)
   );
 
   if (existingIndex > -1) {
