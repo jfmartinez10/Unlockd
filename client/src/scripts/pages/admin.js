@@ -113,19 +113,15 @@ function renderTabla() {
             </td>
             <td class="col-precio">${precio}</td>
             <td class="col-color">${p.color ?? '—'}</td>
-            <td class="col-toggle" style="text-align:center">
+            <td class="col-toggle">
                 <button class="admin-toggle ${p.activo ? 'activo' : ''}"
                         data-accion="activo" data-id="${p.id}"
-                        title="${p.activo ? 'Desactivar' : 'Activar'}">
-                    ${p.activo ? '●' : '○'}
-                </button>
+                        title="${p.activo ? 'Desactivar' : 'Activar'}"></button>
             </td>
-            <td class="col-toggle" style="text-align:center">
+            <td class="col-toggle">
                 <button class="admin-toggle ${p.destacado ? 'activo' : ''}"
                         data-accion="destacado" data-id="${p.id}"
-                        title="${p.destacado ? 'Quitar destacado' : 'Destacar'}">
-                    ${p.destacado ? '★' : '☆'}
-                </button>
+                        title="${p.destacado ? 'Quitar destacado' : 'Destacar'}"></button>
             </td>
             <td class="col-acciones">
                 <div class="admin-td-acciones">
