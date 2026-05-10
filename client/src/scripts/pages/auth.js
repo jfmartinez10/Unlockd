@@ -94,8 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 saveSession(json.data.accessToken, json.data.user);
                 await Promise.all([syncCartOnLogin(), syncFavoritosOnLogin()]);
-                showNotification('Sesión iniciada correctamente', 'success');
-                setTimeout(() => { window.location.href = '/src/pages/index.html'; }, 800);
+
+                const esAdmin = json.data.user?.rol === 'admin';
+                showNotification(
+                    esAdmin ? 'Bienvenido al panel de administración' : 'Sesión iniciada correctamente',
+                    'success'
+                );
+                const destino = esAdmin
+                    ? '/src/pages/admin/admin.html'
+                    : '/src/pages/index.html';
+                setTimeout(() => { window.location.href = destino; }, 800);
 
             } catch (err) {
                 showNotification('Error de conexión. ¿El servidor está activo?', 'error');
