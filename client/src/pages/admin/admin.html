@@ -6,80 +6,118 @@
     <title>Unlockd — Admin</title>
     <link rel="icon" href="/public/assets/images/logo.png">
     <link rel="stylesheet" href="../../styles/variables.css">
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/components/header.css">
+    <link rel="stylesheet" href="../../styles/components/buscador.css">
+    <link rel="stylesheet" href="../../styles/components/carrito.css">
+    <link rel="stylesheet" href="../../styles/components/toast.css">
     <link rel="stylesheet" href="../../styles/pages/admin.css">
 </head>
 <body>
 
-    <div class="admin-layout">
+    <!-- Header normal del sitio -->
+    <header class="main-header">
+        <nav class="nav-left">
+            <a href="/src/pages/index.html">Inicio</a>
+            <a href="/src/pages/tienda/tienda.html">Tienda</a>
+            <a href="/src/pages/contacto/contacto.html">Contacto</a>
+        </nav>
+        <div class="logo-center">
+            <a href="/src/pages/index.html">
+                <img src="/public/assets/images/logo.png" alt="Logo Principal">
+            </a>
+        </div>
+        <div class="nav-right">
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-lupa.svg" alt="Buscar">
+            </span>
+            <span class="icon">
+                <a href="/src/pages/cuenta/cuenta.html">
+                    <img src="/public/assets/images/icons/logo-perfil.svg" alt="Perfil">
+                </a>
+            </span>
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-cesta.svg" alt="Carrito">
+            </span>
+        </div>
+    </header>
 
-        <!-- Barra superior -->
-        <header class="admin-topbar">
-            <div class="admin-topbar-marca">
-                <img src="/public/assets/images/logo.png" alt="Unlockd" class="admin-topbar-logo">
-                <span class="admin-topbar-sep">/</span>
-                <span class="admin-topbar-titulo">Admin</span>
-            </div>
-
+    <!-- Barra secundaria admin -->
+    <div class="admin-bar">
+        <div class="admin-bar-izq">
+            <span class="admin-bar-label">Administración</span>
+            <span class="admin-bar-sep">/</span>
             <nav class="admin-nav">
                 <button class="admin-nav-btn activo" data-tab="productos">Productos</button>
             </nav>
-
-            <div class="admin-topbar-derecha">
-                <span class="admin-usuario" id="adminUsuario"></span>
-                <button class="admin-logout" id="adminLogout">Cerrar sesión</button>
-            </div>
-        </header>
-
-        <!-- Contenido principal -->
-        <main class="admin-main">
-
-            <!-- Barra de herramientas -->
-            <div class="admin-toolbar">
-                <div class="admin-stats" id="adminStats">
-                    <div class="admin-stat"><span class="admin-stat-num" id="statTotal">—</span><span class="admin-stat-label">Total</span></div>
-                    <div class="admin-stat"><span class="admin-stat-num" id="statActivos">—</span><span class="admin-stat-label">Activos</span></div>
-                    <div class="admin-stat"><span class="admin-stat-num" id="statDestacados">—</span><span class="admin-stat-label">Destacados</span></div>
-                </div>
-                <div class="admin-toolbar-acciones">
-                    <input type="text" class="admin-buscador" id="adminBuscar" placeholder="Buscar por nombre o ID...">
-                    <button class="admin-btn-nuevo" id="btnNuevoProducto">+ Nuevo producto</button>
-                </div>
-            </div>
-
-            <!-- Tabla de productos -->
-            <div class="admin-tabla-wrap">
-                <table class="admin-tabla">
-                    <thead>
-                        <tr>
-                            <th class="col-img">Imagen</th>
-                            <th class="col-info">ID / Nombre</th>
-                            <th class="col-precio">Precio</th>
-                            <th class="col-color">Color</th>
-                            <th class="col-toggle">Activo</th>
-                            <th class="col-toggle">Dest.</th>
-                            <th class="col-acciones">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminTablaBody">
-                        <tr><td colspan="7" class="admin-tabla-cargando">Cargando productos...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
+        </div>
+        <div class="admin-bar-der">
+            <span class="admin-usuario" id="adminUsuario"></span>
+            <button class="admin-logout" id="adminLogout">Cerrar sesión</button>
+        </div>
     </div>
+
+    <!-- Contenido principal -->
+    <main class="admin-main">
+
+        <!-- Toolbar -->
+        <div class="admin-toolbar">
+            <div class="admin-stats">
+                <div class="admin-stat">
+                    <span class="admin-stat-num" id="statTotal">—</span>
+                    <span class="admin-stat-label">Total</span>
+                </div>
+                <div class="admin-stat">
+                    <span class="admin-stat-num" id="statActivos">—</span>
+                    <span class="admin-stat-label">Activos</span>
+                </div>
+                <div class="admin-stat">
+                    <span class="admin-stat-num" id="statDestacados">—</span>
+                    <span class="admin-stat-label">Destacados</span>
+                </div>
+            </div>
+            <div class="admin-toolbar-acciones">
+                <input type="text" class="admin-buscador" id="adminBuscar" placeholder="Buscar por nombre o ID...">
+                <button class="admin-btn-nuevo" id="btnNuevoProducto">+ Nuevo producto</button>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="admin-tabla-wrap">
+            <table class="admin-tabla">
+                <thead>
+                    <tr>
+                        <th class="col-img">Imagen</th>
+                        <th class="col-info">ID / Nombre</th>
+                        <th class="col-precio">Precio</th>
+                        <th class="col-color">Color</th>
+                        <th class="col-toggle">Activo</th>
+                        <th class="col-toggle">Dest.</th>
+                        <th class="col-acciones">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTablaBody">
+                    <tr><td colspan="7" class="admin-tabla-cargando">Cargando productos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
 
     <!-- Modal crear / editar producto -->
     <div class="admin-overlay" id="adminOverlay">
         <div class="admin-modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitulo">
+
+            <!-- Cabecera fija del modal -->
             <div class="admin-modal-header">
                 <h2 class="admin-modal-titulo" id="adminModalTitulo">Nuevo producto</h2>
                 <button class="admin-modal-cerrar" id="adminModalCerrar" aria-label="Cerrar">✕</button>
             </div>
+
+            <!-- Cuerpo con scroll propio -->
             <div class="admin-modal-cuerpo">
                 <form id="adminForm" novalidate>
 
-                    <!-- Fila 1: datos básicos -->
                     <div class="admin-form-grid-2">
                         <div class="admin-field">
                             <label class="admin-label" for="fId">ID del producto *</label>
@@ -107,13 +145,11 @@
                         </div>
                     </div>
 
-                    <!-- Descripción -->
                     <div class="admin-field">
                         <label class="admin-label" for="fDescripcion">Descripción</label>
                         <textarea class="admin-input admin-textarea" id="fDescripcion" name="descripcion" rows="2" placeholder="Descripción del producto..."></textarea>
                     </div>
 
-                    <!-- Detalles -->
                     <div class="admin-seccion-titulo">Detalles del producto</div>
                     <div class="admin-form-grid-2">
                         <div class="admin-field">
@@ -134,19 +170,12 @@
                         </div>
                     </div>
 
-                    <!-- Tallas y stock -->
                     <div class="admin-seccion-titulo">Tallas y stock</div>
-                    <div class="admin-tallas-grid" id="adminTallasGrid">
-                        <!-- Renderizado por JS -->
-                    </div>
+                    <div class="admin-tallas-grid" id="adminTallasGrid"></div>
 
-                    <!-- Imágenes -->
                     <div class="admin-seccion-titulo">Imágenes <span class="admin-campo-hint">(máx. 4 — la primera es la principal)</span></div>
-                    <div class="admin-imagenes-grid" id="adminImagenesGrid">
-                        <!-- Renderizado por JS -->
-                    </div>
+                    <div class="admin-imagenes-grid" id="adminImagenesGrid"></div>
 
-                    <!-- Tags + opciones -->
                     <div class="admin-form-grid-2">
                         <div class="admin-field">
                             <label class="admin-label" for="fTags">Tags</label>
@@ -168,10 +197,8 @@
                         </div>
                     </div>
 
-                    <!-- Error -->
                     <p class="admin-form-error" id="adminFormError"></p>
 
-                    <!-- Botones -->
                     <div class="admin-form-footer">
                         <button type="button" class="admin-btn-cancelar" id="adminBtnCancelar">Cancelar</button>
                         <button type="submit" class="admin-btn-guardar" id="adminBtnGuardar">Guardar producto</button>
@@ -182,6 +209,7 @@
         </div>
     </div>
 
+    <script type="module" src="../../scripts/main.js"></script>
     <script type="module" src="../../scripts/pages/admin.js"></script>
 </body>
 </html>
