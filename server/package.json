@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "node --env-file=.env --watch server.js",
     "start": "node --env-file=.env server.js",
-    "init-db": "node --env-file=.env src/scripts/initDB.js"
+    "init-db": "node --env-file=.env src/scripts/initDB.js",
+    "seed-admin": "node --env-file=.env src/scripts/seedAdmin.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
