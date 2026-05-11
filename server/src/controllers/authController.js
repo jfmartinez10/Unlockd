@@ -38,7 +38,9 @@ export async function register(req, res) {
         [usuarioId, codigo]
     );
 
-    await sendVerificationEmail(email, nombre.trim(), codigo);
+    sendVerificationEmail(email, nombre.trim(), codigo).catch(err =>
+        console.error('[auth] Error enviando email de verificación:', err.message)
+    );
 
     return res.status(201).json(ok(null, 'Cuenta creada. Revisa tu correo para verificarla.'));
 }
@@ -176,7 +178,9 @@ export async function forgotPassword(req, res) {
             [usuarioId, tokenReset]
         );
 
-        await sendPasswordResetEmail(email, tokenReset);
+        sendPasswordResetEmail(email, tokenReset).catch(err =>
+            console.error('[auth] Error enviando email de reset:', err.message)
+        );
     }
 
     return res.json(ok(null, 'Si el email existe, recibirás un enlace en breve.'));
