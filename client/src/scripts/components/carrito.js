@@ -236,6 +236,7 @@ function _renderFooter(footer, cart, totalUnidades) {
     });
 
     footer.querySelector('#carritoCheckout').addEventListener('click', () => {
+        sessionStorage.setItem('unlockd_cart_note', _notaTexto);
         window.location.href = '/src/pages/checkout/checkout.html';
     });
 }
