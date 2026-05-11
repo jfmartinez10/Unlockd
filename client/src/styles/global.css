@@ -1,4 +1,5 @@
 @import './variables.css';
+@import './components/cookie.css';
 
 *,
 *::before,
@@ -119,6 +120,45 @@ input[type="number"] {
   height: var(--border-width);
   background: var(--color-border);
   margin: var(--spacing-md) 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Responsive global — fixes aplicados a todo el sitio
+══════════════════════════════════════════════════════════ */
+
+/* Móvil pequeño (≤480px): ocultar textos del nav-left
+   para evitar desbordamiento horizontal                    */
+@media (max-width: 480px) {
+  .nav-left a {
+    font-size: 0;        /* Oculta el texto                */
+    width: 0;
+    overflow: hidden;
+    gap: 0;
+    padding: 0;
+  }
+  .nav-left {
+    gap: 0;
+    width: 0;
+    overflow: hidden;
+  }
+  /* Recuperar logo visible en móvil pequeño */
+  .logo-center img {
+    display: block !important;
+  }
+}
+
+/* Prevenir overflow horizontal en todas las páginas */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Tablas del admin legibles en móvil */
+  .admin-tabla-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Espaciado */
