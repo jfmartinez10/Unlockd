@@ -224,28 +224,71 @@ export async function sendNewsletterWelcomeEmail(to, codigo) {
 
 /* Correo — Confirmación de pedido */
 export async function sendOrderConfirmationEmail(to, order) {
+    const items    = order.items ?? [];
+    const ref      = `#${order.id.slice(0, 8).toUpperCase()}`;
+    const total    = Number(order.total).toFixed(2).replace('.', ',');
+    const envio    = Number(order.envio ?? 0);
+    const envioStr = envio === 0 ? 'Gratis' : `${envio.toFixed(2).replace('.', ',')}€`;
+
+    const filasItems = items.map(i => `
+        <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#111;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
+                ${i.nombre_producto}
+            </td>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:12px;color:#888;text-align:center;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
+                ${i.talla} × ${i.cantidad}
+            </td>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#111;text-align:right;font-weight:600;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
+                ${(Number(i.precio_unitario) * i.cantidad).toFixed(2).replace('.', ',')}€
+            </td>
+        </tr>`).join('');
+
     await getTransporter().sendMail({
         from:    process.env.MAIL_FROM,
         to,
-        subject: `Pedido #${order.id.slice(0, 8).toUpperCase()} confirmado — Unlockd`,
+        subject: `Pedido ${ref} confirmado — Unlockd`,
+        text: `Gracias por tu compra. Tu pedido ${ref} ha sido confirmado. Total: ${total}€`,
         html: htmlWrapper(`
             ${htmlHeader('Confirmación de pedido')}
-            <div style="padding:48px 48px 40px;text-align:center">
+            <div style="padding:48px 48px 32px;text-align:center">
                 <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;color:#aaa;text-transform:uppercase;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
                     Gracias por tu compra
                 </p>
-                <h2 style="margin:0 0 24px;font-size:22px;font-weight:300;color:#0a0a0a;letter-spacing:2px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;text-transform:uppercase">
+                <h2 style="margin:0 0 20px;font-size:22px;font-weight:300;color:#0a0a0a;letter-spacing:2px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;text-transform:uppercase">
                     Pedido confirmado
                 </h2>
-                <div style="width:40px;height:1px;background:#0a0a0a;margin:0 auto 28px"></div>
-                <p style="margin:0 0 6px;font-size:13px;color:#888;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
-                    Número de pedido
+                <div style="width:40px;height:1px;background:#0a0a0a;margin:0 auto 24px"></div>
+                <p style="margin:0;font-size:26px;font-weight:700;color:#0a0a0a;letter-spacing:4px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
+                    ${ref}
                 </p>
-                <p style="margin:0 0 20px;font-size:18px;font-weight:700;color:#0a0a0a;letter-spacing:3px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
-                    #${order.id.slice(0, 8).toUpperCase()}
-                </p>
-                <p style="margin:0;font-size:20px;font-weight:600;color:#0a0a0a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
-                    ${order.total}€
+            </div>
+            ${items.length > 0 ? `
+            <div style="padding:0 48px 32px">
+                <table style="width:100%;border-collapse:collapse">
+                    <thead>
+                        <tr style="background:#0a0a0a">
+                            <th style="padding:10px 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;text-align:left;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Producto</th>
+                            <th style="padding:10px 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;text-align:center;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Uds</th>
+                            <th style="padding:10px 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;text-align:right;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>${filasItems}</tbody>
+                </table>
+                <table style="width:100%;border-collapse:collapse;margin-top:12px">
+                    <tr>
+                        <td style="padding:8px 0;font-size:12px;color:#888;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Envío</td>
+                        <td style="padding:8px 0;font-size:12px;color:#888;text-align:right;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">${envioStr}</td>
+                    </tr>
+                    <tr style="border-top:2px solid #0a0a0a">
+                        <td style="padding:12px 0;font-size:15px;font-weight:700;color:#0a0a0a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Total</td>
+                        <td style="padding:12px 0;font-size:15px;font-weight:700;color:#0a0a0a;text-align:right;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">${total}€</td>
+                    </tr>
+                </table>
+            </div>` : ''}
+            <div style="padding:24px 48px;text-align:center;border-top:1px solid #f0f0f0">
+                <p style="margin:0;font-size:13px;color:#555;line-height:1.7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
+                    Recibirás una notificación cuando tu pedido sea enviado.<br>
+                    <span style="color:#aaa;font-size:11px">Si tienes alguna pregunta, contáctanos en nuestro sitio web.</span>
                 </p>
             </div>
             ${htmlFooter()}
