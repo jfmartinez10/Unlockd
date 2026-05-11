@@ -1,0 +1,196 @@
+/* ── Confirmación de pedido ─────────────────────────────── */
+
+@keyframes confEntrada {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes confCheck {
+    from { stroke-dashoffset: 60; }
+    to   { stroke-dashoffset: 0; }
+}
+
+.conf-main {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: calc(var(--header-height) + 72px) 24px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: confEntrada 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ── Icono check ──────────────────────────────────────────── */
+.conf-icono {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 32px;
+}
+
+.conf-icono svg {
+    width: 100%;
+    height: 100%;
+}
+
+.conf-icono polyline {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: confCheck 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+/* ── Textos ───────────────────────────────────────────────── */
+.conf-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.conf-titulo {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.conf-subtexto {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 48px;
+    line-height: 1.6;
+}
+
+/* ── Resumen de items ────────────────────────────────────── */
+.conf-resumen {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    margin-bottom: 0;
+}
+
+.conf-tabla-header {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    padding: 10px 20px;
+    background: #000;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.conf-tabla-fila {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--color-border);
+    align-items: center;
+}
+
+.conf-tabla-fila:last-child { border-bottom: none; }
+
+.conf-item-nombre {
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.conf-item-talla {
+    font-size: 11px;
+    color: #888;
+    white-space: nowrap;
+}
+
+.conf-item-precio {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ── Totales ──────────────────────────────────────────────── */
+.conf-totales {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-top: none;
+    padding: 0 20px;
+    margin-bottom: 48px;
+}
+
+.conf-total-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    font-size: 12px;
+    color: #888;
+    border-bottom: 1px solid var(--color-border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.conf-total-fila:last-child { border-bottom: none; }
+
+.conf-total-final {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ── Botones de acción ───────────────────────────────────── */
+.conf-acciones {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+.conf-btn-tienda,
+.conf-btn-cuenta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 32px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    border: 1.5px solid #000;
+}
+
+.conf-btn-tienda {
+    background: #000;
+    color: #fff;
+}
+
+.conf-btn-tienda:hover {
+    background: #222;
+}
+
+.conf-btn-cuenta {
+    background: #fff;
+    color: #000;
+}
+
+.conf-btn-cuenta:hover {
+    background: #000;
+    color: #fff;
+}
+
+@media (max-width: 560px) {
+    .conf-main { padding: 48px 20px 60px; }
+    .conf-acciones { flex-direction: column; }
+    .conf-btn-tienda, .conf-btn-cuenta { width: 100%; }
+}
