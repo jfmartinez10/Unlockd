@@ -1,427 +1,584 @@
-/* ——— Checkout ——— */
+/* ══════════════════════════════════════════════════════════
+   Checkout — usa main-header del sitio · sin scroll
+══════════════════════════════════════════════════════════ */
 
-/* Animación entrada */
-@keyframes coEntrada {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+html,
+body {
+  height: 100%;
+  overflow: hidden;
 }
 
-@keyframes coShake {
-    0%, 100% { transform: translateX(0); }
-    20%       { transform: translateX(-4px); }
-    40%       { transform: translateX(4px); }
-    60%       { transform: translateX(-3px); }
-    80%       { transform: translateX(3px); }
+/* ── Logo centrado: iguala ancho de nav-left al nav-right ── */
+/* Sin esto, la asimetría flecha vs. pasos desplaza el logo  */
+.co-nav-left-checkout {
+  min-width: 160px;
 }
 
-/* ——— Header mínimo ——— */
-.co-header {
-    position: sticky;
-    top: 0;
-    z-index: var(--z-index-header);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: var(--header-height);
-    padding: 0 var(--spacing-xxl);
-    background: var(--glass-bg-strong);
-    -webkit-backdrop-filter: var(--glass-blur);
-    backdrop-filter: var(--glass-blur);
-    border-bottom: var(--border-width) solid var(--color-border);
-}
-
+/* ── Back arrow ─────────────────────────────────────────── */
 .co-back {
-    display: flex;
-    align-items: center;
-    color: var(--color-primary);
-    text-decoration: none;
-    width: 36px;
-    height: 36px;
-    transition: opacity var(--transition-fast);
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+.co-back:hover {
+  opacity: 0.45;
+}
+.co-back::after {
+  display: none !important;
 }
 
-.co-back:hover { opacity: 0.5; }
-
-.co-back svg {
-    width: 20px;
-    height: 20px;
-}
-
-.co-logo img {
-    height: 32px;
-    width: auto;
-    display: block;
-}
-
+/* ── Pasos del checkout ─────────────────────────────────── */
 .co-pasos {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-
 .co-paso {
-    font-size: 11px;
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-text-muted);
 }
-
 .co-paso--activo {
-    color: var(--color-primary);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-
 .co-paso--hecho {
-    color: var(--color-text-muted);
-    text-decoration: line-through;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
 }
-
 .co-paso-sep {
-    color: var(--color-text-muted);
-    font-size: 11px;
+  color: var(--color-text-muted);
+  font-size: 11px;
 }
 
-/* ——— Layout principal ——— */
+/* ══════════════════════════════════════════════════════════
+   Layout principal — dos columnas fijas, sin scroll de página
+══════════════════════════════════════════════════════════ */
 .co-main {
-    display: grid;
-    grid-template-columns: 1fr 420px;
-    grid-template-areas: 'form resumen';
-    min-height: calc(100vh - var(--header-height));
-    animation: coEntrada 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+  display: grid;
+  grid-template-columns: 1fr 450px;
+  grid-template-rows: 1fr;
+  grid-template-areas: "form resumen";
+  height: calc(100vh - var(--header-height));
+  margin-top: var(--header-height);
+  overflow: hidden;
 }
 
-/* ——— Título paralelo tipo Unlockd ——— */
-.co-titulo-marco {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: var(--spacing-xl);
-}
-
-.co-titulo-marco span {
-    font-size: 11px;
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: var(--color-primary);
-    padding: 10px 0;
-    position: relative;
-}
-
-.co-titulo-marco::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--border-width, 1px);
-    background: var(--color-border);
-}
-
-.co-titulo-marco::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: var(--border-width, 1px);
-    background: var(--color-border);
-}
-
-/* ——— Resumen ——— */
-.co-resumen {
-    grid-area: resumen;
-    border-left: var(--border-width) solid var(--color-border);
-    background: var(--glass-bg);
-    -webkit-backdrop-filter: var(--glass-blur-md);
-    backdrop-filter: var(--glass-blur-md);
-    padding: var(--spacing-xxl);
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-/* Items del resumen */
-.co-items {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-bottom: var(--spacing-xl);
-}
-
-.co-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md) 0;
-    border-bottom: var(--border-width) solid var(--color-border);
-}
-
-.co-item:first-child {
-    border-top: var(--border-width) solid var(--color-border);
-}
-
-.co-item-imagen {
-    position: relative;
-    flex-shrink: 0;
-    width: 64px;
-    height: 64px;
-    background: var(--color-background-alt);
-    border: var(--border-width) solid var(--color-border);
-}
-
-.co-item-imagen img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 4px;
-}
-
-.co-item-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 20px;
-    height: 20px;
-    background: var(--color-primary);
-    color: var(--color-secondary);
-    border-radius: 50%;
-    font-size: 10px;
-    font-weight: var(--font-weight-bold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.co-item-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.co-item-nombre {
-    display: block;
-    font-size: 11px;
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--color-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.co-item-talla {
-    display: block;
-    font-size: 11px;
-    color: var(--color-text-muted);
-    margin-top: 2px;
-    text-transform: uppercase;
-}
-
-.co-item-precio {
-    font-size: 12px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
-    white-space: nowrap;
-}
-
-/* Vacío */
-.co-carrito-vacio {
-    text-align: center;
-    padding: var(--spacing-xl) 0;
-    font-size: 11px;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
-
-/* Totales */
-.co-totales {
-    margin-top: auto;
-    padding-top: var(--spacing-lg);
-    border-top: var(--border-width) solid var(--color-border);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.co-total-fila {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.co-total-fila--final {
-    font-size: 13px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
-    padding-top: var(--spacing-sm);
-    border-top: var(--border-width) solid var(--color-border);
-    margin-top: var(--spacing-xs);
-}
-
-/* ——— Formulario ——— */
+/* ── Columna formulario ─────────────────────────────────── */
+/* center: espacio repartido arriba y abajo — aspecto profesional */
 .co-formulario {
-    grid-area: form;
-    padding: var(--spacing-xxl);
-    display: flex;
-    flex-direction: column;
+  grid-area: form;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 52px;
+  overflow-y: auto;
+}
+.co-formulario::-webkit-scrollbar {
+  width: 0;
 }
 
+/* ══════════════════════════════════════════════════════════
+   Título oblicuo — animación hover idéntica al resto del sitio
+══════════════════════════════════════════════════════════ */
+.co-titulo-marco {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* Marco inclinado */
+.co-titulo-marco > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 22px;
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-primary);
+  position: relative;
+  border-left: var(--border-width-thick) solid var(--color-border);
+  border-right: var(--border-width-thick) solid var(--color-border);
+  transform: skewX(-35deg);
+  cursor: default;
+}
+
+/* Barra animada superior (misma lógica que .titulo-auth::before) */
+.co-titulo-marco > span::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 0;
+  height: var(--border-width-thick);
+  background-color: var(--color-border);
+  transition: width var(--transition-slow);
+  transform-origin: left;
+}
+
+/* Barra animada inferior */
+.co-titulo-marco > span::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 0;
+  height: var(--border-width-thick);
+  background-color: var(--color-border);
+  transition: width var(--transition-slow);
+  transform-origin: right;
+}
+
+.co-titulo-marco > span:hover::before,
+.co-titulo-marco > span:hover::after {
+  width: calc(100% + 4px);
+}
+
+/* Texto interior des-oblicuado */
+.co-titulo-marco > span > span {
+  display: inline-block;
+  transform: skewX(35deg);
+  border: none;
+  padding: 0;
+  background: none;
+  height: auto;
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+  color: inherit;
+  letter-spacing: 1px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Formulario de datos de envío
+══════════════════════════════════════════════════════════ */
 .co-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
 }
 
 .co-fila-doble {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .co-campo {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .co-label {
-    font-size: 10px;
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-text-muted);
 }
 
+/* Input idéntico al del formulario de auth */
 .co-input {
-    width: 100%;
-    height: 44px;
-    padding: 0 var(--spacing-md);
-    background: var(--color-secondary);
-    border: var(--border-width) solid var(--color-border);
-    font-family: var(--font-family);
-    font-size: var(--font-size-small);
-    color: var(--color-primary);
-    outline: none;
-    transition: box-shadow var(--transition-fast);
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 0;
+  width: 100%;
+  height: var(--input-height);
+  padding: 0 18px;
+  background: var(--color-secondary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+  border: var(--border-width) solid #666;
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  box-sizing: border-box;
 }
-
 .co-input::placeholder {
-    color: var(--color-text-muted);
-    opacity: 0.6;
+  color: #aaa;
 }
-
 .co-input:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 1px var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
-
 .co-input.co-input-error {
-    border-color: var(--color-primary);
-    animation: coShake 0.35s ease;
+  border-color: #c00;
+  box-shadow: 0 0 0 1px #c00;
 }
-
 .co-select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23000' stroke-width='1.5'%3E%3Cpolyline points='1,1 6,7 11,1'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 10px;
-    padding-right: 36px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23000' stroke-width='1.5'%3E%3Cpolyline points='1,1 6,7 11,1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 10px;
+  padding-right: 40px;
 }
 
-/* ——— CTA Finalizar ——— */
+/* ── Botón principal ────────────────────────────────────── */
 .co-cta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 52px;
-    padding: 0 var(--spacing-xl);
-    background: var(--color-primary);
-    color: var(--color-secondary);
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-family);
-    font-size: 11px;
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-top: var(--spacing-sm);
-    transition: opacity var(--transition-fast);
-    position: relative;
-    overflow: hidden;
+  width: 100%;
+  height: var(--button-height);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border: var(--border-width-thick) solid var(--color-border);
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition:
+    background var(--transition-base),
+    color var(--transition-base);
 }
-
 .co-cta svg {
-    width: 18px;
-    height: 18px;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
 }
-
-.co-cta:hover svg {
-    transform: translateX(5px);
-}
-
 .co-cta:hover {
-    opacity: 0.85;
+  background: var(--color-secondary);
+  color: var(--color-primary);
 }
-
-.co-cta:active {
-    opacity: 1;
-    transform: scale(0.995);
+.co-cta:hover svg {
+  transform: translateX(5px);
 }
-
 .co-cta:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+/* Botón sin flecha: texto centrado */
+.co-cta--centrado {
+  justify-content: center;
 }
 
-/* ——— Responsive ——— */
-@media (max-width: 900px) {
-    .co-main {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            'resumen'
-            'form';
-    }
-
-    .co-resumen {
-        border-left: none;
-        border-bottom: var(--border-width) solid var(--color-border);
-    }
-
-    .co-form {
-        max-width: 100%;
-    }
+/* ══════════════════════════════════════════════════════════
+   Columna resumen — empieza justo debajo del header
+══════════════════════════════════════════════════════════ */
+.co-resumen {
+  grid-area: resumen;
+  border-left: var(--border-width) solid var(--color-border);
+  background: #f1f1f1;
+  padding: 44px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Huecos proporcionales */
+  height: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Título RESUMEN más compacto */
+.co-resumen .co-titulo-marco {
+  max-width: 100%;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+.co-resumen .co-titulo-marco > span {
+  font-size: 16px;
+  height: 38px;
+  padding: 0 16px;
+}
+
+/* ── Lista de items ─────────────────────────────────────── */
+.co-items {
+  flex: 0 1 auto;
+  max-height: 350px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.co-items::-webkit-scrollbar {
+  width: 4px;
+}
+.co-items::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
+.co-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Item: sin barritas arriba ni abajo */
+.co-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+}
+
+/* Solo un separador fino entre items consecutivos */
+.co-item + .co-item {
+  border-top: 1px solid #e4e4e4;
+}
+
+/* Imagen grande y visible */
+.co-item-imagen {
+  position: relative;
+  flex-shrink: 0;
+  width: 95px;
+  height: 95px;
+  background: var(--color-secondary);
+  border: var(--border-width) solid var(--color-border);
+}
+.co-item-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  box-sizing: border-box;
+}
+.co-item-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.co-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.co-item-nombre {
+  display: block;
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+  line-height: 1.3;
+}
+.co-item-talla {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.co-item-precio {
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+.co-carrito-vacio {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* ── Totales — flex-shrink 0: NUNCA se cortan ───────────── */
+/* El padding-bottom vive aquí para que sea parte del bloque inencogible */
+.co-nota-resumen {
+  padding: 16px 0;
+  border-top: 1px dashed #ccc;
+  border-bottom: 1px dashed #ccc;
+}
+.co-nota-resumen .co-label {
+  font-size: 11px;
+  margin-bottom: 6px;
+  display: block;
+}
+.co-nota-resumen p {
+  font-size: 13px;
+  color: var(--color-primary);
+  margin-top: 4px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.co-totales {
+  flex-shrink: 0;
+  padding: 8px 0;
+  border-top: var(--border-width) solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.co-total-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.co-total-fila--final {
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  padding-top: 8px;
+  border-top: var(--border-width-thick) solid var(--color-border);
+  margin-top: 0;
+}
+
+/* ── Paso oculto ─────────────────────────────────────────── */
+.co-paso-oculto {
+  display: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Paso 2 — Tarjeta decorativa de pago
+══════════════════════════════════════════════════════════ */
+.co-card-preview {
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1.586;
+  background: linear-gradient(135deg, #0a0a0a 0%, #2a2a2a 100%);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+  color: #fff;
+}
+.co-card-chip {
+  width: 32px;
+  height: 24px;
+  background: linear-gradient(135deg, #d4a843, #f0c96b, #c49030);
+  border-radius: 4px;
+  position: relative;
+}
+.co-card-chip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.co-card-chip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.co-card-numero {
+  font-size: 14px;
+  letter-spacing: 3.5px;
+  color: rgba(255, 255, 255, 0.88);
+  text-align: center;
+  font-family: monospace;
+}
+.co-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.co-card-titular {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.co-card-exp {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.co-pago-aviso {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 10px 0;
+  letter-spacing: 0.3px;
+  border-top: var(--border-width) solid #e0e0e0;
+  border-bottom: var(--border-width) solid #e0e0e0;
+}
+.co-volver {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 4px 0;
+  letter-spacing: 0.5px;
+  font-family: var(--font-family);
+  transition: color var(--transition-fast);
+}
+.co-volver:hover {
+  color: var(--color-primary);
+}
+
+/* ══════════════════════════════════════════════════════════
+   Responsive
+══════════════════════════════════════════════════════════ */
+@media (max-width: 960px) {
+  html,
+  body {
+    overflow: auto;
+  }
+  .co-main {
+    grid-template-columns: 1fr;
+    grid-template-areas: "resumen" "form";
+    height: auto;
+    overflow: auto;
+  }
+  .co-resumen {
+    border-left: none;
+    border-bottom: var(--border-width) solid var(--color-border);
+    height: auto;
+  }
+  .co-formulario {
+    padding: 36px 24px;
+  }
+  .co-form {
+    max-width: 100%;
+  }
+}
 @media (max-width: 600px) {
-    .co-header {
-        padding: 0 var(--spacing-lg);
-    }
-
-    .co-formulario,
-    .co-resumen {
-        padding: var(--spacing-lg);
-    }
-
-    .co-fila-doble {
-        grid-template-columns: 1fr;
-    }
-
-    .co-pasos {
-        display: none;
-    }
+  .co-pasos {
+    display: none;
+  }
+  .co-fila-doble {
+    grid-template-columns: 1fr;
+  }
 }
