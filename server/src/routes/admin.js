@@ -7,6 +7,7 @@ import {
     listarTodos, obtenerProducto, crearProducto, actualizarProducto,
     eliminarProducto, toggleActivo, toggleDestacado, subirImagen,
 } from '../controllers/adminController.js';
+import { listarTodosPedidos, actualizarEstadoPedido } from '../controllers/ordersController.js';
 
 /* Directorio de uploads: server/uploads/ */
 const UPLOAD_DIR = join(import.meta.dirname, '../../../uploads');
@@ -43,5 +44,9 @@ router.delete('/products/:id',                  eliminarProducto);
 router.patch('/products/:id/toggle-activo',     toggleActivo);
 router.patch('/products/:id/toggle-destacado',  toggleDestacado);
 router.post('/upload', upload.single('imagen'), subirImagen);
+
+/* ── Pedidos ─────────────────────────────────────────────── */
+router.get('/orders',                        listarTodosPedidos);
+router.patch('/orders/:id/estado',           actualizarEstadoPedido);
 
 export default router;
