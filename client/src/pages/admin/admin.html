@@ -49,6 +49,7 @@
             <span class="admin-bar-sep">/</span>
             <nav class="admin-nav">
                 <button class="admin-nav-btn activo" data-tab="productos">Productos</button>
+                <button class="admin-nav-btn" data-tab="pedidos">Pedidos</button>
             </nav>
         </div>
         <div class="admin-bar-der">
@@ -82,24 +83,45 @@
             </div>
         </div>
 
-        <!-- Tabla -->
-        <div class="admin-tabla-wrap">
-            <table class="admin-tabla">
-                <thead>
-                    <tr>
-                        <th class="col-img">Imagen</th>
-                        <th class="col-info">ID / Nombre</th>
-                        <th class="col-precio">Precio</th>
-                        <th class="col-color">Color</th>
-                        <th class="col-toggle">Activo</th>
-                        <th class="col-toggle">Dest.</th>
-                        <th class="col-acciones">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTablaBody">
-                    <tr><td colspan="7" class="admin-tabla-cargando">Cargando productos...</td></tr>
-                </tbody>
-            </table>
+        <!-- Tabla productos -->
+        <div id="seccionProductos">
+            <div class="admin-tabla-wrap">
+                <table class="admin-tabla">
+                    <thead>
+                        <tr>
+                            <th class="col-img">Imagen</th>
+                            <th class="col-info">ID / Nombre</th>
+                            <th class="col-precio">Precio</th>
+                            <th class="col-color">Color</th>
+                            <th class="col-toggle">Activo</th>
+                            <th class="col-toggle">Dest.</th>
+                            <th class="col-acciones">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTablaBody">
+                        <tr><td colspan="7" class="admin-tabla-cargando">Cargando productos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sección pedidos -->
+        <div id="seccionPedidos" style="display:none">
+            <div class="admin-tabla-wrap">
+                <table class="admin-tabla">
+                    <thead>
+                        <tr>
+                            <th class="col-info">Referencia / Cliente</th>
+                            <th class="col-precio">Total</th>
+                            <th style="width:110px">Fecha</th>
+                            <th style="width:160px">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidosTablaBody">
+                        <tr><td colspan="4" class="admin-tabla-cargando">Cargando pedidos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </main>
