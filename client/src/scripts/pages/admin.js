@@ -53,6 +53,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderTallasGrid();
     renderImagenesGrid();
 
+    /* Navegación entre pestañas */
+    document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('activo'));
+            btn.classList.add('activo');
+            const tab = btn.dataset.tab;
+            document.getElementById('seccionProductos').style.display = tab === 'productos' ? '' : 'none';
+            document.getElementById('seccionPedidos').style.display   = tab === 'pedidos'   ? '' : 'none';
+            document.getElementById('admin-toolbar') && (document.getElementById('admin-toolbar').style.display = tab === 'productos' ? '' : 'none');
+            const toolbar = document.querySelector('.admin-toolbar');
+            if (toolbar) toolbar.style.display = tab === 'productos' ? '' : 'none';
+            if (tab === 'pedidos') cargarPedidos();
+        });
+    });
+
     await cargarProductos();
 });
 
@@ -502,4 +517,92 @@ function buildPayload() {
 /* ── Utilidad: mostrar error en el formulario ──────────────── */
 function setError(msg) {
     document.getElementById('adminFormError').textContent = msg;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PEDIDOS
+════════════════════════════════════════════════════════════ */
+const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
+
+const ESTADOS = ['pendiente', 'confirmado', 'enviado', 'entregado', 'cancelado'];
+const ESTADO_COLOR = {
+    pendiente:  '#f59e0b',
+    confirmado: '#3b82f6',
+    enviado:    '#8b5cf6',
+    entregado:  '#10b981',
+    cancelado:  '#ef4444',
+};
+
+async function cargarPedidos() {
+    const tbody = document.getElementById('pedidosTablaBody');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="4" class="admin-tabla-cargando">Cargando pedidos...</td></tr>`;
+    try {
+        const res  = await authFetch(`${API_URL}/admin/orders`);
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+        renderPedidosTabla(json.data);
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" class="admin-tabla-vacio">Error al cargar pedidos</td></tr>`;
+        console.error('[admin] pedidos:', err.message);
+    }
+}
+
+function renderPedidosTabla(pedidos) {
+    const tbody = document.getElementById('pedidosTablaBody');
+    if (!pedidos.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="admin-tabla-vacio">No hay pedidos aún</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = pedidos.map(p => {
+        const ref    = `#${p.id.slice(0, 8).toUpperCase()}`;
+        const fecha  = new Date(p.creado_en).toLocaleDateString('es-ES', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        });
+        const cliente = p.usuario_nombre
+            ? `${p.usuario_nombre} <span style="color:#bbb">${p.email}</span>`
+            : p.email;
+        const color  = ESTADO_COLOR[p.estado] ?? '#999';
+        const opts   = ESTADOS.map(e =>
+            `<option value="${e}" ${e === p.estado ? 'selected' : ''}>${e.charAt(0).toUpperCase() + e.slice(1)}</option>`
+        ).join('');
+
+        return `
+        <tr>
+            <td>
+                <span style="font-weight:700;letter-spacing:1px">${ref}</span><br>
+                <span style="font-size:12px;color:#888">${cliente}</span>
+            </td>
+            <td>${fmt.format(Number(p.total))}</td>
+            <td style="font-size:12px;color:#888">${fecha}</td>
+            <td>
+                <select class="admin-estado-select" data-id="${p.id}"
+                        style="border:1.5px solid ${color};color:${color};padding:4px 8px;font-size:11px;font-weight:700;letter-spacing:1px;background:#fff;cursor:pointer;outline:none;text-transform:uppercase;font-family:Arial,sans-serif">
+                    ${opts}
+                </select>
+            </td>
+        </tr>`;
+    }).join('');
+
+    /* Eventos de cambio de estado */
+    tbody.querySelectorAll('.admin-estado-select').forEach(sel => {
+        sel.addEventListener('change', async () => {
+            const id     = sel.dataset.id;
+            const estado = sel.value;
+            try {
+                const res  = await authFetch(`${API_URL}/admin/orders/${id}/estado`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ estado }),
+                });
+                const json = await res.json();
+                if (json.success) {
+                    const color = ESTADO_COLOR[estado] ?? '#999';
+                    sel.style.borderColor = color;
+                    sel.style.color = color;
+                }
+            } catch (err) {
+                console.error('[admin] estado pedido:', err.message);
+            }
+        });
+    });
 }
