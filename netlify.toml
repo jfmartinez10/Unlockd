@@ -5,3 +5,13 @@
   from = "/"
   to = "/src/pages/index.html"
   status = 200
+
+[[redirects]]
+  from = "/styles/*"
+  to = "/src/styles/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/scripts/*"
+  to = "/src/scripts/:splat"
+  status = 200
