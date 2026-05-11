@@ -1,5 +1,6 @@
 import { abrirCarrito } from './components/carrito.js';
 import './components/buscador.js';
+import './components/cookie.js';
 export { showNotification } from './utils/toast.js';
 
 /* Configuración */
