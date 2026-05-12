@@ -237,7 +237,7 @@ async function _confirmarPedido() {
             talla:      i.size ?? 'unica',
             cantidad:   i.quantity,
         })),
-        nota: sessionStorage.getItem('unlockd_cart_note') || null
+        nota: sessionStorage.getItem('unlockd_cart_note') || undefined
     };
 
     try {

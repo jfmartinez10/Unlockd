@@ -28,7 +28,7 @@ const crearPedidoSchema = z.object({
     email:     z.string().email(),
     direccion: direccionSchema,
     items:     z.array(itemSchema).min(1).max(50),
-    nota:      z.string().max(500).optional(),
+    nota:      z.string().max(500).nullish(),
 });
 
 /* ── POST /api/orders ────────────────────────────────────── */
