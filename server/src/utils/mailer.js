@@ -1,24 +1,12 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-function getTransporter() {
-    return nodemailer.createTransport({
-        host:   'smtp.gmail.com',
-        port:   587,
-        secure: false,
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS,
-        },
-        connectionTimeout: 8000,
-        greetingTimeout:   8000,
-        socketTimeout:     10000,
-    });
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM   = process.env.MAIL_FROM || 'Unlockd <onboarding@resend.dev>';
 
 /* Helper interno */
 async function send(payload) {
-    const t = getTransporter();
-    await t.sendMail({ from: process.env.MAIL_FROM, ...payload });
+    const { error } = await resend.emails.send({ from: FROM, ...payload });
+    if (error) throw new Error(`Resend: ${error.message}`);
 }
 
 /* Cabecera común */
