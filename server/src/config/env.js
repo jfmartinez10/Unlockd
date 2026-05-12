@@ -1,4 +1,4 @@
-const REQUIRED = ['DATABASE_URL', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET', 'RESEND_API_KEY', 'CLIENT_URL'];
+const REQUIRED = ['DATABASE_URL', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET', 'MAIL_USER', 'MAIL_PASS', 'CLIENT_URL'];
 
 function validateEnv() {
     const missing = REQUIRED.filter(k => !process.env[k]);
