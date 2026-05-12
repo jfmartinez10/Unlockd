@@ -44,9 +44,12 @@ export async function suscribirse(req, res, next) {
             [email, codigo]
         );
 
-        sendNewsletterWelcomeEmail(email, codigo).catch(err => {
-            console.error('[newsletter] Error enviando email:', err.message);
-        });
+        try {
+            await sendNewsletterWelcomeEmail(email, codigo);
+            console.log('[newsletter] Email enviado a:', email);
+        } catch (err) {
+            console.error('[newsletter] ERROR enviando email:', err.message, err.code, err.response);
+        }
 
         res.status(201).json(ok(null, 'Suscripción completada'));
     } catch (err) {
