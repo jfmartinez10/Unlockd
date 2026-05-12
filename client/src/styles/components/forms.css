@@ -1,3 +1,9 @@
+/* Ocultar el ojo nativo del navegador en campos de contraseña */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
 /* Input básico (sin dimensiones fijas) */
 .form-input {
     background: var(--color-secondary);
