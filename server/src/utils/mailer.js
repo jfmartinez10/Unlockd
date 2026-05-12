@@ -1,21 +1,31 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM   = process.env.MAIL_FROM || 'Unlockd <onboarding@resend.dev>';
-
-/* Helper interno para enviar con log de error */
-async function send(payload) {
-    const { error } = await resend.emails.send(payload);
-    if (error) throw new Error(`Resend: ${error.message}`);
+function getTransporter() {
+    return nodemailer.createTransport({
+        host:   'smtp.gmail.com',
+        port:   587,
+        secure: false,
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS,
+        },
+        connectionTimeout: 8000,
+        greetingTimeout:   8000,
+        socketTimeout:     10000,
+    });
 }
 
-/* Cabecera común para todos los correos */
+/* Helper interno */
+async function send(payload) {
+    const t = getTransporter();
+    await t.sendMail({ from: process.env.MAIL_FROM, ...payload });
+}
+
+/* Cabecera común */
 function htmlHeader(subtitulo = '') {
     return `
     <div style="background:#0a0a0a;padding:40px 48px 28px">
-        <div style="text-align:center;letter-spacing:10px;font-size:20px;font-weight:700;color:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;text-transform:uppercase">
-            UNLOCKD
-        </div>
+        <div style="text-align:center;letter-spacing:10px;font-size:20px;font-weight:700;color:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;text-transform:uppercase">UNLOCKD</div>
         ${subtitulo ? `<div style="text-align:center;margin-top:10px;letter-spacing:3px;font-size:10px;color:#888;text-transform:uppercase;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">${subtitulo}</div>` : ''}
     </div>
     <div style="height:2px;background:linear-gradient(90deg,#0a0a0a,#555,#0a0a0a)"></div>`;
@@ -31,10 +41,7 @@ function htmlFooter() {
 }
 
 function htmlWrapper(content) {
-    return `
-    <!DOCTYPE html>
-    <html lang="es">
-    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+    return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
     <body style="margin:0;padding:0;background:#e8e8e8">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#e8e8e8;padding:40px 0">
             <tr><td align="center">
@@ -43,29 +50,25 @@ function htmlWrapper(content) {
                 </table>
             </td></tr>
         </table>
-    </body>
-    </html>`;
+    </body></html>`;
 }
 
 function htmlButton(url, texto) {
     return `
     <div style="text-align:center;margin:32px 0">
-        <a href="${url}"
-           style="display:inline-block;background:#0a0a0a;color:#fff;text-decoration:none;
-                  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-                  padding:16px 48px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
-            ${texto}
-        </a>
+        <a href="${url}" style="display:inline-block;background:#0a0a0a;color:#fff;text-decoration:none;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:16px 48px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">${texto}</a>
     </div>`;
 }
 
 /* Bienvenida + Código de verificación */
 export async function sendVerificationEmail(to, nombre, codigo) {
+    const clientUrl = process.env.CLIENT_URL || 'https://unlockd-clothes.netlify.app';
+    const verificarUrl = `${clientUrl}/src/pages/auth/verificar.html?email=${encodeURIComponent(to)}`;
+
     await send({
-        from:    FROM,
         to,
         subject: 'Bienvenido a Unlockd — Verifica tu cuenta',
-        text:    `Bienvenido a Unlockd, ${nombre}.\n\nTu código de verificación es: ${codigo}\n\nCaduca en 24 horas.\n\nUnlockd Studio`,
+        text: `Bienvenido a Unlockd, ${nombre}.\n\nTu código de verificación es: ${codigo}\n\nVerifica tu cuenta aquí: ${verificarUrl}\n\nCaduca en 24 horas.\n\nUnlockd Studio`,
         html: htmlWrapper(`
             ${htmlHeader('New Member')}
             <div style="padding:48px 48px 32px;text-align:center">
@@ -78,8 +81,8 @@ export async function sendVerificationEmail(to, nombre, codigo) {
             <div style="padding:32px 48px 40px;text-align:center">
                 <p style="margin:0 0 20px;font-size:13px;color:#888;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Tu código de verificación es:</p>
                 <div style="display:inline-block;background:#0a0a0a;color:#fff;font-size:32px;font-weight:700;letter-spacing:10px;padding:18px 36px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">${codigo}</div>
-                <p style="margin:24px 0 0;font-size:13px;color:#555;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Ve a la sección de verificación e introduce el código.</p>
-                <p style="margin:8px 0 0;font-size:11px;color:#bbb;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Caduca en 24 horas. Si no creaste esta cuenta, ignora este correo.</p>
+                ${htmlButton(verificarUrl, 'Verificar mi cuenta')}
+                <p style="margin:0;font-size:11px;color:#bbb;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Caduca en 24 horas. Si no creaste esta cuenta, ignora este correo.</p>
             </div>
             ${htmlFooter()}
         `),
@@ -90,10 +93,9 @@ export async function sendVerificationEmail(to, nombre, codigo) {
 export async function sendPasswordResetEmail(to, token) {
     const url = `${process.env.CLIENT_URL}/src/pages/auth/reset.html?token=${token}`;
     await send({
-        from:    FROM,
         to,
         subject: 'Restablece tu contraseña — Unlockd',
-        text:    `Hola,\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n\n${url}\n\nEl enlace caduca en 1 hora.\n\nUnlockd Studio`,
+        text: `Haz clic aquí para restablecer tu contraseña:\n\n${url}\n\nEl enlace caduca en 1 hora.`,
         html: htmlWrapper(`
             ${htmlHeader('Seguridad de cuenta')}
             <div style="padding:48px 48px 40px;text-align:center">
@@ -112,8 +114,7 @@ export async function sendPasswordResetEmail(to, token) {
 /* Formulario de contacto */
 export async function sendContactEmail({ nombre, email, asunto, mensaje }) {
     await send({
-        from:    FROM,
-        to:      process.env.CONTACT_EMAIL || process.env.MAIL_USER || FROM,
+        to:      process.env.CONTACT_EMAIL || process.env.MAIL_USER,
         replyTo: email,
         subject: `[Contacto] ${asunto}`,
         html: htmlWrapper(`
@@ -133,13 +134,12 @@ export async function sendContactEmail({ nombre, email, asunto, mensaje }) {
     });
 }
 
-/* Bienvenida newsletter */
+/* Newsletter */
 export async function sendNewsletterWelcomeEmail(to, codigo) {
     const expira = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         .toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
 
     await send({
-        from:    FROM,
         to,
         subject: 'Bienvenido a Unlockd — Tu código de descuento',
         html: htmlWrapper(`
@@ -176,10 +176,9 @@ export async function sendOrderConfirmationEmail(to, order) {
         </tr>`).join('');
 
     await send({
-        from:    FROM,
         to,
         subject: `Pedido ${ref} confirmado — Unlockd`,
-        text:    `Gracias por tu compra. Tu pedido ${ref} ha sido confirmado. Total: ${total}€`,
+        text: `Gracias por tu compra. Tu pedido ${ref} ha sido confirmado. Total: ${total}€`,
         html: htmlWrapper(`
             ${htmlHeader('Confirmación de pedido')}
             <div style="padding:48px 48px 32px;text-align:center">
@@ -202,15 +201,12 @@ export async function sendOrderConfirmationEmail(to, order) {
                     <tr><td style="padding:8px 0;font-size:12px;color:#888;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Envío</td><td style="padding:8px 0;font-size:12px;color:#888;text-align:right;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">${envioStr}</td></tr>
                     <tr style="border-top:2px solid #0a0a0a">
                         <td style="padding:12px 0;font-size:15px;font-weight:700;color:#0a0a0a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Total</td>
-                        <td style="padding:12px 0;font-size:15px;font-weight:700;color:#0a0a0a;text-align:right;font-family:'Helvetice Neue',Helvetica,Arial,sans-serif">${total}€</td>
+                        <td style="padding:12px 0;font-size:15px;font-weight:700;color:#0a0a0a;text-align:right;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">${total}€</td>
                     </tr>
                 </table>
             </div>` : ''}
             <div style="padding:24px 48px;text-align:center;border-top:1px solid #f0f0f0">
-                <p style="margin:0;font-size:13px;color:#555;line-height:1.7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
-                    Recibirás una notificación cuando tu pedido sea enviado.<br>
-                    <span style="color:#aaa;font-size:11px">Si tienes alguna pregunta, contáctanos en nuestro sitio web.</span>
-                </p>
+                <p style="margin:0;font-size:13px;color:#555;line-height:1.7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Recibirás una notificación cuando tu pedido sea enviado.</p>
             </div>
             ${htmlFooter()}
         `),
