@@ -42,7 +42,7 @@ export async function register(req, res) {
         console.error('[auth] Error enviando email de verificación:', err.message)
     );
 
-    return res.status(201).json(ok(null, 'Cuenta creada. Revisa tu correo para verificarla.'));
+    return res.status(201).json(ok(null, 'Cuenta creada correctamente. Ya puedes iniciar sesión.'));
 }
 
 /* POST /api/auth/verificar */
@@ -94,9 +94,6 @@ export async function login(req, res) {
         return res.status(401).json(fail('Credenciales incorrectas'));
     }
 
-    if (!usuario.verificado) {
-        return res.status(403).json(fail('Debes verificar tu email antes de iniciar sesión'));
-    }
 
     const accessToken  = generateAccessToken(usuario);
     const refreshToken = generateRefreshToken();
