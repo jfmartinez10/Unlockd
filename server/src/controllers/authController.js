@@ -24,8 +24,8 @@ export async function register(req, res) {
 
     const hash = await bcrypt.hash(password, 12);
     const { rows } = await query(
-        `INSERT INTO usuarios (nombre, apellidos, email, password_hash)
-         VALUES ($1, $2, $3, $4) RETURNING id`,
+        `INSERT INTO usuarios (nombre, apellidos, email, password_hash, verificado)
+         VALUES ($1, $2, $3, $4, TRUE) RETURNING id`,
         [nombre.trim(), apellidos.trim(), email.toLowerCase(), hash]
     );
 
