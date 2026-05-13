@@ -1,10 +1,15 @@
 import { addToCart } from '../utils/cartService.js';
 import { initFavoritos, esFavorito, toggleFavorito } from '../utils/favoritosService.js';
 import { API_URL } from '../config/api.js';
+import { abrirQuickAdd } from '../components/quickAdd.js';
 
 const SVG_CESTA = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="5" y="13" width="23" height="15" rx="3"/>
     <path d="M12 13C12 9.4 14 7 16.5 7C19 7 21 9.4 21 13"/>
+</svg>`;
+
+const SVG_CORAZON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
 </svg>`;
 
 /* Estado */
@@ -27,8 +32,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnFilter      = document.getElementById('btnFilter');
     const dropdownFilter = document.getElementById('dropdownFilter');
 
+    /* Skeleton mientras carga */
+    function mostrarSkeleton() {
+        grid.innerHTML = Array.from({ length: 6 }, () => `
+            <div class="tienda-skeleton">
+                <div class="tienda-skeleton-img sk-anim"></div>
+                <div class="tienda-skeleton-info">
+                    <div class="tienda-skeleton-nombre sk-anim"></div>
+                    <div class="tienda-skeleton-precio sk-anim"></div>
+                </div>
+            </div>`).join('');
+    }
+
     /* Cargar productos desde la API */
     async function cargarProductos() {
+        mostrarSkeleton();
         try {
             const res  = await fetch(`${API_URL}/products`);
             const json = await res.json();
@@ -66,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <img class="tienda-card-img img-principal" src="${p.images[0]}" alt="${p.name}">
                 <img class="tienda-card-img img-hover"     src="${p.images[1]}" alt="${p.name}" loading="lazy">
                 <button class="btn-favorito${fav ? ' activo' : ''}" aria-label="Guardar en favoritos" data-id="${p.id}" data-activo="${fav}">
-                    <img src="/public/assets/images/logo.png" alt="" aria-hidden="true">
+                    ${SVG_CORAZON}
                 </button>
             </div>
             <div class="tienda-card-info">
@@ -95,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="tienda-lista-acciones">
                     <button class="btn-cesta-mini" aria-label="Añadir al carrito">${SVG_CESTA}</button>
                     <button class="btn-favorito btn-favorito--lista${fav ? ' activo' : ''}" aria-label="Guardar en favoritos" data-id="${p.id}" data-activo="${fav}">
-                        <img src="/public/assets/images/logo.png" alt="" aria-hidden="true">
+                        ${SVG_CORAZON}
                     </button>
                 </div>
             </div>
@@ -149,25 +167,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         grid.querySelectorAll('.btn-cesta-mini').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
+            btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const id = btn.closest('.tienda-card').dataset.id;
                 const p  = productos.find(x => x.id === id);
-                if (p) {
-                    await addToCart({
-                        id,
-                        nombre:       p.name,
-                        precio:       p.price,
-                        priceNumeric: p.priceNumeric,
-                        size:         null,
-                        quantity:     1,
-                        imagen:       p.images[0]
-                    });
-                    document.dispatchEvent(new CustomEvent('cart:updated'));
-                    import('../components/carrito.js').then(({ abrirCarrito }) => abrirCarrito());
-                }
-                btn.classList.add('clicked');
-                setTimeout(() => btn.classList.remove('clicked'), 350);
+                if (p) abrirQuickAdd(p);
             });
         });
     }
@@ -265,3 +269,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarProductos();
     renderGrid();
 });
+
