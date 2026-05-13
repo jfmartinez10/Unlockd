@@ -10,6 +10,8 @@ import {
     forgotPassword,
     resetPassword,
     me,
+    updateProfile,
+    changePassword,
 } from '../controllers/authController.js';
 
 const router = Router();
@@ -22,5 +24,7 @@ router.post('/logout',                        logout);
 router.post('/forgot-password',  authLimiter, forgotPassword);
 router.post('/reset-password',   authLimiter, resetPassword);
 router.get('/me',                requireAuth, me);
+router.patch('/me',              requireAuth, updateProfile);
+router.patch('/password',        requireAuth, changePassword);
 
 export default router;
