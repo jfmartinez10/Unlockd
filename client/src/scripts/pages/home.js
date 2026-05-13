@@ -1,5 +1,5 @@
-import { addToCart } from '../utils/cartService.js';
-import { API_URL }   from '../config/api.js';
+import { API_URL }        from '../config/api.js';
+import { abrirQuickAdd } from '../components/quickAdd.js';
 
 const SVG_CESTA_MINI = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="5" y="13" width="23" height="15" rx="3"/>
@@ -57,21 +57,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.setAttribute('aria-label', 'Añadir al carrito');
             btn.innerHTML = SVG_CESTA_MINI;
 
-            btn.addEventListener('click', async (e) => {
+            btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                await addToCart({
-                    id,
-                    nombre:       prod.name,
-                    precio:       prod.price,
-                    priceNumeric: prod.priceNumeric,
-                    size:         null,
-                    quantity:     1,
-                    imagen:       prod.images[0]
-                });
-                document.dispatchEvent(new CustomEvent('cart:updated'));
-                import('../components/carrito.js').then(({ abrirCarrito }) => abrirCarrito());
-                btn.classList.add('clicked');
-                setTimeout(() => btn.classList.remove('clicked'), 350);
+                abrirQuickAdd(prod);
             });
 
             info.appendChild(btn);
