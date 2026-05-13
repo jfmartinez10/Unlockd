@@ -1,0 +1,189 @@
+/* ── Página de detalle de pedido ─────────────────────────── */
+
+.pedido-seccion {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    min-height: calc(100vh - 200px);
+}
+
+.pedido-volver {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+    margin-bottom: 32px;
+    transition: color var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pedido-volver:hover {
+    color: var(--color-primary);
+}
+
+/* Header del pedido */
+.pedido-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: 8px;
+}
+
+.pedido-ref {
+    font-size: 24px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.pedido-badge {
+    font-size: 11px;
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+}
+
+.pedido-badge--pendiente  { color: #e67e22; }
+.pedido-badge--confirmado { color: #2980b9; }
+.pedido-badge--enviado    { color: #8e44ad; }
+.pedido-badge--entregado  { color: #27ae60; }
+.pedido-badge--cancelado  { color: #e74c3c; }
+
+.pedido-fecha {
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+    margin-bottom: 40px;
+}
+
+/* Layout en dos columnas */
+.pedido-bloques {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--spacing-xl);
+    align-items: start;
+}
+
+.pedido-bloque {
+    border: var(--border-width) solid var(--color-border);
+    padding: var(--spacing-xl);
+}
+
+.pedido-bloque-titulo {
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.pedido-bloque--lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+
+.pedido-subbloque {
+    padding: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.pedido-subbloque:last-child {
+    border-bottom: none;
+}
+
+/* Item de producto */
+.pedido-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) 0;
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.pedido-item:first-child {
+    padding-top: 0;
+}
+
+.pedido-item:last-child {
+    border-bottom: none;
+}
+
+.pedido-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pedido-item-nombre {
+    font-weight: var(--font-weight-semibold);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pedido-item-talla {
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.pedido-item-precio {
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+}
+
+/* Dirección */
+.pedido-direccion-texto p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text);
+    margin: 0;
+}
+
+/* Totales */
+.pedido-total-fila {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.pedido-total-fila:last-child {
+    border-bottom: none;
+}
+
+.pedido-total-fila--final {
+    font-weight: var(--font-weight-bold);
+    font-size: 15px;
+    padding-top: 12px;
+}
+
+/* Loading */
+.pedido-loading {
+    height: 120px;
+    background: linear-gradient(90deg,
+        var(--color-border) 25%,
+        var(--color-background-alt) 50%,
+        var(--color-border) 75%);
+    background-size: 800px 100%;
+    animation: sk-shimmer 1.4s infinite linear;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pedido-seccion {
+        padding: 40px 20px;
+    }
+
+    .pedido-bloques {
+        grid-template-columns: 1fr;
+    }
+}
