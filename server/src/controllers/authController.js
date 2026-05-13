@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { query }  from '../config/db.js';
 import { ok, fail } from '../utils/response.js';
@@ -205,6 +206,58 @@ export async function resetPassword(req, res) {
     await query('UPDATE refresh_tokens SET revocado = TRUE WHERE usuario_id = $1', [row.usuario_id]);
 
     return res.json(ok(null, 'Contraseña actualizada correctamente'));
+}
+
+/* PATCH /api/auth/me  — actualizar nombre y apellidos */
+export async function updateProfile(req, res) {
+    const schema = z.object({
+        nombre:    z.string().min(2).max(80),
+        apellidos: z.string().min(2).max(120),
+    });
+
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json(fail(parsed.error.errors[0].message));
+    }
+
+    const { nombre, apellidos } = parsed.data;
+    const { rows } = await query(
+        'UPDATE usuarios SET nombre = $1, apellidos = $2 WHERE id = $3 RETURNING id, nombre, apellidos, email, rol',
+        [nombre.trim(), apellidos.trim(), req.user.id]
+    );
+
+    if (rows.length === 0) return res.status(404).json(fail('Usuario no encontrado'));
+    return res.json(ok(rows[0], 'Perfil actualizado correctamente'));
+}
+
+/* PATCH /api/auth/password  — cambiar contraseña */
+export async function changePassword(req, res) {
+    const schema = z.object({
+        actual: z.string().min(1),
+        nueva:  z.string().min(8).max(128),
+    });
+
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json(fail(parsed.error.errors[0].message));
+    }
+
+    const { actual, nueva } = parsed.data;
+
+    const { rows } = await query(
+        'SELECT password_hash FROM usuarios WHERE id = $1',
+        [req.user.id]
+    );
+    if (rows.length === 0) return res.status(404).json(fail('Usuario no encontrado'));
+
+    const coincide = await bcrypt.compare(actual, rows[0].password_hash);
+    if (!coincide) return res.status(400).json(fail('La contraseña actual es incorrecta'));
+
+    const hash = await bcrypt.hash(nueva, 12);
+    await query('UPDATE usuarios SET password_hash = $1 WHERE id = $2', [hash, req.user.id]);
+    await query('UPDATE refresh_tokens SET revocado = TRUE WHERE usuario_id = $1', [req.user.id]);
+
+    return res.json(ok(null, 'Contraseña actualizada. Vuelve a iniciar sesión.'));
 }
 
 /* GET /api/auth/me  — requiere requireAuth */
