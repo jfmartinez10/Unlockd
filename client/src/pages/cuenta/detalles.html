@@ -50,15 +50,58 @@
 
         <a href="/src/pages/cuenta/cuenta.html" class="detalles-volver">Volver a la cuenta</a>
 
+        <!-- Info actual -->
         <div class="detalles-info">
             <p class="detalles-nombre" id="detallesNombre"></p>
             <p class="detalles-email" id="detallesEmail"></p>
         </div>
 
-        <div id="listaDirecciones" class="detalles-lista-direcciones"></div>
+        <!-- Editar perfil -->
+        <div class="detalles-form-seccion">
+            <p class="detalles-form-titulo">Editar perfil</p>
+            <form id="perfilForm" class="detalles-form">
+                <div class="detalles-fila">
+                    <div class="detalles-campo">
+                        <label class="detalles-label" for="perfilNombre">Nombre</label>
+                        <input type="text" id="perfilNombre" name="nombre" class="modal-campo" required>
+                    </div>
+                    <div class="detalles-campo">
+                        <label class="detalles-label" for="perfilApellidos">Apellidos</label>
+                        <input type="text" id="perfilApellidos" name="apellidos" class="modal-campo" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-block" id="btnGuardarPerfil">Guardar cambios</button>
+            </form>
+        </div>
 
-        <div class="detalles-btn-wrap">
-            <button class="btn" id="btnAnadirDireccion">Añadir nueva dirección</button>
+        <!-- Cambiar contraseña -->
+        <div class="detalles-form-seccion">
+            <p class="detalles-form-titulo">Cambiar contraseña</p>
+            <form id="passwordForm" class="detalles-form">
+                <div class="detalles-campo">
+                    <label class="detalles-label" for="passActual">Contraseña actual</label>
+                    <input type="password" id="passActual" name="actual" class="modal-campo" required>
+                </div>
+                <div class="detalles-campo">
+                    <label class="detalles-label" for="passNueva">Nueva contraseña</label>
+                    <input type="password" id="passNueva" name="nueva" class="modal-campo" required
+                           placeholder="Mín. 8 caracteres, 1 mayúscula, 1 número">
+                </div>
+                <div class="detalles-campo">
+                    <label class="detalles-label" for="passConfirm">Confirmar nueva contraseña</label>
+                    <input type="password" id="passConfirm" name="confirmar" class="modal-campo" required>
+                </div>
+                <button type="submit" class="btn btn-block" id="btnGuardarPassword">Cambiar contraseña</button>
+            </form>
+        </div>
+
+        <!-- Direcciones -->
+        <div class="detalles-form-seccion">
+            <p class="detalles-form-titulo">Direcciones de envío</p>
+            <div id="listaDirecciones" class="detalles-lista-direcciones"></div>
+            <div class="detalles-btn-wrap">
+                <button class="btn" id="btnAnadirDireccion">Añadir nueva dirección</button>
+            </div>
         </div>
     </section>
 
@@ -97,7 +140,7 @@
 
         <div class="footer-center">
             <img src="/public/assets/images/logo.png" alt="Logo Unlockd" class="footer-logo">
-            <p class="footer-copyright">&copy; 2025 - Unlockd</p>
+            <p class="footer-copyright">&copy; 2026 - Unlockd</p>
         </div>
     </footer>
 
