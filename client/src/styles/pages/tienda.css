@@ -265,13 +265,16 @@
     transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
+.btn-favorito svg,
 .btn-favorito img {
-    width: 100%;
-    height: 100%;
+    width: 18px;
+    height: 18px;
     object-fit: contain;
-    filter: invert(1);
+    stroke: var(--color-secondary);
+    fill: none;
     display: block;
-    transition: filter var(--transition-fast);
+    transition: fill var(--transition-fast), stroke var(--transition-fast);
+    pointer-events: none;
 }
 
 .btn-favorito:hover {
@@ -283,8 +286,10 @@
     border: var(--border-width-thick) solid var(--color-primary);
 }
 
+.btn-favorito.activo svg,
 .btn-favorito.activo img {
-    filter: invert(0);
+    stroke: var(--color-primary);
+    fill: var(--color-primary);
 }
 
 /* Info de producto */
@@ -464,4 +469,48 @@
     .tienda-paginacion {
         padding: var(--spacing-lg);
     }
+}
+
+/* ── Skeleton loader ───────────────────────────────────────── */
+@keyframes sk-shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position:  400px 0; }
+}
+
+.sk-anim {
+    background: linear-gradient(90deg,
+        var(--color-border) 25%,
+        var(--color-background-alt) 50%,
+        var(--color-border) 75%);
+    background-size: 800px 100%;
+    animation: sk-shimmer 1.4s infinite linear;
+    border-radius: 4px;
+}
+
+.tienda-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.tienda-skeleton-img {
+    width: 100%;
+    aspect-ratio: 3/4;
+}
+
+.tienda-skeleton-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) 0;
+}
+
+.tienda-skeleton-nombre {
+    height: 14px;
+    width: 70%;
+}
+
+.tienda-skeleton-precio {
+    height: 14px;
+    width: 40%;
 }
