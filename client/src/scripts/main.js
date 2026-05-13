@@ -43,14 +43,18 @@ function initializeHeader() {
 /* Resaltar página activa */
 function highlightActivePage() {
   const currentPath = window.location.pathname;
-  const navLinks = document.querySelectorAll('.nav-left a');
-  
+  const navLinks    = document.querySelectorAll('.nav-left a');
+
   navLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    if (currentPath.includes(href) && href !== '#') {
-      link.style.opacity = '1';
-      link.style.fontWeight = 'bold';
-    }
+    const href = link.getAttribute('href') ?? '';
+    /* Comparación exacta del segmento final de la URL */
+    const linkPage    = href.split('/').pop();
+    const currentPage = currentPath.split('/').pop() || 'index.html';
+    const match = linkPage && (
+      linkPage === currentPage ||
+      (linkPage === 'index.html' && (currentPage === '' || currentPage === 'index.html'))
+    );
+    link.classList.toggle('nav-active', match);
   });
 }
 
