@@ -3,249 +3,504 @@ import { isLoggedIn, authFetch } from '../utils/auth.js';
 import { showNotification }      from '../utils/toast.js';
 import { API_URL }               from '../config/api.js';
 
+/* ── Constantes ──────────────────────────────────────────── */
 const ENVIO_GRATIS_MIN = 50;
 const ENVIO_COSTE      = 4.99;
 const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
 
-let cartItems  = [];
-let subtotal   = 0;
-let envioCoste = 0;
+/* ── Estado global ───────────────────────────────────────── */
+let cartItems    = [];
+let subtotal     = 0;
+let envioSelecto = ENVIO_COSTE;
+let descuento    = 0;
 
+/* ══════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
+
     cartItems = await getCart();
-    subtotal   = cartItems.reduce((s, i) => s + (i.priceNumeric ?? 0) * i.quantity, 0);
-    envioCoste = subtotal >= ENVIO_GRATIS_MIN ? 0 : ENVIO_COSTE;
 
-    _renderResumen();
-    _initPasoEnvio();
-    _prefillUser();
-});
-
-/* ──────────────────────────────────────────────────────────
-   Resumen lateral
-────────────────────────────────────────────────────────── */
-function _renderResumen() {
-    const itemsEl    = document.getElementById('checkoutItems');
-    const subtotalEl = document.getElementById('checkoutSubtotal');
-    const envioEl    = document.getElementById('checkoutEnvio');
-    const totalEl    = document.getElementById('checkoutTotal');
-
-    if (!itemsEl) return;
-
+    /* Guardia: sin carrito → tienda */
     if (cartItems.length === 0) {
-        itemsEl.innerHTML = `<p class="co-carrito-vacio">Tu carrito está vacío</p>`;
-        [subtotalEl, envioEl, totalEl].forEach(el => { if (el) el.textContent = '—'; });
+        window.location.href = '/src/pages/tienda/tienda.html';
         return;
     }
 
-    itemsEl.innerHTML = cartItems.map(item => {
-        const img    = item.imagen ?? '/public/assets/images/logo.png';
-        const precio = fmt.format((item.priceNumeric ?? 0) * item.quantity);
-        const talla  = item.size ? `<span class="co-item-talla">Talla: ${item.size}</span>` : '';
-        return `
-        <div class="co-item">
-            <div class="co-item-imagen">
-                <img src="${img}" alt="${item.nombre}" loading="lazy">
-                <span class="co-item-badge">${item.quantity}</span>
-            </div>
-            <div class="co-item-info">
-                <span class="co-item-nombre">${item.nombre}</span>
-                ${talla}
-            </div>
-            <span class="co-item-precio">${precio}</span>
-        </div>`;
-    }).join('');
+    subtotal = cartItems.reduce((s, i) => s + (i.priceNumeric ?? 0) * i.quantity, 0);
 
-    const total = subtotal + envioCoste;
-    if (subtotalEl) subtotalEl.textContent = fmt.format(subtotal);
-    if (envioEl)    envioEl.textContent    = envioCoste === 0 ? 'Gratis' : fmt.format(envioCoste);
-    if (totalEl)    totalEl.textContent    = fmt.format(total);
+    _renderResumenDerecho();
+    _prefillUsuario();
+    _initEnvio();
+    _initDescuento();
+    _initInputFilters();
+    _initAutocomplete();
+    _initNota();
+    _initFinalizar();
+    _initToggleMovil();
+    _sincronizarMovil();
+});
 
-    /* Mostrar nota si existe */
-    const notaTexto = sessionStorage.getItem('unlockd_cart_note');
-    const notaCont  = document.getElementById('checkoutNota');
-    const notaTxtEl = document.getElementById('checkoutNotaTexto');
-    if (notaTexto && notaTexto.trim() && notaCont && notaTxtEl) {
-        notaTxtEl.textContent = notaTexto.trim();
-        notaCont.classList.remove('co-paso-oculto');
-    } else if (notaCont) {
-        notaCont.classList.add('co-paso-oculto');
+/* ══════════════════════════════════════════════════════════
+   RESUMEN DERECHO
+═══════════════════════════════════════════════════════════ */
+function _renderResumenDerecho() {
+    const itemsEl = document.getElementById('coItems');
+    if (itemsEl) {
+        itemsEl.innerHTML = cartItems.map(item => {
+            const img    = item.imagen ?? '/public/assets/images/logo.png';
+            const precio = fmt.format((item.priceNumeric ?? 0) * item.quantity);
+            const talla  = item.size ?? '';
+            return `
+            <div class="co-item">
+                <div class="co-item-img-wrap">
+                    <img class="co-item-img" src="${img}" alt="${item.nombre}" loading="lazy">
+                    <span class="co-item-badge">${item.quantity}</span>
+                </div>
+                <div class="co-item-datos">
+                    <span class="co-item-nombre">${item.nombre}</span>
+                    ${talla ? `<span class="co-item-talla">${talla}</span>` : ''}
+                </div>
+                <span class="co-item-precio">${precio}</span>
+            </div>`;
+        }).join('');
     }
+
+    _actualizarTotales();
 }
 
-/* ──────────────────────────────────────────────────────────
-   Paso 1 — Datos de envío
-────────────────────────────────────────────────────────── */
-function _prefillUser() {
-    /* Si el usuario está logado, pre-rellena email del sessionStorage */
-    if (!isLoggedIn()) return;
-    try {
-        const user = JSON.parse(sessionStorage.getItem('unlockd_user') || '{}');
-        const emailInput = document.getElementById('coEmail');
-        if (emailInput && user.email) emailInput.value = user.email;
-        if (document.getElementById('coNombre') && user.nombre)
-            document.getElementById('coNombre').value = user.nombre;
-        if (document.getElementById('coApellidos') && user.apellidos)
-            document.getElementById('coApellidos').value = user.apellidos;
-    } catch { /* no crítico */ }
-}
+function _actualizarTotales() {
+    const envio = subtotal - descuento >= ENVIO_GRATIS_MIN ? 0 : envioSelecto;
+    const total = subtotal - descuento + envio;
 
-function _initPasoEnvio() {
-    const form = document.getElementById('checkoutForm');
-    if (!form) return;
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
-    form.querySelectorAll('.co-input').forEach(input =>
-        input.addEventListener('input', () => input.classList.remove('co-input-error'))
-    );
+    set('coSubtotal', fmt.format(subtotal));
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (!_validarEnvio(form)) return;
-        _mostrarPasoPago();
-    });
-}
-
-function _validarEnvio(form) {
-    let valido = true;
-    form.querySelectorAll('[required]').forEach(campo => {
-        campo.classList.remove('co-input-error');
-        if (!campo.value.trim()) {
-            campo.classList.add('co-input-error');
-            valido = false;
-        }
-    });
-    const emailInput = form.querySelector('[type="email"]');
-    if (emailInput?.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-        emailInput.classList.add('co-input-error');
-        valido = false;
+    const envioEl = document.getElementById('coEnvio');
+    if (envioEl) {
+        envioEl.className = '';
+        envioEl.textContent = envio === 0 ? 'Gratis' : fmt.format(envio);
     }
-    if (!valido) {
-        showNotification('Completa todos los campos requeridos', 'error');
-        form.querySelector('.co-input-error')?.focus();
+
+    const totalEl = document.getElementById('coTotal');
+    if (totalEl) {
+        totalEl.innerHTML = `<span style="font-size:12px;font-weight:400;margin-right:6px;color:#888">EUR</span>${fmt.format(total)}`;
     }
-    return valido;
+
+    const filaDesc = document.getElementById('filaDescuento');
+    const descVal  = document.getElementById('coDescuentoValor');
+    if (filaDesc) filaDesc.style.display = descuento > 0 ? 'flex' : 'none';
+    if (descVal)  descVal.textContent = `−${fmt.format(descuento)}`;
+
+    /* Actualizar total en toggle móvil */
+    const toggleTotal = document.getElementById('toggleTotal');
+    if (toggleTotal) toggleTotal.textContent = fmt.format(total);
 }
 
-/* ──────────────────────────────────────────────────────────
-   Paso 2 — Pago (simulado)
-────────────────────────────────────────────────────────── */
-function _mostrarPasoPago() {
-    const paso1 = document.getElementById('pasoDatosEnvio');
-    const paso2 = document.getElementById('pasoPago');
-    const pasosNav = document.querySelector('.co-pasos');
+/* ══════════════════════════════════════════════════════════
+   MÉTODOS DE ENVÍO
+═══════════════════════════════════════════════════════════ */
+function _initEnvio() {
+    const contenedor = document.getElementById('metodosEnvio');
+    if (!contenedor) return;
 
-    if (paso1) paso1.classList.add('co-paso-oculto');
-    if (paso2) paso2.classList.remove('co-paso-oculto');
+    const gratis = subtotal - descuento >= ENVIO_GRATIS_MIN;
+    envioSelecto  = gratis ? 0 : ENVIO_COSTE;
 
-    /* Actualizar barra de progreso */
-    if (pasosNav) {
-        pasosNav.querySelectorAll('.co-paso').forEach((el, i) => {
-            el.classList.toggle('co-paso--hecho',   i < 2);
-            el.classList.toggle('co-paso--activo',  i === 2);
+    if (gratis) {
+        contenedor.innerHTML = `
+            <label class="co-metodo">
+                <input type="radio" name="metodoEnvio" value="gratis" checked>
+                <div class="co-metodo-info">
+                    <span class="co-metodo-nombre">Envío gratuito</span>
+                    <span class="co-metodo-desc">Pedidos superiores a ${fmt.format(ENVIO_GRATIS_MIN)} · 3-5 días hábiles</span>
+                </div>
+                <span class="co-metodo-precio">Gratis</span>
+            </label>`;
+    } else {
+        contenedor.innerHTML = `
+            <label class="co-metodo">
+                <input type="radio" name="metodoEnvio" value="estandar" checked>
+                <div class="co-metodo-info">
+                    <span class="co-metodo-nombre">Envío estándar</span>
+                    <span class="co-metodo-desc">3-5 días hábiles</span>
+                </div>
+                <span class="co-metodo-precio">${fmt.format(ENVIO_COSTE)}</span>
+            </label>`;
+    }
+
+    contenedor.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            envioSelecto = radio.value === 'gratis' ? 0 : ENVIO_COSTE;
+            _actualizarTotales();
         });
-    }
+    });
+}
 
-    document.getElementById('pagoBtn')?.addEventListener('click', _confirmarPedido);
-    document.getElementById('pagoVolver')?.addEventListener('click', () => {
-        paso2.classList.add('co-paso-oculto');
-        paso1.classList.remove('co-paso-oculto');
-        if (pasosNav) {
-            pasosNav.querySelectorAll('.co-paso').forEach((el, i) => {
-                el.classList.toggle('co-paso--hecho',  i < 1);
-                el.classList.toggle('co-paso--activo', i === 1);
-            });
+/* ══════════════════════════════════════════════════════════
+   DESCUENTO
+═══════════════════════════════════════════════════════════ */
+function _initDescuento() {
+    const btn = document.getElementById('btnAplicarDescuento');
+    const inp = document.getElementById('coDescuento');
+    const msg = document.getElementById('descuentoMsg');
+    if (!btn || !inp) return;
+
+    const CODIGOS = {
+        'UNLOCKD10':  0.10,
+        'PROMO20':    0.20,
+        'BIENVENIDA': 0.15,
+    };
+
+    btn.addEventListener('click', () => {
+        const codigo = inp.value.trim().toUpperCase();
+        if (!codigo) return;
+
+        const pct = CODIGOS[codigo];
+        if (pct) {
+            descuento = +(subtotal * pct).toFixed(2);
+            if (msg) { msg.textContent = `Código aplicado: −${Math.round(pct * 100)}%`; msg.className = 'co-descuento-msg ok'; }
+            inp.disabled = true;
+            btn.disabled = true;
+            /* Recalcular envío ahora que ha cambiado el total con descuento */
+            _initEnvio();
+        } else {
+            descuento = 0;
+            if (msg) { msg.textContent = 'Código no válido'; msg.className = 'co-descuento-msg error'; }
         }
+        _actualizarTotales();
     });
 
-    /* Máscara + preview tarjeta */
-    const cardInput    = document.getElementById('pagoTarjeta');
-    const nombreInput  = document.getElementById('pagoNombre');
-    const expInput     = document.getElementById('pagoExp');
-    const previewNum   = document.getElementById('cardPreviewNum');
-    const previewNom   = document.getElementById('cardPreviewNombre');
-    const previewExp   = document.getElementById('cardPreviewExp');
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') btn.click(); });
+}
 
+/* ══════════════════════════════════════════════════════════
+   FILTROS DE INPUT
+═══════════════════════════════════════════════════════════ */
+function _initInputFilters() {
+    /* Solo números */
+    ['coTelefono', 'coCP', 'pagoTarjeta', 'pagoCVV'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => {
+            el.value = el.value.replace(/\D/g, '');
+        });
+        el.addEventListener('keydown', (e) => {
+            const allow = ['Backspace','Delete','Tab','Escape','Enter','ArrowLeft','ArrowRight','Home','End'];
+            if (allow.includes(e.key)) return;
+            if (!/^\d$/.test(e.key)) e.preventDefault();
+        });
+    });
+
+    /* Formato tarjeta: grupos de 4 */
+    const cardInput = document.getElementById('pagoTarjeta');
     if (cardInput) {
-        cardInput.addEventListener('input', (e) => {
-            const v = e.target.value.replace(/\D/g, '').slice(0, 16);
-            e.target.value = v.replace(/(.{4})/g, '$1 ').trim();
-            if (previewNum) {
-                const padded = v.padEnd(16, '•');
-                previewNum.textContent = padded.replace(/(.{4})/g, '$1 ').trim();
-            }
+        cardInput.addEventListener('input', () => {
+            const digits = cardInput.value.replace(/\D/g, '').slice(0, 16);
+            cardInput.value = digits.replace(/(.{4})(?=.)/g, '$1 ');
         });
     }
-    if (nombreInput && previewNom) {
-        nombreInput.addEventListener('input', (e) => {
-            previewNom.textContent = e.target.value.toUpperCase() || 'TITULAR';
+
+    /* Solo letras en nombre de tarjeta (no dígitos) */
+    const cardName = document.getElementById('pagoNombre');
+    if (cardName) {
+        cardName.addEventListener('input', () => {
+            cardName.value = cardName.value.replace(/[0-9]/g, '');
+        });
+        cardName.addEventListener('keydown', (e) => {
+            if (/^\d$/.test(e.key)) e.preventDefault();
         });
     }
+
+    /* Fecha de vencimiento: máscara automática MM/AA */
+    const expInput = document.getElementById('pagoExp');
     if (expInput) {
         expInput.addEventListener('input', (e) => {
             let v = e.target.value.replace(/\D/g, '').slice(0, 4);
             if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
             e.target.value = v;
-            if (previewExp) previewExp.textContent = v || 'MM/AA';
+        });
+        expInput.addEventListener('keydown', (e) => {
+            /* Permitir borrar la barra automáticamente al pulsar Backspace */
+            if (e.key === 'Backspace' && expInput.value.endsWith('/')) {
+                e.preventDefault();
+                expInput.value = expInput.value.slice(0, -1);
+            }
         });
     }
 }
 
-function _validarPago() {
+/* ══════════════════════════════════════════════════════════
+   AUTOCOMPLETE DE DIRECCIÓN — Nominatim (OpenStreetMap)
+═══════════════════════════════════════════════════════════ */
+function _initAutocomplete() {
+    const input  = document.getElementById('coDireccion');
+    const lista  = document.getElementById('autocompleteLista');
+    if (!input || !lista) return;
+
+    let debounceTimer = null;
+    let ultimaQuery   = '';
+
+    input.addEventListener('input', () => {
+        const q = input.value.trim();
+        clearTimeout(debounceTimer);
+
+        if (q.length < 4) {
+            _cerrarLista(lista);
+            return;
+        }
+
+        if (q === ultimaQuery) return;
+        ultimaQuery = q;
+
+        debounceTimer = setTimeout(() => _buscarDirecciones(q, lista, input), 400);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') _cerrarLista(lista);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !lista.contains(e.target)) {
+            _cerrarLista(lista);
+        }
+    });
+}
+
+async function _buscarDirecciones(query, lista, input) {
+    try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=es,ar,mx,co,pe,cl&q=${encodeURIComponent(query)}`;
+        const res  = await fetch(url, {
+            headers: { 'Accept-Language': 'es', 'User-Agent': 'UnlockdApp/1.0' }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+
+        if (!data.length) {
+            _cerrarLista(lista);
+            return;
+        }
+
+        lista.innerHTML = data.map((item, idx) => `
+            <div class="co-autocomplete-item" data-idx="${idx}">${item.display_name}</div>
+        `).join('');
+
+        lista.querySelectorAll('.co-autocomplete-item').forEach((el, idx) => {
+            el.addEventListener('click', () => {
+                _seleccionarDireccion(data[idx], input, lista);
+            });
+        });
+
+        lista.classList.add('visible');
+
+    } catch {
+        /* Error de red silencioso — el usuario puede escribir manualmente */
+    }
+}
+
+function _seleccionarDireccion(item, input, lista) {
+    const addr = item.address ?? {};
+
+    /* Calle */
+    const road   = addr.road ?? addr.pedestrian ?? addr.footway ?? '';
+    const number = addr.house_number ?? '';
+    input.value  = road + (number ? ` ${number}` : '');
+
+    /* Ciudad */
+    const ciudadEl = document.getElementById('coCiudad');
+    if (ciudadEl) {
+        ciudadEl.value = addr.city ?? addr.town ?? addr.village ?? addr.county ?? '';
+    }
+
+    /* Código postal */
+    const cpEl = document.getElementById('coCP');
+    if (cpEl && addr.postcode) {
+        cpEl.value = addr.postcode.replace(/\D/g, '').slice(0, 10);
+    }
+
+    /* País */
+    const paisEl = document.getElementById('coPais');
+    if (paisEl && addr.country) {
+        const opt = Array.from(paisEl.options).find(o =>
+            o.value.toLowerCase() === (addr.country ?? '').toLowerCase()
+        );
+        if (opt) paisEl.value = opt.value;
+    }
+
+    _cerrarLista(lista);
+}
+
+function _cerrarLista(lista) {
+    lista.classList.remove('visible');
+    lista.innerHTML = '';
+}
+
+/* ══════════════════════════════════════════════════════════
+   PRE-RELLENAR DATOS DE SESIÓN
+═══════════════════════════════════════════════════════════ */
+function _prefillUsuario() {
+    if (!isLoggedIn()) return;
+    try {
+        const u = JSON.parse(sessionStorage.getItem('unlockd_user') || '{}');
+
+        const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+        set('coEmail',     u.email);
+        set('coNombre',    u.nombre);
+        set('coApellidos', u.apellidos);
+
+        /* Ocultar "Iniciar sesión" si ya está autenticado */
+        const linkLogin = document.getElementById('coLinkLogin');
+        if (linkLogin) linkLogin.style.display = 'none';
+    } catch { /* no crítico */ }
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOGGLE RESUMEN MÓVIL
+═══════════════════════════════════════════════════════════ */
+function _initToggleMovil() {
+    const btn     = document.getElementById('btnToggleResumen');
+    const resumen = document.getElementById('movilResumen');
+    const texto   = document.getElementById('toggleTexto');
+    if (!btn || !resumen) return;
+
+    btn.addEventListener('click', () => {
+        const abierto = resumen.classList.toggle('abierto');
+        if (texto) texto.textContent = abierto ? 'Ocultar resumen del pedido' : 'Mostrar resumen del pedido';
+    });
+}
+
+/* Inyecta una copia del resumen en el panel móvil */
+function _sincronizarMovil() {
+    const movilResumen = document.getElementById('movilResumen');
+    if (!movilResumen) return;
+
+    /* Clonar el contenido del panel derecho */
+    const rightInner = document.querySelector('.co-right-inner');
+    if (rightInner) {
+        movilResumen.innerHTML = rightInner.innerHTML;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
+   NOTA DEL PEDIDO
+═══════════════════════════════════════════════════════════ */
+function _initNota() {
+    const textarea = document.getElementById('coNota');
+    if (!textarea) return;
+
+    /* Pre-cargar la nota escrita en el carrito */
+    const notaGuardada = sessionStorage.getItem('unlockd_cart_note') ?? '';
+    if (notaGuardada) {
+        textarea.value = notaGuardada;
+        /* Mostrarla también en el panel derecho */
+        const resumen  = document.getElementById('notaResumen');
+        const notaText = document.getElementById('notaTexto');
+        if (resumen && notaText) {
+            notaText.textContent = notaGuardada;
+            resumen.style.display = 'block';
+        }
+    }
+
+    textarea.addEventListener('input', () => {
+        const nota     = textarea.value.trim();
+        const resumen  = document.getElementById('notaResumen');
+        const notaText = document.getElementById('notaTexto');
+        if (!resumen || !notaText) return;
+
+        if (nota) {
+            notaText.textContent = nota;
+            resumen.style.display = 'block';
+        } else {
+            resumen.style.display = 'none';
+        }
+    });
+}
+
+/* ══════════════════════════════════════════════════════════
+   VALIDACIÓN Y ENVÍO
+═══════════════════════════════════════════════════════════ */
+function _initFinalizar() {
+    const btn = document.getElementById('btnFinalizarPedido');
+    if (btn) btn.addEventListener('click', _confirmarPedido);
+}
+
+function _validar() {
+    const campos = ['coEmail', 'coNombre', 'coApellidos', 'coPais', 'coDireccion', 'coCiudad', 'coCP'];
+    let ok = true;
+
+    campos.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('error');
+        if (!el.value.trim()) { el.classList.add('error'); ok = false; }
+    });
+
+    const email = document.getElementById('coEmail');
+    if (email?.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        email.classList.add('error'); ok = false;
+    }
+
+    /* Tarjeta */
     const tarjeta = document.getElementById('pagoTarjeta')?.value.replace(/\s/g, '') ?? '';
     const exp     = document.getElementById('pagoExp')?.value ?? '';
     const cvv     = document.getElementById('pagoCVV')?.value ?? '';
     const nombre  = document.getElementById('pagoNombre')?.value.trim() ?? '';
 
-    let valido = true;
-    const mark = (id, ok) => {
-        document.getElementById(id)?.classList.toggle('co-input-error', !ok);
-        if (!ok) valido = false;
+    const markCard = (id, valido) => {
+        document.getElementById(id)?.classList.toggle('error', !valido);
+        if (!valido) ok = false;
     };
-    mark('pagoNombre',  nombre.length >= 3);
-    mark('pagoTarjeta', /^\d{16}$/.test(tarjeta));
-    mark('pagoExp',     /^\d{2}\/\d{2}$/.test(exp));
-    mark('pagoCVV',     /^\d{3,4}$/.test(cvv));
 
-    if (!valido) showNotification('Revisa los datos de la tarjeta', 'error');
-    return valido;
+    markCard('pagoNombre',  nombre.length >= 3);
+    markCard('pagoTarjeta', /^\d{16}$/.test(tarjeta));
+    markCard('pagoExp',     /^\d{2}\/\d{2}$/.test(exp));   /* formato MM/AA */
+    markCard('pagoCVV',     /^\d{3}$/.test(cvv));
+
+    if (!ok) {
+        showNotification('Completa todos los campos requeridos', 'error');
+        /* Hacer scroll al primer campo con error */
+        const primerError = document.querySelector('.co-input.error');
+        if (primerError) primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    return ok;
 }
 
 async function _confirmarPedido() {
-    if (cartItems.length === 0) {
-        showNotification('Tu carrito está vacío', 'error');
-        return;
-    }
-    if (!_validarPago()) return;
+    if (!_validar()) return;
 
-    const btn = document.getElementById('pagoBtn');
+    const btn = document.getElementById('btnFinalizarPedido');
     if (btn) { btn.disabled = true; btn.textContent = 'Procesando...'; }
 
-    const form = document.getElementById('checkoutForm');
     const body = {
-        nombre:    form.coNombre.value.trim(),
-        apellidos: form.coApellidos.value.trim(),
-        email:     form.coEmail.value.trim(),
+        nombre:    document.getElementById('coNombre')?.value.trim()    ?? '',
+        apellidos: document.getElementById('coApellidos')?.value.trim() ?? '',
+        email:     document.getElementById('coEmail')?.value.trim()     ?? '',
         direccion: {
-            calle:    form.coDireccion.value.trim(),
-            ciudad:   form.coCiudad.value.trim(),
-            cp:       form.coCP.value.trim(),
-            pais:     form.coPais.value,
-            telefono: form.coTelefono?.value.trim() ?? '',
+            calle:    document.getElementById('coDireccion')?.value.trim()  ?? '',
+            ciudad:   document.getElementById('coCiudad')?.value.trim()     ?? '',
+            cp:       document.getElementById('coCP')?.value.trim()         ?? '',
+            pais:     document.getElementById('coPais')?.value              ?? '',
+            telefono: document.getElementById('coTelefono')?.value.trim()   ?? '',
         },
         items: cartItems.map(i => ({
             productoId: i.producto_id ?? i.id,
             talla:      i.size ?? 'unica',
             cantidad:   i.quantity,
         })),
-        nota: sessionStorage.getItem('unlockd_cart_note') || undefined
+        nota: document.getElementById('coNota')?.value.trim() || undefined,
     };
 
     try {
-        const fetchFn = isLoggedIn() ? authFetch : (url, opts) => fetch(url, { ...opts, credentials: 'include' });
+        const fetchFn = isLoggedIn()
+            ? authFetch
+            : (url, opts) => fetch(url, { ...opts, credentials: 'include' });
+
         const res  = await fetchFn(`${API_URL}/orders`, {
             method:  'POST',
-            body:    JSON.stringify(body),
             headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(body),
         });
         const json = await res.json();
 
@@ -254,19 +509,15 @@ async function _confirmarPedido() {
             return;
         }
 
-        /* Vaciar carrito local */
         await clearCart();
         document.dispatchEvent(new CustomEvent('cart:updated'));
-
-        /* Guardar resumen en sessionStorage para la confirmación */
         sessionStorage.setItem('unlockd_pedido', JSON.stringify(json.data.pedido));
-
         window.location.href = `/src/pages/checkout/confirmacion.html?id=${json.data.pedido.id}`;
 
     } catch (err) {
         console.error('[checkout]', err.message);
         showNotification('Error de conexión. ¿El servidor está activo?', 'error');
     } finally {
-        if (btn) { btn.disabled = false; btn.textContent = 'Confirmar pedido'; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Finalizar pedido'; }
     }
 }
