@@ -43,8 +43,14 @@
   transition: width var(--transition-slow);
 }
 
-.nav-left a:hover::after {
+.nav-left a:hover::after,
+.nav-left a.nav-active::after {
   width: 100%;
+}
+
+.nav-left a.nav-active {
+  opacity: 1;
+  font-weight: var(--font-weight-semibold);
 }
 
 .nav-left a:hover {
