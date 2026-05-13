@@ -1,0 +1,229 @@
+/* ══════════════════════════════════════════════════════════
+   QUICK-ADD POPUP
+   ══════════════════════════════════════════════════════════ */
+
+.qa-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.qa-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ── Modal ──────────────────────────────────────────────── */
+.qa-modal {
+    background: var(--color-secondary);
+    width: 100%;
+    max-width: 720px;
+    max-height: 90vh;
+    display: flex;
+    position: relative;
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transform: translateY(20px) scale(0.98);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity  0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.qa-overlay.visible .qa-modal {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* ── Botón cerrar ───────────────────────────────────────── */
+.qa-cerrar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: var(--color-primary);
+    line-height: 1;
+    z-index: 2;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qa-cerrar:hover { opacity: 0.45; }
+
+/* ── Imagen izquierda ───────────────────────────────────── */
+.qa-imagen {
+    width: 48%;
+    flex-shrink: 0;
+    background: #f5f5f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    min-height: 380px;
+}
+
+.qa-imagen img {
+    width: 100%;
+    height: 100%;
+    max-height: 440px;
+    object-fit: contain;   /* imagen completa, sin recorte */
+    object-position: center;
+    display: block;
+    image-rendering: auto;
+}
+
+/* ── Info derecha ───────────────────────────────────────── */
+.qa-info {
+    flex: 1;
+    padding: 36px 32px 28px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.qa-nombre {
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+    margin: 0 0 6px;
+    padding-right: 30px;
+    letter-spacing: 0.2px;
+}
+
+.qa-precio {
+    font-size: 14px;
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.qa-sep {
+    height: 1px;
+    background: var(--color-border);
+    margin: 18px 0;
+    flex-shrink: 0;
+}
+
+/* ── Tallas ─────────────────────────────────────────────── */
+.qa-talla-label {
+    font-size: 11px;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin: 0 0 14px;
+}
+
+.qa-tallas {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    transition: outline 0.15s;
+}
+
+/* Aviso sin talla seleccionada */
+.qa-tallas--error .talla-btn {
+    border-color: #e74c3c;
+    color: #e74c3c;
+    animation: qa-shake 0.35s ease;
+}
+
+@keyframes qa-shake {
+    0%, 100% { transform: skewX(var(--skew-angle)) translateX(0); }
+    25%       { transform: skewX(var(--skew-angle)) translateX(-4px); }
+    75%       { transform: skewX(var(--skew-angle)) translateX(4px); }
+}
+
+/* ── Cantidad ───────────────────────────────────────────── */
+.qa-cantidad {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.qa-cantidad-num {
+    min-width: 44px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* ── Botón añadir ───────────────────────────────────────── */
+.qa-btn-add {
+    width: 100%;
+    height: 48px;
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    font-family: var(--font-family);
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    margin-top: 18px;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.qa-btn-add:hover:not(:disabled) {
+    background: var(--color-primary);
+    color: var(--color-secondary);
+}
+
+.qa-btn-add:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ── Ver detalles ───────────────────────────────────────── */
+.qa-link-detalles {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--color-primary);
+    text-decoration: underline;
+    transition: color 0.15s;
+    flex-shrink: 0;
+}
+
+.qa-link-detalles:hover { color: #666; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .qa-overlay { padding: 0; align-items: flex-end; }
+
+    .qa-modal {
+        flex-direction: column;
+        max-width: 100%;
+        max-height: 92vh;
+        border-bottom: none;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .qa-imagen {
+        width: 100%;
+        min-height: 220px;
+        padding: 16px;
+    }
+
+    .qa-imagen img { max-height: 220px; }
+
+    .qa-info { padding: 20px 20px 24px; }
+
+    .qa-tallas { gap: 14px; }
+}
