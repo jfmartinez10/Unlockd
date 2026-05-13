@@ -10,16 +10,111 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     /* Cargar datos del usuario */
+    let usuarioActual = null;
     try {
         const res  = await authFetch(`${API_URL}/auth/me`);
         const json = await res.json();
         if (json.success) {
+            usuarioActual = json.data;
             document.getElementById('detallesNombre').textContent =
                 `${json.data.nombre} ${json.data.apellidos}`;
             document.getElementById('detallesEmail').textContent = json.data.email;
+            /* Pre-rellenar formulario de perfil */
+            const inp = document.getElementById('perfilNombre');
+            const inpA = document.getElementById('perfilApellidos');
+            if (inp)  inp.value  = json.data.nombre    ?? '';
+            if (inpA) inpA.value = json.data.apellidos ?? '';
         }
     } catch {
         /* Si falla no bloqueamos la página */
+    }
+
+    /* Formulario editar perfil */
+    const perfilForm = document.getElementById('perfilForm');
+    if (perfilForm) {
+        perfilForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnGuardarPerfil');
+            const orig = btn.textContent;
+            btn.disabled = true; btn.textContent = 'Guardando...';
+
+            try {
+                const res  = await authFetch(`${API_URL}/auth/me`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        nombre:    document.getElementById('perfilNombre').value.trim(),
+                        apellidos: document.getElementById('perfilApellidos').value.trim(),
+                    }),
+                });
+                const json = await res.json();
+                if (json.success) {
+                    showNotification('Perfil actualizado correctamente', 'success');
+                    document.getElementById('detallesNombre').textContent =
+                        `${json.data.nombre} ${json.data.apellidos}`;
+                    /* Actualizar sessionStorage */
+                    try {
+                        const u = JSON.parse(sessionStorage.getItem('unlockd_user') || '{}');
+                        u.nombre    = json.data.nombre;
+                        u.apellidos = json.data.apellidos;
+                        sessionStorage.setItem('unlockd_user', JSON.stringify(u));
+                    } catch {}
+                } else {
+                    showNotification(json.message || 'Error al guardar', 'error');
+                }
+            } catch {
+                showNotification('Error de conexión', 'error');
+            } finally {
+                btn.disabled = false; btn.textContent = orig;
+            }
+        });
+    }
+
+    /* Formulario cambiar contraseña */
+    const passwordForm = document.getElementById('passwordForm');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nueva    = document.getElementById('passNueva').value;
+            const confirmar = document.getElementById('passConfirm').value;
+            if (nueva !== confirmar) {
+                showNotification('Las contraseñas no coinciden', 'error');
+                return;
+            }
+            if (nueva.length < 8 || !/[A-Z]/.test(nueva) || !/[0-9]/.test(nueva)) {
+                showNotification('La contraseña necesita mínimo 8 caracteres, 1 mayúscula y 1 número', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btnGuardarPassword');
+            const orig = btn.textContent;
+            btn.disabled = true; btn.textContent = 'Guardando...';
+
+            try {
+                const res  = await authFetch(`${API_URL}/auth/password`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        actual: document.getElementById('passActual').value,
+                        nueva,
+                    }),
+                });
+                const json = await res.json();
+                if (json.success) {
+                    showNotification(json.message, 'success');
+                    passwordForm.reset();
+                    /* Redirigir al login porque los refresh tokens se revocaron */
+                    setTimeout(() => {
+                        sessionStorage.clear();
+                        window.location.href = '/src/pages/auth/login.html';
+                    }, 2000);
+                } else {
+                    showNotification(json.message || 'Error al cambiar contraseña', 'error');
+                }
+            } catch {
+                showNotification('Error de conexión', 'error');
+            } finally {
+                btn.disabled = false; btn.textContent = orig;
+            }
+        });
     }
 
     /* Cargar direcciones guardadas */
