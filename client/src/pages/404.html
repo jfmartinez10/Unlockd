@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlockd — Página no encontrada</title>
+    <link rel="icon" href="/public/assets/images/logo.png">
+    <link rel="stylesheet" href="../styles/variables.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/components/header.css">
+    <link rel="stylesheet" href="../styles/components/footer.css">
+    <link rel="stylesheet" href="../styles/components/buttons.css">
+    <style>
+        .notfound-seccion {
+            min-height: calc(100vh - var(--header-height) - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .notfound-codigo {
+            font-size: clamp(80px, 15vw, 160px);
+            font-weight: var(--font-weight-bold);
+            line-height: 1;
+            letter-spacing: -4px;
+            margin-bottom: 16px;
+            color: var(--color-primary);
+        }
+
+        .notfound-titulo {
+            font-size: clamp(18px, 3vw, 28px);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .notfound-texto {
+            color: var(--color-text-muted);
+            font-size: var(--font-size-base);
+            max-width: 400px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .notfound-acciones {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .notfound-link {
+            text-decoration: none;
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-text-muted);
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 2px;
+            transition: color var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        .notfound-link:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="nav-left">
+            <a href="/src/pages/index.html">Inicio</a>
+            <a href="/src/pages/tienda/tienda.html">Tienda</a>
+            <a href="/src/pages/contacto/contacto.html">Contacto</a>
+        </nav>
+
+        <div class="logo-center">
+            <a href="/src/pages/index.html">
+                <img src="/public/assets/images/logo.png" alt="Unlockd">
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-lupa.svg" alt="Buscar">
+            </span>
+            <span class="icon">
+                <a href="/src/pages/cuenta/cuenta.html">
+                    <img src="/public/assets/images/icons/logo-perfil.svg" alt="Perfil">
+                </a>
+            </span>
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-cesta.svg" alt="Carrito">
+            </span>
+        </div>
+    </header>
+
+    <section class="notfound-seccion">
+        <div class="notfound-codigo">404</div>
+        <h1 class="notfound-titulo">Página no encontrada</h1>
+        <p class="notfound-texto">La página que buscas no existe o ha sido movida. Pero siempre puedes encontrar algo nuevo en la tienda.</p>
+        <div class="notfound-acciones">
+            <a href="/src/pages/index.html" class="btn">Volver al inicio</a>
+            <a href="/src/pages/tienda/tienda.html" class="notfound-link">Ver la tienda →</a>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-left">
+            <a href="/src/pages/legal/politica-privacidad.html" class="footer-link">Política de Privacidad</a>
+            <a href="/src/pages/legal/politica-reembolso.html" class="footer-link">Política de Reembolso</a>
+            <a href="/src/pages/legal/terminos-servicio.html" class="footer-link">Términos de Servicio</a>
+        </div>
+        <div class="footer-center">
+            <img src="/public/assets/images/logo.png" alt="Logo Unlockd" class="footer-logo">
+            <p class="footer-copyright">&copy; 2026 - Unlockd</p>
+        </div>
+    </footer>
+
+    <script type="module" src="../scripts/main.js"></script>
+
+</body>
+</html>
