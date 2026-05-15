@@ -5,6 +5,7 @@ import {
     crearPedido,
     listarMisPedidos,
     obtenerMiPedido,
+    cancelarPedido,
 } from '../controllers/ordersController.js';
 
 const router = Router();
@@ -25,7 +26,8 @@ function optionalAuth(req, _res, next) {
 router.post('/', optionalAuth, crearPedido);
 
 /* GET /api/orders/mine — requiere sesión */
-router.get('/mine',     requireAuth, listarMisPedidos);
-router.get('/mine/:id', requireAuth, obtenerMiPedido);
+router.get('/mine',              requireAuth, listarMisPedidos);
+router.get('/mine/:id',          requireAuth, obtenerMiPedido);
+router.patch('/mine/:id/cancel', requireAuth, cancelarPedido);
 
 export default router;
