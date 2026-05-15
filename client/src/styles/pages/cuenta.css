@@ -358,6 +358,14 @@
     color: #666;
 }
 
+.detalles-dir-btn.btn-editar {
+    color: #0070f3;
+}
+
+.detalles-dir-btn.btn-editar:hover {
+    color: #0055cc;
+}
+
 .detalles-dir-btn.btn-eliminar {
     color: #999;
 }
