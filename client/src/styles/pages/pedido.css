@@ -22,6 +22,32 @@
     color: var(--color-primary);
 }
 
+/* Botón cancelar */
+.pedido-btn-cancelar {
+    margin-bottom: 24px;
+    padding: 10px 20px;
+    background: none;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    font-family: var(--font-family);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.pedido-btn-cancelar:hover:not(:disabled) {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.pedido-btn-cancelar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Header del pedido */
 .pedido-header {
     display: flex;
