@@ -301,6 +301,59 @@
 
 .co-link-volver:hover { color: #666; }
 
+/* Direcciones guardadas */
+.co-direcciones-guardadas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.co-dir-guardada {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-family: var(--font-family);
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.co-dir-guardada:hover { border-color: var(--color-primary); background: #fafafa; }
+
+.co-dir-guardada.seleccionada {
+    border-color: var(--color-primary);
+    background: #f7f7f7;
+}
+
+.co-dir-guardada-nombre {
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+}
+
+.co-dir-guardada-linea {
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.co-dir-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--color-primary);
+    color: var(--color-secondary);
+    padding: 1px 6px;
+    border-radius: 2px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.3px;
+}
+
 /* Textarea nota del pedido */
 .co-nota-textarea {
     height: auto;
