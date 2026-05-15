@@ -205,25 +205,49 @@
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 600px) {
-    .qa-overlay { padding: 0; align-items: flex-end; }
+    .qa-overlay {
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+    }
 
     .qa-modal {
         flex-direction: column;
-        max-width: 100%;
-        max-height: 92vh;
-        border-bottom: none;
-        border-radius: 16px 16px 0 0;
+        width: calc(100% - 32px);
+        max-width: 420px;
+        max-height: 88vh;
+        border-radius: 16px;
+        border: 1px solid var(--color-border);
     }
 
     .qa-imagen {
         width: 100%;
-        min-height: 220px;
+        min-height: 200px;
+        max-height: 220px;
         padding: 16px;
+        border-radius: 16px 16px 0 0;
     }
 
-    .qa-imagen img { max-height: 220px; }
+    .qa-imagen img { max-height: 200px; }
 
-    .qa-info { padding: 20px 20px 24px; }
+    .qa-info {
+        padding: 20px 24px 24px;
+        align-items: center;
+        text-align: center;
+    }
 
-    .qa-tallas { gap: 14px; }
+    .qa-nombre { padding-right: 0; }
+
+    .qa-talla-label { text-align: center; }
+
+    .qa-tallas {
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .qa-sep { width: 100%; }
+
+    .qa-cantidad {
+        justify-content: center;
+    }
 }
