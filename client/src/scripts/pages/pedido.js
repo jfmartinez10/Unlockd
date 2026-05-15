@@ -1,4 +1,5 @@
 import { isLoggedIn, authFetch } from '../utils/auth.js';
+import { showNotification }      from '../utils/toast.js';
 import { API_URL }               from '../config/api.js';
 
 const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
@@ -36,12 +37,56 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         _renderPedido(json.data);
+        _renderCancelar(json.data, id);
 
     } catch (err) {
         console.error('[pedido]', err.message);
         window.location.href = '/src/pages/cuenta/cuenta.html';
     }
 });
+
+function _renderCancelar(p, id) {
+    const wrap = document.getElementById('pedidoCancelWrap');
+    if (!wrap) return;
+    if (!['pendiente', 'confirmado'].includes(p.estado)) return;
+
+    wrap.innerHTML = `
+        <button class="pedido-btn-cancelar" id="btnCancelarPedido">
+            Cancelar pedido
+        </button>`;
+
+    wrap.querySelector('#btnCancelarPedido').addEventListener('click', async () => {
+        if (!confirm('¿Seguro que quieres cancelar este pedido? Esta acción no se puede deshacer.')) return;
+
+        const btn = wrap.querySelector('#btnCancelarPedido');
+        btn.disabled = true;
+        btn.textContent = 'Cancelando...';
+
+        try {
+            const res  = await authFetch(`${API_URL}/orders/mine/${id}/cancel`, { method: 'PATCH' });
+            const json = await res.json();
+
+            if (json.success) {
+                showNotification('Pedido cancelado correctamente', 'success');
+                /* Actualizar badge y ocultar botón */
+                const estadoEl = document.getElementById('pedidoEstado');
+                if (estadoEl) {
+                    estadoEl.textContent = 'Cancelado';
+                    estadoEl.className   = 'pedido-badge pedido-badge--cancelado';
+                }
+                wrap.innerHTML = '';
+            } else {
+                showNotification(json.message || 'No se pudo cancelar el pedido', 'error');
+                btn.disabled    = false;
+                btn.textContent = 'Cancelar pedido';
+            }
+        } catch {
+            showNotification('Error de conexión', 'error');
+            btn.disabled    = false;
+            btn.textContent = 'Cancelar pedido';
+        }
+    });
+}
 
 function _renderPedido(p) {
     /* Ref + estado */
