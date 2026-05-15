@@ -120,15 +120,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     /* Cargar direcciones guardadas */
     await cargarDirecciones();
 
-    /* Modal */
+    /* Modal — soporta modo "nueva" y modo "editar" */
     const overlay     = document.getElementById('modalOverlay');
     const btnAbrir    = document.getElementById('btnAnadirDireccion');
     const btnCerrar   = document.getElementById('modalCerrar');
     const btnCancelar = document.getElementById('modalCancelar');
     const form        = document.getElementById('direccionForm');
+    const btnSubmit   = form.querySelector('[type="submit"]');
 
-    function abrirModal() {
+    let modoEdicion   = false;
+    let idEdicion     = null;
+
+    function abrirModal(datos = null) {
         form.reset();
+        modoEdicion = !!datos;
+        idEdicion   = datos?.id ?? null;
+
+        if (datos) {
+            document.getElementById('dirNombre').value      = datos.nombre      ?? '';
+            document.getElementById('dirApellidos').value   = datos.apellidos   ?? '';
+            document.getElementById('dirPais').value        = datos.pais        ?? '';
+            document.getElementById('dirCiudad').value      = datos.ciudad      ?? '';
+            document.getElementById('dirProvincia').value   = datos.provincia   ?? '';
+            document.getElementById('dirDireccion').value   = datos.direccion   ?? '';
+            document.getElementById('dirCodPostal').value   = datos.cod_postal  ?? '';
+            document.getElementById('dirDireccion2').value  = datos.direccion2  ?? '';
+            document.getElementById('dirPredeterminada').checked = datos.predeterminada ?? false;
+            btnSubmit.textContent = 'Guardar cambios';
+        } else {
+            btnSubmit.textContent = 'Añadir dirección';
+        }
+
         overlay.classList.add('activo');
         document.body.style.overflow = 'hidden';
     }
@@ -136,9 +158,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function cerrarModal() {
         overlay.classList.remove('activo');
         document.body.style.overflow = '';
+        modoEdicion = false;
+        idEdicion   = null;
     }
 
-    btnAbrir.addEventListener('click', abrirModal);
+    btnAbrir.addEventListener('click', () => abrirModal());
     btnCerrar.addEventListener('click', cerrarModal);
     btnCancelar.addEventListener('click', cerrarModal);
 
@@ -146,35 +170,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.target === overlay) cerrarModal();
     });
 
+    /* Exponer abrirModal para los botones "Editar" generados dinámicamente */
+    window._abrirModalDireccion = abrirModal;
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const btn = form.querySelector('[type="submit"]');
-        const textoOriginal = btn.textContent;
-        btn.textContent = 'Guardando...';
-        btn.disabled = true;
+        const textoOriginal = btnSubmit.textContent;
+        btnSubmit.textContent = 'Guardando...';
+        btnSubmit.disabled = true;
+
+        const payload = {
+            nombre:         document.getElementById('dirNombre').value.trim(),
+            apellidos:      document.getElementById('dirApellidos').value.trim(),
+            pais:           document.getElementById('dirPais').value.trim(),
+            ciudad:         document.getElementById('dirCiudad').value.trim(),
+            provincia:      document.getElementById('dirProvincia').value.trim(),
+            direccion:      document.getElementById('dirDireccion').value.trim(),
+            cod_postal:     document.getElementById('dirCodPostal').value.trim(),
+            direccion2:     document.getElementById('dirDireccion2').value.trim(),
+            predeterminada: document.getElementById('dirPredeterminada').checked,
+        };
+
+        const url    = modoEdicion ? `${API_URL}/addresses/${idEdicion}` : `${API_URL}/addresses`;
+        const method = modoEdicion ? 'PATCH' : 'POST';
 
         try {
-            const res = await authFetch(`${API_URL}/addresses`, {
-                method:  'POST',
+            const res  = await authFetch(url, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nombre:         document.getElementById('dirNombre').value.trim(),
-                    apellidos:      document.getElementById('dirApellidos').value.trim(),
-                    pais:           document.getElementById('dirPais').value.trim(),
-                    ciudad:         document.getElementById('dirCiudad').value.trim(),
-                    provincia:      document.getElementById('dirProvincia').value.trim(),
-                    direccion:      document.getElementById('dirDireccion').value.trim(),
-                    cod_postal:     document.getElementById('dirCodPostal').value.trim(),
-                    direccion2:     document.getElementById('dirDireccion2').value.trim(),
-                    predeterminada: document.getElementById('dirPredeterminada').checked,
-                }),
+                body: JSON.stringify(payload),
             });
-
             const json = await res.json();
 
             if (json.success) {
-                showNotification('Dirección guardada correctamente', 'success');
+                showNotification(modoEdicion ? 'Dirección actualizada' : 'Dirección guardada correctamente', 'success');
                 cerrarModal();
                 await cargarDirecciones();
             } else {
@@ -183,8 +213,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch {
             showNotification('Error de conexión', 'error');
         } finally {
-            btn.textContent = textoOriginal;
-            btn.disabled = false;
+            btnSubmit.textContent = textoOriginal;
+            btnSubmit.disabled = false;
         }
     });
 });
@@ -218,6 +248,7 @@ async function cargarDirecciones() {
                     ${!d.predeterminada
                         ? `<button class="detalles-dir-btn btn-pred" data-id="${d.id}">Predeterminada</button>`
                         : ''}
+                    <button class="detalles-dir-btn btn-editar" data-id="${d.id}">Editar</button>
                     <button class="detalles-dir-btn btn-eliminar" data-id="${d.id}">Eliminar</button>
                 </div>
             </div>
@@ -229,6 +260,13 @@ async function cargarDirecciones() {
 
         contenedor.querySelectorAll('.btn-pred').forEach(btn => {
             btn.addEventListener('click', () => marcarPredeterminada(btn.dataset.id));
+        });
+
+        contenedor.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const datos = json.data.find(d => String(d.id) === String(btn.dataset.id));
+                if (datos && window._abrirModalDireccion) window._abrirModalDireccion(datos);
+            });
         });
 
     } catch {
