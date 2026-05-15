@@ -485,7 +485,6 @@
 /* Responsive */
 @media (max-width: 768px) {
     .carrito-panel {
-        width: 100vw;
-        border-left: none;
+        width: calc(100vw - 60px);
     }
 }
