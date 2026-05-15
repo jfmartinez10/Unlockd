@@ -79,8 +79,8 @@ El proyecto abarca el flujo completo de una aplicación de E-commerce:
 
 Una vista rápida de los principales endpoints del servidor:
 
-| Endpoint | Método | Descripción | Autenticado |
-|---|---|---|---|
+| Endpoint | Método | Descripción
+|---|---|---|
 | `/api/auth/register` | `POST` | Registra un nuevo usuario y envía email 
 | `/api/auth/login` | `POST` | Autentica al usuario y genera cookie JWT 
 | `/api/products` | `GET` | Devuelve el catálogo de productos 
