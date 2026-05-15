@@ -13,6 +13,7 @@ import favRoutes        from './routes/favorites.js';
 import newsletterRoutes from './routes/newsletter.js';
 import addressRoutes    from './routes/addresses.js';
 import adminRoutes      from './routes/admin.js';
+import couponRoutes     from './routes/coupons.js';
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/favorites',  favRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/addresses',  addressRoutes);
 app.use('/api/admin',      adminRoutes);
+app.use('/api/coupons',   couponRoutes);
 
 app.use((_req, res) => {
     res.status(404).json({ success: false, message: 'Ruta no encontrada' });
