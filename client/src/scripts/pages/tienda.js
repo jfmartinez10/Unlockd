@@ -12,27 +12,31 @@ const SVG_CORAZON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
 </svg>`;
 
-/* Estado */
+/* ── Estado aplicado (lo que hay en pantalla) ─────────────── */
 let productos      = [];
-let estadoFiltro   = 'todos';
+let estadoColores       = [];   // [] = todos
+let estadoTallas        = [];   // [] = todas
+let estadoDisponibilidad = [];  // [] = todas
 let estadoOrden    = 'defecto';
 let estadoBusqueda = '';
 let estadoVista    = 'grid';
 let paginaActual   = 1;
 const ITEMS_POR_PAGINA = 9;
 
+/* ── Estado pendiente (lo que está seleccionado en el panel pero no aplicado) */
+let pendColores       = [];
+let pendTallas        = [];
+let pendDisponibilidad = [];
+let pendOrden         = 'defecto';
+
 document.addEventListener('DOMContentLoaded', async () => {
 
-    const grid           = document.getElementById('tiendaGrid');
-    const dotsContainer  = document.getElementById('paginaDots');
-    const paginacion     = document.getElementById('tiendaPaginacion');
-    const contador       = document.getElementById('tiendaContador');
-    const btnSort        = document.getElementById('btnSort');
-    const dropdownSort   = document.getElementById('dropdownSort');
-    const btnFilter      = document.getElementById('btnFilter');
-    const dropdownFilter = document.getElementById('dropdownFilter');
+    const grid          = document.getElementById('tiendaGrid');
+    const dotsContainer = document.getElementById('paginaDots');
+    const paginacion    = document.getElementById('tiendaPaginacion');
+    const contador      = document.getElementById('tiendaContador');
 
-    /* Skeleton mientras carga */
+    /* ── Skeleton mientras carga ── */
     function mostrarSkeleton() {
         grid.innerHTML = Array.from({ length: 6 }, () => `
             <div class="tienda-skeleton">
@@ -44,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>`).join('');
     }
 
-    /* Cargar productos desde la API */
+    /* ── Cargar productos desde la API ── */
     async function cargarProductos() {
         mostrarSkeleton();
         try {
@@ -61,17 +65,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     function getProductosFiltradosOrdenados() {
         let result = [...productos];
 
-        if (estadoFiltro !== 'todos') {
-            result = result.filter(p => p.color === estadoFiltro);
+        /* Colores (multi-select) */
+        if (estadoColores.length > 0) {
+            result = result.filter(p => estadoColores.includes(p.color));
         }
 
+        /* Tallas (multi-select) */
+        if (estadoTallas.length > 0) {
+            result = result.filter(p =>
+                Array.isArray(p.tallas) && estadoTallas.some(t => p.tallas.includes(t))
+            );
+        }
+
+        /* Disponibilidad */
+        if (estadoDisponibilidad.length > 0) {
+            const querExistencia = estadoDisponibilidad.includes('existencia');
+            const querAgotado    = estadoDisponibilidad.includes('agotado');
+            if (querExistencia && !querAgotado) {
+                result = result.filter(p => (p.stock ?? 1) > 0);
+            } else if (querAgotado && !querExistencia) {
+                result = result.filter(p => (p.stock ?? 1) <= 0);
+            }
+            /* Si ambos marcados, no filtra */
+        }
+
+        /* Búsqueda textual */
         const q = estadoBusqueda.trim().toLowerCase();
         if (q) {
             result = result.filter(p => p.name.toLowerCase().includes(q));
         }
 
-        if (estadoOrden === 'mayor-menor') result.sort((a, b) => b.priceNumeric - a.priceNumeric);
-        if (estadoOrden === 'menor-mayor') result.sort((a, b) => a.priceNumeric - b.priceNumeric);
+        /* Orden */
+        switch (estadoOrden) {
+            case 'menor-mayor': result.sort((a, b) => a.priceNumeric - b.priceNumeric); break;
+            case 'mayor-menor': result.sort((a, b) => b.priceNumeric - a.priceNumeric); break;
+            case 'az':          result.sort((a, b) => a.name.localeCompare(b.name, 'es')); break;
+            case 'za':          result.sort((a, b) => b.name.localeCompare(a.name, 'es')); break;
+            case 'reciente':
+                result.sort((a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0));
+                break;
+        }
 
         return result;
     }
@@ -145,6 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         renderPaginacion(totalPaginas);
+        actualizarBadge();
     }
 
     function attachCardEvents() {
@@ -189,7 +223,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    /* Buscador global */
+    /* ── Badge del botón Filtros ── */
+    function actualizarBadge() {
+        const badge = document.getElementById('filtrosBadge');
+        if (!badge) return;
+        const hayFiltros =
+            estadoColores.length > 0 ||
+            estadoTallas.length > 0 ||
+            estadoDisponibilidad.length > 0 ||
+            estadoOrden !== 'defecto';
+        badge.style.display = hayFiltros ? 'block' : 'none';
+    }
+
+    /* ── Buscador global ── */
     document.addEventListener('buscador:query', (e) => {
         estadoBusqueda = e.detail?.query ?? '';
         paginaActual = 1;
@@ -200,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const urlQ = new URLSearchParams(window.location.search).get('q');
     if (urlQ) estadoBusqueda = urlQ;
 
-    /* Toggle vista */
+    /* ── Toggle de vista ── */
     const btnVistaGrid  = document.getElementById('btnVistaGrid');
     const btnVistaLista = document.getElementById('btnVistaLista');
 
@@ -216,57 +262,99 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    /* Dropdown Ordenar */
-    btnSort.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const abierto = dropdownSort.classList.toggle('activo');
-        btnSort.setAttribute('aria-expanded', String(abierto));
-        dropdownFilter.classList.remove('activo');
-        btnFilter.setAttribute('aria-expanded', 'false');
-    });
+    /* ════════════════════════════════════════════════════════
+       PANEL DE FILTROS
+    ════════════════════════════════════════════════════════ */
+    const btnAbrir   = document.getElementById('btnAbrirFiltros');
+    const overlay    = document.getElementById('filtrosOverlay');
+    const panel      = document.getElementById('filtrosPanel');
+    const btnCerrar  = document.getElementById('filtrosCerrar');
+    const btnBorrar  = document.getElementById('filtrosBorrar');
+    const btnAplicar = document.getElementById('filtrosAplicar');
 
-    dropdownSort.querySelectorAll('.tienda-dropdown-item').forEach(item => {
-        item.addEventListener('click', () => {
-            estadoOrden = item.dataset.orden;
-            dropdownSort.querySelectorAll('.tienda-dropdown-item').forEach(i => i.classList.remove('activo'));
-            item.classList.add('activo');
-            dropdownSort.classList.remove('activo');
-            btnSort.setAttribute('aria-expanded', 'false');
-            paginaActual = 1;
-            renderGrid();
+    function abrirPanel() {
+        /* Sincronizar controles con estado pendiente */
+        sincronizarPanel();
+        panel.classList.add('activo');
+        overlay.classList.add('activo');
+        panel.setAttribute('aria-hidden', 'false');
+        overlay.setAttribute('aria-hidden', 'false');
+        btnAbrir.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarPanel() {
+        panel.classList.remove('activo');
+        overlay.classList.remove('activo');
+        panel.setAttribute('aria-hidden', 'true');
+        overlay.setAttribute('aria-hidden', 'true');
+        btnAbrir.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    }
+
+    /* Carga en el panel el estado aplicado actual */
+    function sincronizarPanel() {
+        /* Disponibilidad */
+        panel.querySelectorAll('.filtros-disp-check').forEach(cb => {
+            cb.checked = estadoDisponibilidad.includes(cb.value);
         });
-    });
-
-    /* Dropdown Filtrar */
-    btnFilter.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const abierto = dropdownFilter.classList.toggle('activo');
-        btnFilter.setAttribute('aria-expanded', String(abierto));
-        dropdownSort.classList.remove('activo');
-        btnSort.setAttribute('aria-expanded', 'false');
-    });
-
-    dropdownFilter.querySelectorAll('.tienda-dropdown-item').forEach(item => {
-        item.addEventListener('click', () => {
-            estadoFiltro = item.dataset.color;
-            dropdownFilter.querySelectorAll('.tienda-dropdown-item').forEach(i => i.classList.remove('activo'));
-            item.classList.add('activo');
-            dropdownFilter.classList.remove('activo');
-            btnFilter.setAttribute('aria-expanded', 'false');
-            paginaActual = 1;
-            renderGrid();
+        /* Colores */
+        panel.querySelectorAll('.filtros-color-check').forEach(cb => {
+            cb.checked = estadoColores.includes(cb.value);
         });
+        /* Orden */
+        const radioActivo = panel.querySelector(`input[name="filtrosOrden"][value="${estadoOrden}"]`);
+        if (radioActivo) radioActivo.checked = true;
+        /* Tallas */
+        panel.querySelectorAll('.filtros-talla-check').forEach(cb => {
+            cb.checked = estadoTallas.includes(cb.value);
+        });
+    }
+
+    /* Lee el estado actual del panel (sin aplicar) */
+    function leerPanel() {
+        pendDisponibilidad = [...panel.querySelectorAll('.filtros-disp-check:checked')].map(cb => cb.value);
+        pendColores = [...panel.querySelectorAll('.filtros-color-check:checked')].map(cb => cb.value);
+        pendTallas  = [...panel.querySelectorAll('.filtros-talla-check:checked')].map(cb => cb.value);
+        const radioSel = panel.querySelector('input[name="filtrosOrden"]:checked');
+        pendOrden = radioSel ? radioSel.value : 'defecto';
+    }
+
+    function aplicarFiltros() {
+        leerPanel();
+        estadoDisponibilidad = pendDisponibilidad;
+        estadoColores  = pendColores;
+        estadoTallas   = pendTallas;
+        estadoOrden    = pendOrden;
+        paginaActual   = 1;
+        cerrarPanel();
+        renderGrid();
+    }
+
+    function borrarTodo() {
+        /* Limpiar controles del panel */
+        panel.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        const radioDefecto = panel.querySelector('input[name="filtrosOrden"][value="defecto"]');
+        if (radioDefecto) radioDefecto.checked = true;
+        /* Limpiar estado pendiente */
+        pendColores = [];
+        pendTallas  = [];
+        pendDisponibilidad = [];
+        pendOrden = 'defecto';
+    }
+
+    btnAbrir?.addEventListener('click', abrirPanel);
+    btnCerrar?.addEventListener('click', cerrarPanel);
+    overlay?.addEventListener('click', cerrarPanel);
+    btnAplicar?.addEventListener('click', aplicarFiltros);
+    btnBorrar?.addEventListener('click', borrarTodo);
+
+    /* ESC cierra el panel */
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && panel.classList.contains('activo')) cerrarPanel();
     });
 
-    document.addEventListener('click', () => {
-        dropdownSort.classList.remove('activo');
-        dropdownFilter.classList.remove('activo');
-        btnSort.setAttribute('aria-expanded', 'false');
-        btnFilter.setAttribute('aria-expanded', 'false');
-    });
-
-    /* Arranque */
+    /* ── Arranque ── */
     await cargarProductos();
     renderGrid();
 });
-
