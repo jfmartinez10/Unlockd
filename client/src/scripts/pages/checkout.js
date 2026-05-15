@@ -9,10 +9,11 @@ const ENVIO_COSTE      = 4.99;
 const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
 
 /* ── Estado global ───────────────────────────────────────── */
-let cartItems    = [];
-let subtotal     = 0;
-let envioSelecto = ENVIO_COSTE;
-let descuento    = 0;
+let cartItems      = [];
+let subtotal       = 0;
+let envioSelecto   = ENVIO_COSTE;
+let descuento      = 0;
+let codigoCuponOk  = '';   /* código validado para enviarlo al crear el pedido */
 
 /* ══════════════════════════════════════════════════════════
    INIT
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     _renderResumenDerecho();
     _prefillUsuario();
+    _cargarDireccionesGuardadas();
     _initEnvio();
     _initDescuento();
     _initInputFilters();
@@ -147,28 +149,49 @@ function _initDescuento() {
     const msg = document.getElementById('descuentoMsg');
     if (!btn || !inp) return;
 
-    const CODIGOS = {
-        'UNLOCKD10':  0.10,
-        'PROMO20':    0.20,
-        'BIENVENIDA': 0.15,
-    };
-
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
         const codigo = inp.value.trim().toUpperCase();
         if (!codigo) return;
 
-        const pct = CODIGOS[codigo];
-        if (pct) {
-            descuento = +(subtotal * pct).toFixed(2);
-            if (msg) { msg.textContent = `Código aplicado: −${Math.round(pct * 100)}%`; msg.className = 'co-descuento-msg ok'; }
-            inp.disabled = true;
-            btn.disabled = true;
-            /* Recalcular envío ahora que ha cambiado el total con descuento */
-            _initEnvio();
-        } else {
-            descuento = 0;
-            if (msg) { msg.textContent = 'Código no válido'; msg.className = 'co-descuento-msg error'; }
+        btn.disabled = true;
+        btn.textContent = '...';
+
+        try {
+            const res  = await fetch(`${API_URL}/coupons/validate`, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ codigo }),
+            });
+            const json = await res.json();
+
+            if (json.success) {
+                const pct = json.data.porcentaje / 100;   /* 10 → 0.10 */
+                descuento     = +(subtotal * pct).toFixed(2);
+                codigoCuponOk = json.data.codigo;
+                if (msg) {
+                    msg.textContent  = `Código aplicado: −${json.data.porcentaje}%`;
+                    msg.className    = 'co-descuento-msg ok';
+                }
+                inp.disabled = true;
+                btn.disabled = true;
+                btn.textContent = 'Aplicado';
+                _initEnvio();
+            } else {
+                descuento     = 0;
+                codigoCuponOk = '';
+                if (msg) {
+                    msg.textContent = json.message || 'Código no válido';
+                    msg.className   = 'co-descuento-msg error';
+                }
+                btn.disabled    = false;
+                btn.textContent = 'Aplicar';
+            }
+        } catch {
+            if (msg) { msg.textContent = 'Error de conexión'; msg.className = 'co-descuento-msg error'; }
+            btn.disabled    = false;
+            btn.textContent = 'Aplicar';
         }
+
         _actualizarTotales();
     });
 
@@ -337,6 +360,65 @@ function _cerrarLista(lista) {
 }
 
 /* ══════════════════════════════════════════════════════════
+   DIRECCIONES GUARDADAS
+═══════════════════════════════════════════════════════════ */
+async function _cargarDireccionesGuardadas() {
+    if (!isLoggedIn()) return;
+
+    const bloque = document.getElementById('bloqueGuardadas');
+    const lista  = document.getElementById('listaDireccionesGuardadas');
+    if (!bloque || !lista) return;
+
+    try {
+        const res  = await authFetch(`${API_URL}/addresses`);
+        const json = await res.json();
+        if (!json.success || !json.data.length) return;
+
+        bloque.style.display = 'block';
+        lista.innerHTML = json.data.map(d => `
+            <button class="co-dir-guardada" data-id="${d.id}" type="button">
+                <span class="co-dir-guardada-nombre">${d.nombre} ${d.apellidos}${d.predeterminada ? ' <span class="co-dir-badge">Predeterminada</span>' : ''}</span>
+                <span class="co-dir-guardada-linea">${d.direccion}${d.direccion2 ? `, ${d.direccion2}` : ''}</span>
+                <span class="co-dir-guardada-linea">${d.cod_postal} ${d.ciudad} · ${d.pais}</span>
+            </button>`).join('');
+
+        lista.querySelectorAll('.co-dir-guardada').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const d = json.data.find(x => String(x.id) === btn.dataset.id);
+                if (!d) return;
+                _rellenarDesdeDireccion(d);
+                /* Marcar seleccionada */
+                lista.querySelectorAll('.co-dir-guardada').forEach(b => b.classList.remove('seleccionada'));
+                btn.classList.add('seleccionada');
+            });
+        });
+
+        /* Auto-seleccionar la predeterminada */
+        const pred = json.data.find(d => d.predeterminada);
+        if (pred) {
+            _rellenarDesdeDireccion(pred);
+            lista.querySelector(`[data-id="${pred.id}"]`)?.classList.add('seleccionada');
+        }
+    } catch { /* no crítico */ }
+}
+
+function _rellenarDesdeDireccion(d) {
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ''; };
+    set('coNombre',    d.nombre);
+    set('coApellidos', d.apellidos);
+    set('coDireccion', d.direccion);
+    set('coDireccion2', d.direccion2 ?? '');
+    set('coCiudad',    d.ciudad);
+    set('coCP',        d.cod_postal);
+
+    const paisEl = document.getElementById('coPais');
+    if (paisEl) {
+        const opt = Array.from(paisEl.options).find(o => o.value === d.pais);
+        if (opt) paisEl.value = d.pais;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
    PRE-RELLENAR DATOS DE SESIÓN
 ═══════════════════════════════════════════════════════════ */
 function _prefillUsuario() {
@@ -489,7 +571,8 @@ async function _confirmarPedido() {
             talla:      i.size ?? 'unica',
             cantidad:   i.quantity,
         })),
-        nota: document.getElementById('coNota')?.value.trim() || undefined,
+        nota:         document.getElementById('coNota')?.value.trim() || undefined,
+        codigoCupon:  codigoCuponOk || undefined,
     };
 
     try {
