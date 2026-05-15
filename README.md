@@ -40,11 +40,8 @@ El diseño de Unlockd se basa en la simplicidad y el contraste, utilizando una e
 ![Página de Checkout](./client/docs/checkout.png)
 
 ### 8. Panel de Administrador
-![Panel de Administrador](./client/docs/panel-admin.png)
-
-### 9. Panel de Administrador, sección editar producto
-![Panel de Administrador sección editar producto 1](./client/docs/panel-admin-editar1.png)
-![Panel de Administrador sección editar producto 2](./client/docs/panel-admin-editar2.png)
+![Panel de Administrador](./client/docs/panel-admin.PNG)
+![Panel de Administrador sección editar producto 2](./client/docs/panel-admin-editar2.PNG)
 
 ---
 
