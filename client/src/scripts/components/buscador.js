@@ -73,11 +73,21 @@ document.addEventListener('buscador:resultados', (e) => {
 });
 
 function _initEventos() {
-    /* Lupa del header */
+    /* Lupa desktop (nav-right) */
     const lupaSpan = document.querySelector('.nav-right .icon:first-child');
     if (lupaSpan) {
         lupaSpan.style.cursor = 'pointer';
         lupaSpan.addEventListener('click', (e) => {
+            e.stopPropagation();
+            _abierto ? cerrarBuscador() : abrirBuscador();
+        });
+    }
+
+    /* Lupa mobile (nav-mobile-left) */
+    const lupaMobile = document.getElementById('btnBuscadorMobile');
+    if (lupaMobile) {
+        lupaMobile.style.cursor = 'pointer';
+        lupaMobile.addEventListener('click', (e) => {
             e.stopPropagation();
             _abierto ? cerrarBuscador() : abrirBuscador();
         });
