@@ -17,29 +17,42 @@
 
     <header class="main-header">
         <nav class="nav-left">
-            <a class="co-back" href="/src/pages/tienda/tienda.html" aria-label="Seguir comprando">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
-                    <line x1="19" y1="12" x2="5" y2="12"/>
-                    <polyline points="12,19 5,12 12,5"/>
-                </svg>
-            </a>
+            <a href="/src/pages/index.html">Inicio</a>
+            <a href="/src/pages/tienda/tienda.html">Tienda</a>
+            <a href="/src/pages/contacto/contacto.html">Contacto</a>
         </nav>
+
+        <div class="nav-mobile-left">
+            <button class="nav-hamburguesa" id="btnHamburguesa" aria-label="Menú" aria-expanded="false">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <span class="icon" id="btnBuscadorMobile">
+                <img src="/public/assets/images/icons/logo-lupa.svg" alt="Buscar">
+            </span>
+        </div>
 
         <div class="logo-center">
             <a href="/src/pages/index.html">
-                <img src="/public/assets/images/logo.png" alt="Unlockd">
+                <img src="/public/assets/images/logo.png" alt="Logo Principal">
             </a>
         </div>
 
         <div class="nav-right">
-            <nav class="co-pasos" aria-label="Pasos del checkout">
-                <span class="co-paso co-paso--hecho">Carrito</span>
-                <span class="co-paso-sep">/</span>
-                <span class="co-paso co-paso--hecho">Envío</span>
-                <span class="co-paso-sep">/</span>
-                <span class="co-paso co-paso--hecho">Pago</span>
-            </nav>
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-lupa.svg" alt="Buscar">
+            </span>
+            <span class="icon">
+                <a href="/src/pages/auth/login.html">
+                    <img src="/public/assets/images/icons/logo-perfil.svg" alt="Perfil">
+                </a>
+            </span>
+            <span class="icon">
+                <img src="/public/assets/images/icons/logo-cesta.svg" alt="Carrito">
+            </span>
         </div>
     </header>
 
