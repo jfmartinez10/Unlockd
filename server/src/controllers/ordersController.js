@@ -23,12 +23,13 @@ const itemSchema = z.object({
 });
 
 const crearPedidoSchema = z.object({
-    nombre:    z.string().min(1),
-    apellidos: z.string().min(1),
-    email:     z.string().email(),
-    direccion: direccionSchema,
-    items:     z.array(itemSchema).min(1).max(50),
-    nota:      z.string().max(500).nullish(),
+    nombre:      z.string().min(1),
+    apellidos:   z.string().min(1),
+    email:       z.string().email(),
+    direccion:   direccionSchema,
+    items:       z.array(itemSchema).min(1).max(50),
+    nota:        z.string().max(500).nullish(),
+    codigoCupon: z.string().max(80).nullish(),
 });
 
 /* ── POST /api/orders ────────────────────────────────────── */
@@ -38,7 +39,7 @@ export async function crearPedido(req, res) {
         return res.status(400).json(fail(parsed.error.errors[0].message));
     }
 
-    const { nombre, apellidos, email, direccion, items, nota } = parsed.data;
+    const { nombre, apellidos, email, direccion, items, nota, codigoCupon } = parsed.data;
 
     /* Verificar productos y obtener precios reales desde BD (nunca confiar en el cliente) */
     const productoIds = [...new Set(items.map(i => i.productoId))];
@@ -57,11 +58,30 @@ export async function crearPedido(req, res) {
         productos.map(p => [p.id, { nombre: p.nombre, precio: Number(p.precio_numerico) }])
     );
 
-    /* Calcular totales con precios de BD */
+    /* Calcular subtotal con precios de BD */
     const subtotal = items.reduce((sum, item) =>
         sum + precioMap[item.productoId].precio * item.cantidad, 0);
-    const envio  = subtotal >= ENVIO_GRATIS_MIN ? 0 : ENVIO_COSTE;
-    const total  = Number((subtotal + envio).toFixed(2));
+
+    /* Validar cupón en BD si viene en el body */
+    let descuento = 0;
+    let cuponRow  = null;
+    if (codigoCupon) {
+        const { rows: [cup] } = await pool.query(
+            `SELECT id, usado, codigo_expira_en
+             FROM suscriptores
+             WHERE UPPER(codigo_descuento) = UPPER($1) AND activo = TRUE`,
+            [codigoCupon]
+        );
+        if (cup && !cup.usado && (!cup.codigo_expira_en || new Date(cup.codigo_expira_en) > new Date())) {
+            descuento = Number((subtotal * 0.10).toFixed(2));
+            cuponRow  = cup;
+        }
+        /* Código inválido o expirado: ignoramos el descuento silenciosamente */
+    }
+
+    const subtotalConDescuento = subtotal - descuento;
+    const envio  = subtotalConDescuento >= ENVIO_GRATIS_MIN ? 0 : ENVIO_COSTE;
+    const total  = Number((subtotalConDescuento + envio).toFixed(2));
 
     /* Transacción: insertar pedido + líneas + limpiar carrito */
     const client = await pool.connect();
@@ -88,6 +108,14 @@ export async function crearPedido(req, res) {
                  precioMap[item.productoId].precio]
             )
         ));
+
+        /* Marcar cupón como usado */
+        if (cuponRow) {
+            await client.query(
+                'UPDATE suscriptores SET usado = TRUE WHERE id = $1',
+                [cuponRow.id]
+            );
+        }
 
         /* Vaciar carrito BD si hay usuario autenticado */
         if (req.user?.id) {
@@ -150,6 +178,27 @@ export async function obtenerMiPedido(req, res) {
     return res.json(ok(rows[0]));
 }
 
+/* ── PATCH /api/orders/mine/:id/cancel ──────────────────── */
+export async function cancelarPedido(req, res) {
+    const { rows } = await pool.query(
+        'SELECT id, estado FROM pedidos WHERE id = $1 AND usuario_id = $2',
+        [req.params.id, req.user.id]
+    );
+
+    if (!rows[0]) return res.status(404).json(fail('Pedido no encontrado'));
+
+    if (!['pendiente', 'confirmado'].includes(rows[0].estado)) {
+        return res.status(400).json(fail('Este pedido ya no se puede cancelar'));
+    }
+
+    const { rows: updated } = await pool.query(
+        `UPDATE pedidos SET estado = 'cancelado' WHERE id = $1 RETURNING id, estado`,
+        [req.params.id]
+    );
+
+    return res.json(ok(updated[0], 'Pedido cancelado'));
+}
+
 /* ── GET /api/admin/orders ───────────────────────────────── */
 export async function listarTodosPedidos(_req, res) {
     const { rows } = await pool.query(
@@ -172,10 +221,10 @@ const ESTADOS_VALIDOS = ['pendiente', 'confirmado', 'enviado', 'entregado', 'can
 export async function actualizarEstadoPedido(req, res) {
     const { estado } = req.body;
     if (!ESTADOS_VALIDOS.includes(estado)) {
-        return res.status(400).json(fail('Estado inválido'));
+        return res.status(400).json(fail('Estado invalido'));
     }
     const { rows } = await pool.query(
-        `UPDATE pedidos SET estado = $1 WHERE id = $2 RETURNING id, estado`,
+        'UPDATE pedidos SET estado = $1 WHERE id = $2 RETURNING id, estado',
         [estado, req.params.id]
     );
     if (!rows[0]) return res.status(404).json(fail('Pedido no encontrado'));
