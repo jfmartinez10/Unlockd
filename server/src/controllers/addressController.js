@@ -85,6 +85,46 @@ export async function eliminarDireccion(req, res, next) {
     }
 }
 
+/* PATCH /api/addresses/:id — actualizar dirección */
+export async function actualizarDireccion(req, res, next) {
+    try {
+        const parsed = direccionSchema.safeParse(req.body);
+        if (!parsed.success) {
+            const errores = parsed.error.errors.map(e => e.message);
+            return res.status(422).json(fail(errores[0]));
+        }
+
+        const d = parsed.data;
+
+        if (d.predeterminada) {
+            await query(
+                'UPDATE direcciones_envio SET predeterminada = FALSE WHERE usuario_id = $1',
+                [req.user.id]
+            );
+        }
+
+        const result = await query(
+            `UPDATE direcciones_envio
+             SET nombre=$1, apellidos=$2, pais=$3, ciudad=$4, provincia=$5,
+                 direccion=$6, cod_postal=$7, direccion2=$8, predeterminada=$9
+             WHERE id=$10 AND usuario_id=$11
+             RETURNING id, nombre, apellidos, pais, ciudad, provincia,
+                       direccion, cod_postal, direccion2, predeterminada`,
+            [d.nombre, d.apellidos, d.pais, d.ciudad, d.provincia,
+             d.direccion, d.cod_postal, d.direccion2, d.predeterminada,
+             req.params.id, req.user.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json(fail('Dirección no encontrada'));
+        }
+
+        res.json(ok(result.rows[0], 'Dirección actualizada'));
+    } catch (err) {
+        next(err);
+    }
+}
+
 /* PATCH /api/addresses/:id/predeterminada — marcar como predeterminada */
 export async function marcarPredeterminada(req, res, next) {
     try {
